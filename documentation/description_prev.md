@@ -11,40 +11,40 @@
 ### HC5 - Consecutive assignments
 	The minimum and maximum number of consecutive assignments, per shift or global, must be respected.
 ### HC6 - Consecutive days off
-	The minimum and maximum number of consecutive days off must be respected.
-### HC7 - Maximum incomplete week-ends
+	The minimum and maximum number of consecutive days off must be respected. T
+### HC8 - Maximum incomplete week-ends
 	Every nurse that has the complete weekend value set to true, must work both week-end days or none. Maximum of incomplete weekends must be respected
-### HC8 - Total assignments: 
+### HC9 Total assignments: 
 	For each nurse the total number of assignments (working days) must be included within the limits (minimum and maximum) enforced by her/his contract.
-### HC9: - Minimal continuous free period
+### HC10: Minimal continuous free period
 	Each nurse must have every week a minimum continuous free period.
-### HC10 - Single assignment per day - exception	
+### HC11 - Single assignment per day - exception	
     Each nurse can be assigned to at most one shift per day or she can be assigned to early and night shift on the same day.
-### HC11 - Missing required skill - exception
+### HC12 - Missing required skill - exception
 	A shift of a given skill must necessarily be fulfilled by a nurse having that skill or by a nurse that can be assigned to this shift with this skill "if needed".
-### HC12 - Maximum shifts of specific type (night) due to health condition
+### HC13 - Maximum shifts of specific type (night) due to health condition
 	Each nurse with a specific health condition (pregnancy) must not be assigned to a shift of specific type (night) more than maximum.
-### HC13 - Planned vacation
+### HC14 - Planned vacation
 	Each planned vacation (1 week long) must be respected.
 
 ## Soft constraints
-### SC1 - Insufficient staffing for optimal coverage
+### SC2 - Insufficient staffing for optimal coverage
 	The number of nurses for each shift for each skill must be equal to the optimal requirement. Each missing nurse is penalized according to the weight provided (30). Extra nurses above the optimal value are not considered in the cost.
-### SC2 - Consecutive assignments - optimal
+### SC5 - Consecutive assignments - optimal
 	The minimum and maximum number of consecutive assignments, per shift or global, should be respected. Their evaluation involves also the border data. Each extra or missing day is multiplied by the corresponding weight. The weights for violation of consecutive shift constraints and consecutive working days are respectively 15 and 30.
-### SC3 - Consecutive days off - optimal
+### SC6 - Consecutive days off - optimal
 	The minimum and maximum number of consecutive days off should be respected. Their evaluation involves also the border data. Each extra or missing day is multiplied by weight (30).
-### SC4 - Assignement preferences
+### SC7 - Preferences
 	Each assignment to an undesired shift is penalized by weight (10).
 	Each desired shift which is not assigned is penalized by weight (10).
-### SC5 - Complete week-end optimal
+### SC8 - Complete week-end optimal
 	Every nurse that has the complete weekend value set to true, must work both week-end days or none. If she/he works only one of the two days Sat and Sun this is penalized by weight (30). 
-### SC6 - Total assignments - optimal 
+### SC9 Total assignments - optimal: 
 	For each nurse the total number of assignments (working days) must be included within the limits (minimum and maximum) enforced by her/his contract. The difference (in either direction), multiplied by its weight (20), is added to the objective function.
-### SC7 - Missing required skill - exception
+### SC12 - Missing required skill - exception
 	If nurse is assigned to a shift with a skill in category "if needed" each such shift penalized by weight (10)
-### SC8 - Overtime preferences
-	Unsatisfied preferences for overtime (each month) are penalized by weight (10). Each assignment missing from desired overtime is penalized by weight (10).
+### SC13 - Overtime preference
+	Unsatisfied preferences for overtime (each month) are penalized by weight (10). Each assignment missing from desired overitme is penalized by weight (10).
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## A Hybrid Approach for Solving Real-World Nurse Rostering Problems [link](https://link.springer.com/chapter/10.1007/978-3-642-23786-7_9)
