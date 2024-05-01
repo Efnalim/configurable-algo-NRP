@@ -1339,10 +1339,10 @@ def save_tmp_results(
         results[(week_number, "allweeksoft")] = 0
         return
 
-    for n in range(num_nurses):
-        sub_value += solver.get_values(total_working_days_over_limit[(n)]) * 20
-        sub_value += solver.get_values(total_working_days_under_limit[(n)]) * 20
-        sub_value += solver.get_values(total_working_weekends_over_limit[(n)]) * 30
+    # for n in range(num_nurses):
+    #     sub_value += solver.get_values(total_working_days_over_limit[(n)]) * 20
+    #     sub_value += solver.get_values(total_working_days_under_limit[(n)]) * 20
+    #     sub_value += solver.get_values(total_working_weekends_over_limit[(n)]) * 30
 
     results[(week_number, "status")] = solver.get_status()
 
@@ -1350,11 +1350,14 @@ def save_tmp_results(
         results[(week_number, "status")] = "Optimal solution found"
 
     if solver.get_status() == 107:
-        results[(week_number, "status")] = "Stopped due time limit"
+        results[(week_number, "status")] = "Stoped due time limit"
 
-    results[(week_number, "value")] = solver.get_objective_value() - sub_value
-    results[(week_number, "allweeksoft")] = sub_value
-    results[("allweeksoft")] = sub_value
+    # results[(week_number, "value")] = solver.get_objective_value() - sub_value
+    # results[(week_number, "allweeksoft")] = sub_value
+    # results[("allweeksoft")] = sub_value
+    results[(week_number, "value")] = 0
+    results[(week_number, "allweeksoft")] = 0
+    results[("allweeksoft")] = 0
 
     for n in range(num_nurses):
         for d in range(num_days):
@@ -1363,55 +1366,55 @@ def save_tmp_results(
                     results[(n, d + 7 * week_number, s, sk)] = solver.get_values(
                         shifts_with_skills[n][d][s][sk]
                     )
-            history_data["nurseHistory"][n]["numberOfAssignments"] += solver.get_values(
-                working_days[n][d]
-            )
-        history_data["nurseHistory"][n]["numberOfWorkingWeekends"] += solver.get_values(
-            working_weekends[(n)]
-        )
+        #     history_data["nurseHistory"][n]["numberOfAssignments"] += solver.get_values(
+        #         working_days[n][d]
+        #     )
+        # history_data["nurseHistory"][n]["numberOfWorkingWeekends"] += solver.get_values(
+        #     working_weekends[(n)]
+        # )
 
-        if solver.get_values(working_days[n][6]) == 0:
-            consecutive_free_days = 1
-            d = 5
-            while d >= 0 and solver.get_values(working_days[n][d]) == 0:
-                consecutive_free_days += 1
-                d -= 1
-            history_data["nurseHistory"][n][
-                "numberOfConsecutiveDaysOff"
-            ] = consecutive_free_days
-            history_data["nurseHistory"][n]["numberOfConsecutiveWorkingDays"] = 0
-            history_data["nurseHistory"][n]["numberOfConsecutiveAssignments"] = 0
-            history_data["nurseHistory"][n]["lastAssignedShiftType"] = "None"
-        else:
-            consecutive_work_days = 1
-            d = 5
-            while d >= 0 and solver.get_values(working_days[n][d]) == 1:
-                consecutive_work_days += 1
-                d -= 1
-            history_data["nurseHistory"][n][
-                "numberOfConsecutiveWorkingDays"
-            ] = consecutive_work_days
-            history_data["nurseHistory"][n]["numberOfConsecutiveDaysOff"] = 0
+        # if solver.get_values(working_days[n][6]) == 0:
+        #     consecutive_free_days = 1
+        #     d = 5
+        #     while d >= 0 and solver.get_values(working_days[n][d]) == 0:
+        #         consecutive_free_days += 1
+        #         d -= 1
+        #     history_data["nurseHistory"][n][
+        #         "numberOfConsecutiveDaysOff"
+        #     ] = consecutive_free_days
+        #     history_data["nurseHistory"][n]["numberOfConsecutiveWorkingDays"] = 0
+        #     history_data["nurseHistory"][n]["numberOfConsecutiveAssignments"] = 0
+        #     history_data["nurseHistory"][n]["lastAssignedShiftType"] = "None"
+        # else:
+        #     consecutive_work_days = 1
+        #     d = 5
+        #     while d >= 0 and solver.get_values(working_days[n][d]) == 1:
+        #         consecutive_work_days += 1
+        #         d -= 1
+        #     history_data["nurseHistory"][n][
+        #         "numberOfConsecutiveWorkingDays"
+        #     ] = consecutive_work_days
+        #     history_data["nurseHistory"][n]["numberOfConsecutiveDaysOff"] = 0
 
-            consecutive_shift = 0
-            for s in range(num_shifts):
-                if solver.get_values(shifts[n][6][s]) == 1:
-                    consecutive_shift = s
-                    break
-            consecutive_shifts = 1
-            for shift_name, shift_id in shift_to_int.items():
-                if shift_id == consecutive_shift:
-                    history_data["nurseHistory"][n][
-                        "lastAssignedShiftType"
-                    ] = shift_name
+        #     consecutive_shift = 0
+        #     for s in range(num_shifts):
+        #         if solver.get_values(shifts[n][6][s]) == 1:
+        #             consecutive_shift = s
+        #             break
+        #     consecutive_shifts = 1
+        #     for shift_name, shift_id in shift_to_int.items():
+        #         if shift_id == consecutive_shift:
+        #             history_data["nurseHistory"][n][
+        #                 "lastAssignedShiftType"
+        #             ] = shift_name
 
-            d = 5
-            while d >= 0 and solver.get_values(shifts[n][d][consecutive_shift]) == 1:
-                consecutive_shifts += 1
-                d -= 1
-            history_data["nurseHistory"][n][
-                "numberOfConsecutiveAssignments"
-            ] = consecutive_shifts
+        #     d = 5
+        #     while d >= 0 and solver.get_values(shifts[n][d][consecutive_shift]) == 1:
+        #         consecutive_shifts += 1
+        #         d -= 1
+        #     history_data["nurseHistory"][n][
+        #         "numberOfConsecutiveAssignments"
+        #     ] = consecutive_shifts
 
 
 def set_objective_function(c, constants, basic_ILP_vars, soft_ILP_vars):
