@@ -12,6 +12,8 @@ import math
 from nsp_solver.solver.nsp_contest import compute_one_week as compute_one_week_or_tools
 from nsp_solver.solver.nsp_cplex import compute_one_week as compute_one_week_cplex
 from nsp_solver.solver.nsp_docplex import compute_one_week as compute_one_week_docplex
+from nsp_solver.simulator.simulator import update_history_for_next_week
+from nsp_solver.validator.validator import ScheduleValidator
 
 def load_data(number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list):
     """
@@ -19,19 +21,19 @@ def load_data(number_nurses: int, number_weeks: int, history_data_file_id: int, 
     Returns a dictionary named 'constants' containing loaded data.
     """
 
-    file_name = "data\hidden-JSON\H0-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(history_data_file_id) + ".json"
+    file_name = "data\H0-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(history_data_file_id) + ".json"
     f0 = open(file_name)
     h0_data = json.load(f0)
     f0.close()
 
-    file_name = "data\hidden-JSON\Sc-n0" + str(number_nurses) +"w" + str(number_weeks) + ".json"
+    file_name = "data\Sc-n0" + str(number_nurses) +"w" + str(number_weeks) + ".json"
     f1 = open(file_name)
     sc_data = json.load(f1)
     f1.close()
 
     wd_data = []
     for week in range(number_weeks):
-        file_name = "data\hidden-JSON\WD-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(week_data_files_ids[week]) + ".json"
+        file_name = "data\WD-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(week_data_files_ids[week]) + ".json"
         f2 = open(file_name)
         wd_data.append(json.load(f2))
         f2.close()
@@ -112,8 +114,10 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     if(mode == 0):
         print(f"CPLEX for {number_weeks} weeks ({' '.join(map(str, week_data_files_ids))}) and for {number_nurses} nurses")
-    else:
+    if(mode == 1):
         print(f"OR TOOLS for {number_weeks} weeks ({' '.join(map(str, week_data_files_ids))}) and for {number_nurses} nurses")
+    if(mode == 2):
+        print(f"DOCPLEX for {number_weeks} weeks ({' '.join(map(str, week_data_files_ids))}) and for {number_nurses} nurses")
 
     display = True
     if(time_limit_for_week == 0):
@@ -131,13 +135,24 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
             compute_one_week_or_tools(time_limit_for_week, week_number, constants, results)
         if(mode == 2):
             compute_one_week_docplex(time_limit_for_week, week_number, constants, results)
-
+        update_history_for_next_week(results, constants, week_number)
+        validator = ScheduleValidator(results, constants, {}, week_number)
+        if validator.is_schedule_valid():
+            results[(week_number, "value")] = validator.get_objective_value_of_schedule()
+        else:
+            print(f"Schedule for week{week_number} not found")
+            results[(week_number, "value")] = 99999
+            return
+        
     # display results
     if(display):
         display_schedule(results, constants, number_weeks)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print("----------------------------------------------------------------")
-    total_value = results[("allweeksoft")]
+    # total_value = results[("allweeksoft")]
+    total_value = 0
+    validator = ScheduleValidator(results, constants, {}, week_number)
+    total_value += validator.get_all_weeks_objective_value()
     for week_number in range(number_weeks):
         print(f"status:          {results[(week_number, 'status')]}")
         print(f"objective value: {results[(week_number, 'value')]}")
