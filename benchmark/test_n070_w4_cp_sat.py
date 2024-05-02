@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import os
 import sys
 import subprocess
 
@@ -17,8 +18,15 @@ def redirect_stdout_to_file(file_path):
 
 
 try:
-    output_file = 'outputs\\output_test_n070_w4_cpl_sat.txt'
+    output_file = 'outputs\\logs\\output_test_n070_w4_cpl_sat.txt'
     number_of_iteration = 1
+
+    if not os.path.exists("outputs"): 
+        os.makedirs("outputs") 
+    if not os.path.exists("outputs\\logs"): 
+        os.makedirs("outputs\\logs") 
+    if not os.path.exists("outputs\\schedules"): 
+        os.makedirs("outputs\\schedules") 
 
     # list of input for benchmark
     with redirect_stdout_to_file(output_file):

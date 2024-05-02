@@ -75,6 +75,7 @@ class ScheduleValidator:
         for n in all_nurses:
             for d in all_days:
                 if sum(self.help_vars["shifts"][n][d][:]) > 1:
+                    print(f"{n} {d}")
                     return False
 
         return True
@@ -123,6 +124,7 @@ class ScheduleValidator:
                             ]
                             == 1
                         ):
+                            print(f"{n} {d} {s} {shifts[n][d][s]} {shifts[n][d + 1][utils.shift_to_int[forbidden_shift_succession]]}")
                             return False
             last_shift = utils.shift_to_int[
                 self.constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
@@ -135,6 +137,7 @@ class ScheduleValidator:
                 "succeedingShiftTypes"
             ]:
                 if shifts[n][0][utils.shift_to_int[forbidden_shift_succession]] == 1:
+                    print(f"{n} {s} {last_shift} {utils.shift_to_int[forbidden_shift_succession]}")
                     return False
 
         return True
@@ -161,12 +164,17 @@ class ScheduleValidator:
             for d in range(num_days):
                 for s in range(num_shifts):
                     for sk in range(num_skills):
+                        self.schedule[(n, d + 7 * self.num_week, s, sk)] = round(
+                            self.schedule[(n, d + 7 * self.num_week, s, sk)]
+                        )
                         shifts_and_skills[n][d][s][sk] = self.schedule[
                             (n, d + 7 * self.num_week, s, sk)
                         ]
                     shifts[n][d][s] = sum(
-                        self.schedule[(n, d + 7 * self.num_week, s, sk)]
-                        for sk in range(num_skills)
+                        [
+                            self.schedule[(n, d + 7 * self.num_week, s, sk)]
+                            for sk in range(num_skills)
+                        ]
                     )
                 working_days[n][d] = sum(shifts[n][d][:])
 
@@ -527,7 +535,14 @@ class ScheduleValidator:
                 utils.contract_to_int[nurses_data[n]["contract"]]
             ]["minimumNumberOfAssignments"]
 
-            total_assignments = sum([self.schedule[(n, d, s, sk)] for d in range(num_days*num_weeks) for s in all_shifts for sk in all_skills])
+            total_assignments = sum(
+                [
+                    self.schedule[(n, d, s, sk)]
+                    for d in range(num_days * num_weeks)
+                    for s in all_shifts
+                    for sk in all_skills
+                ]
+            )
             diff = total_assignments - upper_limit
             if diff > 0:
                 subtotal += diff * utils.TOTAL_ASSIGNMENTS_WEIGHT
@@ -551,9 +566,50 @@ class ScheduleValidator:
             ]["maximumNumberOfWorkingWeekends"]
             total_working_weekends = 0
             for w in range(num_weeks):
-                if sum([self.schedule[(n, 5 + 7 * w, s, sk)] + self.schedule[(n, 6 + 7 * w, s, sk)] for s in all_shifts for sk in all_skills]) > 0:
+                if (
+                    sum(
+                        [
+                            self.schedule[(n, 5 + 7 * w, s, sk)]
+                            + self.schedule[(n, 6 + 7 * w, s, sk)]
+                            for s in all_shifts
+                            for sk in all_skills
+                        ]
+                    )
+                    > 0
+                ):
                     total_working_weekends += 1
             diff = total_working_weekends - worked_weekends_limit
             if diff > 0:
                 subtotal += diff * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
         return subtotal
+
+    def print_current_week(self):
+        num_days = self.constants["num_days"]
+        num_nurses = self.constants["num_nurses"]
+        num_skills = self.constants["num_skills"]
+        num_shifts = self.constants["num_shifts"]
+        for n in range(num_nurses):
+            for d in range(num_days):
+                for s in range(num_shifts):
+                    for sk in range(num_skills):
+                        print(
+                            f'{self.help_vars["shifts_and_skills"][n][d][s][sk]} ',
+                            end="",
+                        )
+                    print("|", end="")
+                print("||", end="")
+            print()
+        
+        for n in range(num_nurses):
+            for d in range(num_days):
+                for s in range(num_shifts):
+                    print(
+                        f'{self.help_vars["shifts"][n][d][s]} ',
+                        end="",
+                    )
+                print("|", end="")
+            print()
+
+    def export_schedule(self, file):
+        acc_text = ''
+        file.write(acc_text)

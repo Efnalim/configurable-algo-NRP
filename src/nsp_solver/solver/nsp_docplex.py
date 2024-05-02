@@ -130,15 +130,15 @@ def add_shift_succession_reqs(
         ]
         if last_shift == 2:
             model.add(
-                sum([shifts[n][0][last_shift - 1], shifts[n][0][last_shift - 2]]) == 0
+                sum([shifts[n][0][0], shifts[n][0][1]]) == 0
             )
         if last_shift == 3:
             model.add(
                 sum(
                     [
-                        shifts[n][0][last_shift - 1],
-                        shifts[n][0][last_shift - 2],
-                        shifts[n][0][last_shift - 3],
+                        shifts[n][0][0],
+                        shifts[n][0][1],
+                        shifts[n][0][2],
                     ]
                 )
                 == 0

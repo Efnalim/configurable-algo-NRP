@@ -4,3 +4,4 @@ venv
 outputs
 *.pyc
 __pycache__/
+input

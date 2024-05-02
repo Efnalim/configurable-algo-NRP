@@ -8,6 +8,7 @@ import numpy as np
 from matplotlib.colors import LogNorm
 import matplotlib.ticker as ticker 
 import math
+import time
 
 from nsp_solver.solver.nsp_contest import compute_one_week as compute_one_week_or_tools
 from nsp_solver.solver.nsp_cplex import compute_one_week as compute_one_week_cplex
@@ -68,7 +69,7 @@ def load_data(number_nurses: int, number_weeks: int, history_data_file_id: int, 
     return constants
 
 
-def display_schedule(results, constants, number_weeks):
+def display_schedule(results, constants, number_weeks, save, filename):
     """
     Displays computed schedule as table in a figure.
     """
@@ -91,7 +92,7 @@ def display_schedule(results, constants, number_weeks):
     for sk in range(num_skills):
         legend[0][sk] = 1 - (0.2 * sk)
 
-    fig, (ax0, ax1) = plt.subplots(2, 1)
+    fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(16, 9), gridspec_kw={'height_ratios': [10, 1]})
     
     c = ax0.pcolor(schedule_table) 
     ax0.set_title('Schedule') 
@@ -105,8 +106,11 @@ def display_schedule(results, constants, number_weeks):
     ax1.set_xticks(np.arange(num_skills + 1) + 0.5)
     ax1.set_xticklabels([ "HeadNurse", "Nurse", "Caretaker", "Trainee", "Not working" ])
     
-    fig.tight_layout() 
-    plt.show() 
+    fig.tight_layout()
+    if save: 
+        plt.savefig(filename)
+    else:
+        plt.show() 
 
 def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list):
     # Loading Data and init constants
@@ -126,6 +130,7 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
         # time_limit_for_week = 10
 
     # accumulate results over weeks
+    start = time.time()
     results = {}
     for week_number in range(number_weeks):
         constants["wd_data"] = constants["all_wd_data"][week_number]
@@ -135,7 +140,6 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
             compute_one_week_or_tools(time_limit_for_week, week_number, constants, results)
         if(mode == 2):
             compute_one_week_docplex(time_limit_for_week, week_number, constants, results)
-        update_history_for_next_week(results, constants, week_number)
         validator = ScheduleValidator(results, constants, {}, week_number)
         if validator.is_schedule_valid():
             results[(week_number, "value")] = validator.get_objective_value_of_schedule()
@@ -143,10 +147,11 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
             print(f"Schedule for week{week_number} not found")
             results[(week_number, "value")] = 99999
             return
-        
+        update_history_for_next_week(results, constants, week_number)
+    end = time.time()
     # display results
     if(display):
-        display_schedule(results, constants, number_weeks)
+        display_schedule(results, constants, number_weeks, False, None)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print("----------------------------------------------------------------")
     # total_value = results[("allweeksoft")]
@@ -159,7 +164,22 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
         total_value += results[(week_number, "value")]
         print("----------------------------------------------------------------")
     print(f"value total: {total_value}")
+    print(f"time total: {math.ceil(end - start)} s")
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+    tool_name = ""
+    if(mode == 0):
+        tool_name = "CPLEX"
+    if(mode == 1):
+        tool_name = "OR TOOLS"
+    if(mode == 2):
+        tool_name = "DOCPLEX"
+
+    schedule_file_name = f'outputs\\schedules\\{tool_name}_n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}.png'
+    # with open(schedule_file_name, "w") as f:
+    display_schedule(results, constants, number_weeks, True, schedule_file_name)
+        # validator.export_schedule(f)
+
 
 if __name__ == "__main__":
     time_limit_for_week = int(sys.argv[1])
