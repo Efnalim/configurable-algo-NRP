@@ -10,14 +10,12 @@ day_to_int = {
     "Saturday": 5,
     "Sunday": 6,
 }
-
-def get_shift_to_int():
-    return shift_to_int
-def get_skill_to_int():
-    return skill_to_int
-def get_contract_to_int():
-    return contract_to_int
-def get_day_to_int():
-    return day_to_int
-    
-    
+OPT_CAPACITY_WEIGHT = 30
+CONS_WORK_DAY_WEIGHT = 30
+CONS_SHIFT_WEIGHT = 15
+CONS_DAY_OFF_WEIGHT = 30
+UNSATISFIED_PREFERENCE_WEIGHT = 10
+INCOMPLETE_WEEKEDN_WEIGHT = 30
+CONS_WORK_DAY_WEIGHT = 30
+TOTAL_ASSIGNMENTS_WEIGHT = 20
+TOTAL_WORKING_WEEKENDS_WEIGHT = 30

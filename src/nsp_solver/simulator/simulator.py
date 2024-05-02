@@ -45,7 +45,7 @@ def update_history_for_next_week(results, constants, week_number):
                     consecutive_shift = s
                     break
             consecutive_shifts = 1
-            for shift_name, shift_id in utils.get_shift_to_int().items():
+            for shift_name, shift_id in utils.shift_to_int.items():
                 if shift_id == consecutive_shift:
                     history_data["nurseHistory"][n][
                         "lastAssignedShiftType"

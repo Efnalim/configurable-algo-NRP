@@ -9,18 +9,7 @@ import cplex
 
 from docplex.cp.model import CpoModel
 
-shift_to_int = {"Early": 0, "Day": 1, "Late": 2, "Night": 3, "Any": 4, "None": 5}
-skill_to_int = {"HeadNurse": 0, "Nurse": 1, "Caretaker": 2, "Trainee": 3}
-contract_to_int = {"FullTime": 0, "PartTime": 1, "HalfTime": 2}
-day_to_int = {
-    "Monday": 0,
-    "Tuesday": 1,
-    "Wednesday": 2,
-    "Thursday": 3,
-    "Friday": 4,
-    "Saturday": 5,
-    "Sunday": 6,
-}
+from nsp_solver.utils import utils
 
 max_consecutive_work_days = 7
 max_consecutive_days_off = 7
@@ -44,8 +33,8 @@ def init_cp_vars(model, constants):
     ]
 
     for req in wd_data["requirements"]:
-        s = shift_to_int[req["shiftType"]]
-        sk = skill_to_int[req["skill"]]
+        s = utils.shift_to_int[req["shiftType"]]
+        sk = utils.skill_to_int[req["skill"]]
         minimal_capacities_in_week = [
             req["requirementOnMonday"]["minimum"],
             req["requirementOnTuesday"]["minimum"],
@@ -136,7 +125,7 @@ def add_shift_succession_reqs(
     """
 
     for n in all_nurses:
-        last_shift = shift_to_int[
+        last_shift = utils.shift_to_int[
             constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
         ]
         if last_shift == 2:
@@ -198,7 +187,7 @@ def add_missing_skill_req(
         for sk in all_skills:
             has_skill = False
             for skill in nurse_data["skills"]:
-                if sk == skill_to_int[skill]:
+                if sk == utils.skill_to_int[skill]:
                     has_skill = True
                     break
             if has_skill is False:
@@ -258,6 +247,34 @@ def add_hard_constrains(model, basic_cp_vars, constants):
         all_shifts,
         all_skills,
     )
+    for req in wd_data["requirements"]:
+        add_shift_skill_req_minimal(model, req, basic_cp_vars, constants)
+
+def add_shift_skill_req_minimal(model, req, basic_cp_vars, constants):
+    """
+    Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
+    """
+
+    all_nurses = constants["all_nurses"]
+    shifts_with_skills = basic_cp_vars["shifts_with_skills"]
+
+    s = utils.shift_to_int[req["shiftType"]]
+    sk = utils.skill_to_int[req["skill"]]
+    minimal_capacities_in_week = [
+        req["requirementOnMonday"]["minimum"],
+        req["requirementOnTuesday"]["minimum"],
+        req["requirementOnWednesday"]["minimum"],
+        req["requirementOnThursday"]["minimum"],
+        req["requirementOnFriday"]["minimum"],
+        req["requirementOnSaturday"]["minimum"],
+        req["requirementOnSunday"]["minimum"],
+    ]
+
+    for d, min_capacity in enumerate(minimal_capacities_in_week):
+        model.add(
+            sum([shifts_with_skills[n][d][s][sk] for n in all_nurses])
+            >= min_capacity
+        )
 
 
 def init_cp_vars_for_soft_constraints(model, basic_cp_vars, constants):
@@ -365,7 +382,7 @@ def init_cp_vars_for_soft_constraints(model, basic_cp_vars, constants):
     violations_of_min_consecutive_days_off = {}
     for n in all_nurses:
         min_consecutive_days_off = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveDaysOff"]
         for d in all_days:
             for dd in range(1, min_consecutive_days_off):
@@ -378,7 +395,7 @@ def init_cp_vars_for_soft_constraints(model, basic_cp_vars, constants):
     violations_of_min_consecutive_working_days = {}
     for n in all_nurses:
         min_consecutive_working_days = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveWorkingDays"]
         for d in all_days:
             for dd in range(1, min_consecutive_working_days):
@@ -470,8 +487,8 @@ def add_shift_skill_req_optimal(model, req, basic_cp_vars, soft_cp_vars, constan
     shifts_with_skills = basic_cp_vars["shifts_with_skills"]
     insufficient_staffing = soft_cp_vars["insufficient_staffing"]
 
-    s = shift_to_int[req["shiftType"]]
-    sk = skill_to_int[req["skill"]]
+    s = utils.shift_to_int[req["shiftType"]]
+    sk = utils.skill_to_int[req["skill"]]
     optimal_capacities_in_week = [
         req["requirementOnMonday"]["optimal"],
         req["requirementOnTuesday"]["optimal"],
@@ -500,10 +517,10 @@ def add_insatisfied_preferences_reqs(
 
     for preference in wd_data["shiftOffRequests"]:
         nurse_id = int(preference["nurse"].split("_")[1])
-        day_id = day_to_int[preference["day"]]
-        shift_id = shift_to_int[preference["shiftType"]]
+        day_id = utils.day_to_int[preference["day"]]
+        shift_id = utils.shift_to_int[preference["shiftType"]]
 
-        if shift_id != shift_to_int["Any"]:
+        if shift_id != utils.shift_to_int["Any"]:
             model.add(
                 (
                     unsatisfied_preferences[(nurse_id, day_id, shift_id)]
@@ -516,9 +533,9 @@ def add_insatisfied_preferences_reqs(
     # for preference in wd_data["shiftOnRequests"]:
     #     nurse_id = int(preference["nurse"].split("_")[1])
     #     day_id = day_to_int[preference["day"]]
-    #     shift_id = shift_to_int[preference["shiftType"]]
+    #     shift_id = utils.shift_to_int[preference["shiftType"]]
 
-    #     if shift_id != shift_to_int["Any"]:
+    #     if shift_id != utils.shift_to_int["Any"]:
     #         model.add((unsatisfied_preferences[(nurse_id, day_id, shift_id)] + shifts[nurse_id][day_id][shift_id]) == 1)
 
 
@@ -541,9 +558,9 @@ def add_total_working_weekends_soft_constraints(
         model.add(working_weekends[(n)] - working_days[n][6] == 0)
 
     for n in all_nurses:
-        # worked_weekends_limit_for_this_week = sc_data["contracts"][contract_to_int[sc_data["nurses"][n]["contract"]]]["maximumNumberOfWorkingWeekends"]
+        # worked_weekends_limit_for_this_week = sc_data["contracts"][utils.contract_to_int[sc_data["nurses"][n]["contract"]]]["maximumNumberOfWorkingWeekends"]
         worked_weekends_limit_for_this_week = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["maximumNumberOfWorkingWeekends"] * ((week_number + 1) / num_weeks)
         worked_weekends_in_previous_weeks = h0_data["nurseHistory"][n][
             "numberOfWorkingWeekends"
@@ -564,7 +581,7 @@ def add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, const
 
     for n in all_nurses:
         isCompleteWeekendRequested = contracts_data[
-            contract_to_int[nurses_data[n]["contract"]]
+            utils.contract_to_int[nurses_data[n]["contract"]]
         ]["completeWeekends"]
         if isCompleteWeekendRequested == 1:
             model.add(
@@ -593,13 +610,13 @@ def add_total_working_days_out_of_bounds_constraint(
             "numberOfAssignments"
         ]
         upper_limit = math.ceil(
-            contracts_data[contract_to_int[nurses_data[n]["contract"]]][
+            contracts_data[utils.contract_to_int[nurses_data[n]["contract"]]][
                 "maximumNumberOfAssignments"
             ]
             * ((week_number + 1) / num_weeks)
         )
         lower_limit = math.ceil(
-            contracts_data[contract_to_int[nurses_data[n]["contract"]]][
+            contracts_data[utils.contract_to_int[nurses_data[n]["contract"]]][
                 "minimumNumberOfAssignments"
             ]
             * ((week_number + 1) / num_weeks)
@@ -630,7 +647,7 @@ def add_max_consecutive_work_days_constraint(
             "numberOfConsecutiveWorkingDays"
         ]
         max_consecutive_working_days = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["maximumNumberOfConsecutiveWorkingDays"]
         for d in all_days:
             if d > max_consecutive_working_days:
@@ -693,7 +710,7 @@ def add_min_consecutive_work_days_constraint(
             "numberOfConsecutiveWorkingDays"
         ]
         min_consecutive_working_days = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveWorkingDays"]
         for d in all_days:
             for dd in range(1, min_consecutive_working_days):
@@ -740,7 +757,7 @@ def add_min_consecutive_shifts_constraint(
         lastAssignedShiftType = constants["h0_data"]["nurseHistory"][n][
             "lastAssignedShiftType"
         ]
-        lastShittTypeAsInt = shift_to_int[lastAssignedShiftType]
+        lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data["shiftTypes"][s][
@@ -796,7 +813,7 @@ def add_min_consecutive_days_off_constraint(
             "numberOfConsecutiveDaysOff"
         ]
         min_consecutive_days_off = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveDaysOff"]
         for d in all_days:
             for dd in range(1, min_consecutive_days_off):
@@ -839,7 +856,7 @@ def add_max_consecutive_work_shifts_constraint(
     shifts = basic_cp_vars["shifts"]
 
     for n in all_nurses:
-        last_shift = shift_to_int[
+        last_shift = utils.shift_to_int[
             constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
         ]
         consecutive_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
@@ -895,7 +912,7 @@ def add_max_consecutive_days_off_constraint(
             "numberOfConsecutiveDaysOff"
         ]
         max_consecutive_working_days = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["maximumNumberOfConsecutiveDaysOff"]
         for d in all_days:
             if d > max_consecutive_working_days:
@@ -1049,7 +1066,7 @@ def set_objective_function(model, constants, basic_cp_vars, soft_cp_vars):
     weights_of_violations_of_min_cons_working_days = []
     for n in all_nurses:
         min_consecutive_working_days = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveWorkingDays"]
         for d in all_days:
             for dd in range(1, min_consecutive_working_days):
@@ -1062,7 +1079,7 @@ def set_objective_function(model, constants, basic_cp_vars, soft_cp_vars):
     weights_of_violations_of_min_cons_days_off = []
     for n in all_nurses:
         min_consecutive_days_off = sc_data["contracts"][
-            contract_to_int[sc_data["nurses"][n]["contract"]]
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
         ]["minimumNumberOfConsecutiveDaysOff"]
         for d in all_days:
             for dd in range(1, min_consecutive_days_off):
@@ -1211,8 +1228,8 @@ def compute_one_week(time_limit_for_week, week_number, constants, results):
 
     basic_cp_vars, soft_cp_vars = setup_problem(mdl, constants, week_number)
 
-    msol = mdl.solve(TimeLimit=10)
-    # msol = mdl.solve(TimeLimit=time_limit_for_week)
+    # msol = mdl.solve(TimeLimit=10)
+    msol = mdl.solve(TimeLimit=time_limit_for_week)
     if msol:
         save_tmp_results(
             results, msol, constants, basic_cp_vars, soft_cp_vars, week_number, mdl
