@@ -18,7 +18,7 @@ def redirect_stdout_to_file(file_path):
 
 
 try:
-    output_file = 'outputs\\logs\\output_test_n035_w4_cplex.txt'
+    output_file = 'outputs\\logs\\output_test_n035_w4_cplex_modified.txt'
 
     if not os.path.exists("outputs"): 
         os.makedirs("outputs") 
@@ -31,7 +31,7 @@ try:
     number_of_nurses = 35
     time_limit = 0
     solver_id = 0
-    modified = 0
+    modified = 1
 
     week_combinations = []
     with open('input\\week_combinations.txt') as f:

@@ -10,7 +10,7 @@ if __name__ == "__main__":
         os.makedirs("..\\input") 
 
     num_combinations = int(sys.argv[1])
-    filename = "..\\input\\week_combinations1.txt"
+    filename = "..\\input\\week_combinations.txt"
     with open(filename, "w") as f:
         for _ in range(num_combinations):
             f.write(f"4 {random.randint(0, 2)} {random.randint(0, 9)} {random.randint(0, 9)} {random.randint(0, 9)} {random.randint(0, 9)}\n")

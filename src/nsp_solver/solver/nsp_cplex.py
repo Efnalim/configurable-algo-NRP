@@ -13,6 +13,13 @@ max_consecutive_work_days = 7
 max_consecutive_days_off = 7
 
 
+def prepare_help_constants(constants):
+    constants["wd_data"]["vacations"] = list(
+        map(lambda x: int(x.split("_")[1]), constants["wd_data"]["vacations"])
+    )
+    print(constants["wd_data"]["vacations"])
+
+
 def init_ilp_vars(model, constants):
     """
     Initializes basic variables for primarly for hard contraints.
@@ -272,6 +279,27 @@ def add_hard_constrains(model, basic_ILP_vars, constants):
 
     for req in wd_data["requirements"]:
         add_shift_skill_req_minimal(model, req, basic_ILP_vars, constants)
+
+    add_vacations_reqs(model, wd_data, basic_ILP_vars, constants)
+
+    # add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constants)
+
+
+def add_vacations_reqs(model, wd_data, basic_ILP_vars, constants):
+    all_days = constants["all_days"]
+    num_days = constants["num_days"]
+    working_days = basic_ILP_vars["working_days"]
+
+    for nurse_id in wd_data["vacations"]:
+        model.linear_constraints.add(
+            lin_expr=[
+                cplex.SparsePair(
+                    working_days[nurse_id][:], [1] * len(working_days[nurse_id][:])
+                )
+            ],
+            senses=["E"],
+            rhs=[0],
+        )
 
 
 def add_shift_skill_req_minimal(model, req, basic_ILP_vars, constants):
@@ -704,7 +732,6 @@ def add_insatisfied_preferences_reqs(
                 rhs=[0],
             )
 
-
     # for preference in wd_data["shiftOnRequests"]:
     #     nurse_id = int(preference["nurse"].split("_")[1])
     #     day_id = day_to_int[preference["day"]]
@@ -826,6 +853,9 @@ def add_total_working_days_out_of_bounds_constraint(
     h0_data = constants["h0_data"]
 
     for n in all_nurses:
+        if n in constants["wd_data"]["vacations"]:
+            continue
+
         worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
             "numberOfAssignments"
         ]
@@ -1235,11 +1265,20 @@ def add_max_consecutive_days_off_constraint(
                         rhs=[1],
                     )
 
+
+def add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constants):
+    all_nurses = constants["all_nurses"]
+    all_days = constants["all_days"]
+    sc_data = constants["sc_data"]
+    working_days = basic_ILP_vars["working_days"]
+
     for n in all_nurses:
         consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
-        max_consecutive_working_days = max_consecutive_days_off
+        max_consecutive_working_days = sc_data["contracts"][
+            utils.contract_to_int[sc_data["nurses"][n]["contract"]]
+        ]["maximumNumberOfConsecutiveDaysOffHard"]
         for d in all_days:
             if d > max_consecutive_working_days:
                 model.linear_constraints.add(
@@ -1537,6 +1576,8 @@ def set_objective_function(c, constants, basic_ILP_vars, soft_ILP_vars):
 
 
 def setup_problem(c, constants, week_number):
+    prepare_help_constants(constants)
+
     # Create ILP variables.
     basic_ILP_vars = init_ilp_vars(c, constants)
 

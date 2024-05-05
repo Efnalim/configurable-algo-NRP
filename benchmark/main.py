@@ -16,25 +16,29 @@ from nsp_solver.solver.nsp_docplex import compute_one_week as compute_one_week_d
 from nsp_solver.simulator.simulator import update_history_for_next_week
 from nsp_solver.validator.validator import ScheduleValidator
 
-def load_data(number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list):
+def load_data(number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list, modified: bool):
     """
     Loads and prepairs data for computation.
     Returns a dictionary named 'constants' containing loaded data.
     """
 
-    file_name = "data\H0-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(history_data_file_id) + ".json"
+    path = "data"
+    if modified:
+        path = "modified_data"
+
+    file_name = path + "\H0-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(history_data_file_id) + ".json"
     f0 = open(file_name)
     h0_data = json.load(f0)
     f0.close()
 
-    file_name = "data\Sc-n0" + str(number_nurses) +"w" + str(number_weeks) + ".json"
+    file_name = path + "\Sc-n0" + str(number_nurses) +"w" + str(number_weeks) + ".json"
     f1 = open(file_name)
     sc_data = json.load(f1)
     f1.close()
 
     wd_data = []
     for week in range(number_weeks):
-        file_name = "data\WD-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(week_data_files_ids[week]) + ".json"
+        file_name = path + "\WD-n0" + str(number_nurses) +"w" + str(number_weeks) + "-" + str(week_data_files_ids[week]) + ".json"
         f2 = open(file_name)
         wd_data.append(json.load(f2))
         f2.close()
@@ -78,19 +82,28 @@ def display_schedule(results, constants, number_weeks, save, filename):
     num_nurses = constants["num_nurses"]
     num_skills = constants["num_skills"]
     num_shifts = constants["num_shifts"]
+    num_days_in_week = constants["num_days"]
 
     schedule_table = np.zeros([num_nurses, num_days * num_shifts]) 
-    legend = np.zeros([1, num_skills + 1])
+    legend = np.zeros([1, num_skills + 2])
 
     for d in range(num_days):
         for n in range(num_nurses):
             for s in range(num_shifts):
                 for sk in range(num_skills):
                     if results[(n, d, s, sk)] == 1:
-                        schedule_table[n][d*num_shifts + s] = 1 - (0.2 * sk)
+                        schedule_table[n][d*num_shifts + s] = 0.85 - (0.175 * sk)
+
+    for w in range(number_weeks):
+        for n in constants["all_wd_data"][w]["vacations"]:
+            # n = int(nurse_id.split("_")[1])
+            for d in range(num_days_in_week):
+                for s in range(num_shifts):
+                    schedule_table[n][(d + 7 * w)*num_shifts + s] = 1
 
     for sk in range(num_skills):
-        legend[0][sk] = 1 - (0.2 * sk)
+        legend[0][sk] = 0.85 - (0.175 * sk)
+    legend[0][num_skills + 1] = 1
 
     fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(16, 9), gridspec_kw={'height_ratios': [10, 1]})
     
@@ -103,8 +116,8 @@ def display_schedule(results, constants, number_weeks, save, filename):
 
     c = ax1.pcolor(legend, edgecolors='k', linewidths=5) 
     ax1.set_title('Legend - skills') 
-    ax1.set_xticks(np.arange(num_skills + 1) + 0.5)
-    ax1.set_xticklabels([ "HeadNurse", "Nurse", "Caretaker", "Trainee", "Not working" ])
+    ax1.set_xticks(np.arange(num_skills + 2) + 0.5)
+    ax1.set_xticklabels([ "HeadNurse", "Nurse", "Caretaker", "Trainee", "Not working", "Vacation" ])
     
     fig.tight_layout()
     if save: 
@@ -112,9 +125,9 @@ def display_schedule(results, constants, number_weeks, save, filename):
     else:
         plt.show() 
 
-def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list):
+def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, history_data_file_id: int, week_data_files_ids: list, modified: bool):
     # Loading Data and init constants
-    constants = load_data(number_nurses, number_weeks, history_data_file_id, week_data_files_ids)
+    constants = load_data(number_nurses, number_weeks, history_data_file_id, week_data_files_ids, modified)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     if(mode == 0):
         print(f"CPLEX for {number_weeks} weeks ({' '.join(map(str, week_data_files_ids))}) and for {number_nurses} nurses")
@@ -182,10 +195,11 @@ def main(time_limit_for_week, mode, number_nurses: int, number_weeks: int, histo
 
 
 if __name__ == "__main__":
-    time_limit_for_week = int(sys.argv[1])
-    mode = int(sys.argv[2])
-    number_nurses = int(sys.argv[3])
-    number_weeks = int(sys.argv[4])
-    history_data_file_id = int(sys.argv[5])
-    week_data_files_ids = list(map(int, (sys.argv[6:])))
-    main(time_limit_for_week, mode, number_nurses, number_weeks, history_data_file_id, week_data_files_ids)
+    modified = int(sys.argv[1]) == 1
+    time_limit_for_week = int(sys.argv[2])
+    mode = int(sys.argv[3])
+    number_nurses = int(sys.argv[4])
+    number_weeks = int(sys.argv[5])
+    history_data_file_id = int(sys.argv[6])
+    week_data_files_ids = list(map(int, (sys.argv[7:])))
+    main(time_limit_for_week, mode, number_nurses, number_weeks, history_data_file_id, week_data_files_ids, modified)

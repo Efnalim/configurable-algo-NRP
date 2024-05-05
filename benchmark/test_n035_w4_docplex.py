@@ -31,6 +31,7 @@ try:
     number_of_nurses = 35
     time_limit = 0
     solver_id = 2
+    modified = 0
 
     week_combinations = []
     with open('input\\week_combinations.txt') as f:
@@ -38,7 +39,7 @@ try:
 
     # list of input for benchmark
     with redirect_stdout_to_file(output_file):
-        arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} ' + combination for combination in week_combinations]
+        arguments_list = [ f'{modified} {time_limit} {solver_id} {number_of_nurses} ' + combination for combination in week_combinations]
 
         # run the main script in iterations
         for arg in arguments_list:
