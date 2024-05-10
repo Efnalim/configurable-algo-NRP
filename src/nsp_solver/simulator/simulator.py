@@ -4,9 +4,10 @@ from nsp_solver.utils import utils
 def update_history_for_next_week(results, constants, week_number):
     num_days = constants["num_days"]
     num_nurses = constants["num_nurses"]
-    num_skills = constants["num_skills"]
     num_shifts = constants["num_shifts"]
     history_data = constants["h0_data"]
+
+    history_data["week"] += 1
 
     working_days, shifts = compute_helpful_values(results, constants, week_number)
     
@@ -14,7 +15,10 @@ def update_history_for_next_week(results, constants, week_number):
         for d in range(num_days):
             history_data["nurseHistory"][n]["numberOfAssignments"] += working_days[n][d]
             
-        history_data["nurseHistory"][n]["numberOfWorkingWeekends"] += isPositiveNumber(sum(working_days[n][5:7]))
+        weekend_working_days = sum(working_days[n][5:7])
+        history_data["nurseHistory"][n]["numberOfWorkingWeekends"] += isPositiveNumber(weekend_working_days)
+        if weekend_working_days == 1:
+            history_data["nurseHistory"][n]["numberOfIncompleteWeekends"] += weekend_working_days
 
         if working_days[n][6] == 0:
             consecutive_free_days = 1
@@ -58,7 +62,7 @@ def update_history_for_next_week(results, constants, week_number):
             history_data["nurseHistory"][n][
                 "numberOfConsecutiveAssignments"
             ] = consecutive_shifts
-    print(history_data["nurseHistory"])
+    # print(history_data["nurseHistory"])
 
 def compute_helpful_values(results, constants, week_number):
     num_days = constants["num_days"]

@@ -44,6 +44,8 @@
     "id" : "FullTime",
     "minimumNumberOfAssignments" : 15,
     "maximumNumberOfAssignments" : 22,
+    "minimumNumberOfAssignmentsHard" : 12,
+    "maximumNumberOfAssignmentsHard" : 25,
     "minimumNumberOfConsecutiveWorkingDays" : 3,
     "maximumNumberOfConsecutiveWorkingDays" : 5,
     "minimumNumberOfConsecutiveDaysOff" : 2,
@@ -54,11 +56,14 @@
     "minimumNumberOfConsecutiveDaysOffHard" : 2,
     "maximumNumberOfConsecutiveDaysOffHard" : 5,
     "maximumNumberOfWorkingWeekendsHard" : 3,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
     "completeWeekends" : 1
   }, {
     "id" : "PartTime",
     "minimumNumberOfAssignments" : 7,
     "maximumNumberOfAssignments" : 15,
+    "minimumNumberOfAssignmentsHard" : 4,
+    "maximumNumberOfAssignmentsHard" : 18,
     "minimumNumberOfConsecutiveWorkingDays" : 3,
     "maximumNumberOfConsecutiveWorkingDays" : 5,
     "minimumNumberOfConsecutiveDaysOff" : 2,
@@ -69,11 +74,14 @@
     "minimumNumberOfConsecutiveDaysOffHard" : 2,
     "maximumNumberOfConsecutiveDaysOffHard" : 7,
     "maximumNumberOfWorkingWeekendsHard" : 3,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
     "completeWeekends" : 1
   }, {
     "id" : "HalfTime",
     "minimumNumberOfAssignments" : 5,
     "maximumNumberOfAssignments" : 11,
+    "minimumNumberOfAssignmentsHard" : 4,
+    "maximumNumberOfAssignmentsHard" : 14,
     "minimumNumberOfConsecutiveWorkingDays" : 3,
     "maximumNumberOfConsecutiveWorkingDays" : 5,
     "minimumNumberOfConsecutiveDaysOff" : 3,
@@ -84,6 +92,7 @@
     "minimumNumberOfConsecutiveDaysOffHard" : 2,
     "maximumNumberOfConsecutiveDaysOffHard" : 7,
     "maximumNumberOfWorkingWeekendsHard" : 2,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
     "completeWeekends" : 1
   } ],
   "nurses" : [ {
