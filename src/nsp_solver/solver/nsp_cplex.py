@@ -381,6 +381,9 @@ def add_hard_constrains(model, basic_ILP_vars, constants):
     if constants["configuration"]["h8"]:
         add_max_min_total_working_days_constraint_hard(model, basic_ILP_vars, constants)
 
+    if constants["configuration"]["h9"]:
+        add_min_continuous_free_period_constraint_hard(model, basic_ILP_vars, constants)
+
     if constants["configuration"]["h10"]:
         add_max_one_shift_per_day_exception_constraint(model, basic_ILP_vars, constants)
 
@@ -593,6 +596,68 @@ def add_shift_skill_req_minimal(model, basic_ILP_vars, constants):
                 senses=["G"],
                 rhs=[min_capacity],
             )
+
+
+def add_min_continuous_free_period_constraint_hard(model, basic_ILP_vars, constants):
+    all_nurses = constants["all_nurses"]
+    num_days = constants["num_days"]
+    working_days = basic_ILP_vars["working_days"]
+
+    for n in all_nurses:
+        nurses_data = constants["sc_data"]["nurses"]
+        contracts_data = constants["sc_data"]["contracts"]
+        min_free_period = contracts_data[
+            utils.contract_to_int[nurses_data[n]["contract"]]
+        ]["minimalFreePeriod"]
+
+        vars_to_add = []
+        free_periods = {}
+        for d in range(num_days - min_free_period + 1):
+            var_name = f"free_period_of_{min_free_period}_days_n{n}_d{d}"
+            vars_to_add.append(var_name)
+            free_periods[(n, d)] = var_name
+        model.variables.add(
+            names=vars_to_add,
+            lb=[0] * len(vars_to_add),
+            ub=[1] * len(vars_to_add),
+            types=["N"] * len(vars_to_add),
+        )
+
+        for d in range(num_days - min_free_period + 1):
+            model.linear_constraints.add(
+                lin_expr=[
+                    cplex.SparsePair(
+                        [free_periods[(n, d)]]
+                        + working_days[n][d : d + min_free_period],
+                        [1] + [1] * min_free_period,
+                    )
+                ],
+                senses=["G"],
+                rhs=[0],
+            )
+
+            for dd in range(d, d + min_free_period):
+                model.linear_constraints.add(
+                    lin_expr=[
+                        cplex.SparsePair(
+                            [free_periods[(n, d)]] + [working_days[n][dd]],
+                            [1] + [1],
+                        )
+                    ],
+                    senses=["L"],
+                    rhs=[1],
+                )
+
+        model.linear_constraints.add(
+            lin_expr=[
+                cplex.SparsePair(
+                    [free_periods[(n, d)] for d in range(num_days - min_free_period + 1)],
+                    [1] * (num_days - min_free_period + 1),
+                )
+            ],
+            senses=["G"],
+            rhs=[1],
+        )
 
 
 def add_max_min_total_working_days_constraint_hard(model, basic_ILP_vars, constants):

@@ -57,6 +57,7 @@
     "maximumNumberOfConsecutiveDaysOffHard" : 5,
     "maximumNumberOfWorkingWeekendsHard" : 3,
     "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 2,
     "completeWeekends" : 1
   }, {
     "id" : "PartTime",
@@ -75,6 +76,7 @@
     "maximumNumberOfConsecutiveDaysOffHard" : 7,
     "maximumNumberOfWorkingWeekendsHard" : 3,
     "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 2,
     "completeWeekends" : 1
   }, {
     "id" : "HalfTime",
@@ -93,6 +95,7 @@
     "maximumNumberOfConsecutiveDaysOffHard" : 7,
     "maximumNumberOfWorkingWeekendsHard" : 2,
     "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 2,
     "completeWeekends" : 1
   } ],
   "nurses" : [ {
