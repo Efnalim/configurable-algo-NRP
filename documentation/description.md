@@ -36,15 +36,14 @@
 	The minimum and maximum number of consecutive days off should be respected. Their evaluation involves also the border data. Each extra or missing day is multiplied by weight (30).
 ### SC4 - Assignement preferences
 	Each assignment to an undesired shift is penalized by weight (10).
-	Each desired shift which is not assigned is penalized by weight (10).
 ### SC5 - Complete week-end optimal
 	Every nurse that has the complete weekend value set to true, must work both week-end days or none. If she/he works only one of the two days Sat and Sun this is penalized by weight (30). 
 ### SC6 - Total assignments - optimal 
 	For each nurse the total number of assignments (working days) must be included within the limits (minimum and maximum) enforced by her/his contract. The difference (in either direction), multiplied by its weight (20), is added to the objective function.
 ### SC7 - Total weekends - optimal 
 	For each nurse the total number of assignments during weekends must be included within the limits (minimum and maximum) enforced by her/his contract. The difference (in either direction), multiplied by its weight (30), is added to the objective function.
-### SC8 - Missing required skill - exception
-	If nurse is assigned to a shift with a skill in category "if needed" each such shift penalized by weight (10)
+### SC8 - Using "if needed" skill
+	If nurse is assigned to a shift with a skill in category "if needed" each such shift penalized by weight (15)
 ### SC9 - Overtime preferences
 	Unsatisfied preferences for overtime (each month) are penalized by weight (10). Each assignment missing from desired overtime is penalized by weight (10).
 ------------------------------------------------------------------------------------------------------------------------------------------------

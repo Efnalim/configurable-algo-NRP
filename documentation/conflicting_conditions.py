@@ -27,7 +27,7 @@ with Diagram("Realtionships between conditions", show=False):
 
     with Cluster("Soft constraints"):
         s9 = C4Node("SC9", "", "Overtime preferences", "constraint")
-        s8 = C4Node("SC8", "", "Missing required skill - exception", "constraint")
+        s8 = C4Node("SC8", "", 'Using "if needed" skill', "constraint")
         s7 = C4Node("SC7", "", "Total working weekends - optimal", "constraint")
         s6 = C4Node("SC6", "", "Total assignments - optimal ", "constraint")
         s5 = C4Node("SC5", "", "Complete week-end optimal", "constraint")
