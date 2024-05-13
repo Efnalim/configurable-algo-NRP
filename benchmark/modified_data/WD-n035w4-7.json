@@ -574,5 +574,5 @@
     "shiftType" : "Late",
     "day" : "Sunday"
   } ],
-  "vacations" : ["TR_32"]
+  "vacations" : ["NU_14", "NU_11"]
 }

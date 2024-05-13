@@ -385,10 +385,15 @@ def add_hard_constrains(model, basic_ILP_vars, constants):
         add_min_continuous_free_period_constraint_hard(model, basic_ILP_vars, constants)
 
     if constants["configuration"]["h10"]:
-        add_max_one_shift_per_day_exception_constraint(model, basic_ILP_vars, constants)
+        add_max_one_shift_per_day_exception_constraint_hard(
+            model, basic_ILP_vars, constants
+        )
+
+    if constants["configuration"]["h11"]:
+        add_max_shift_of_given_type_constraint_hard(model, basic_ILP_vars, constants)
 
     if constants["configuration"]["h12"]:
-        add_vacations_reqs(model, basic_ILP_vars, constants)
+        add_vacations_reqs_constraint_hard(model, basic_ILP_vars, constants)
 
 
 def add_max_incomplete_weekends_constraint_hard(model, basic_ILP_vars, constants):
@@ -475,7 +480,33 @@ def add_max_one_shift_per_day_constraint(model, basic_ILP_vars, constants):
             )
 
 
-def add_max_one_shift_per_day_exception_constraint(model, basic_ILP_vars, constants):
+def add_max_shift_of_given_type_constraint_hard(model, basic_ILP_vars, constants):
+    all_nurses = constants["all_nurses"]
+    all_days = constants["all_days"]
+    num_days = constants["num_days"]
+    shifts = basic_ILP_vars["shifts"]
+
+    for n in all_nurses:
+        already_assigned = constants["h0_data"]["nurseHistory"][n][
+            "numbersOfAssignedRestrictedShiftTypes"
+        ]
+        for restriction in constants["sc_data"]["nurses"][n]["restrictions"]:
+            shift_id = utils.shift_to_int[restriction["type"]]
+            limit = restriction["limit"]
+            model.linear_constraints.add(
+                lin_expr=[
+                    cplex.SparsePair(
+                        [shifts[n][d][shift_id] for d in all_days], [1] * num_days
+                    )
+                ],
+                senses=["L"],
+                rhs=[limit - already_assigned[shift_id]["numberOfAssignments"]],
+            )
+
+
+def add_max_one_shift_per_day_exception_constraint_hard(
+    model, basic_ILP_vars, constants
+):
     all_nurses = constants["all_nurses"]
     all_shifts = constants["all_shifts"]
     all_days = constants["all_days"]
@@ -549,7 +580,7 @@ def add_max_one_shift_per_day_exception_constraint(model, basic_ILP_vars, consta
                 )
 
 
-def add_vacations_reqs(model, basic_ILP_vars, constants):
+def add_vacations_reqs_constraint_hard(model, basic_ILP_vars, constants):
     wd_data = constants["wd_data"]
     working_days = basic_ILP_vars["working_days"]
 
@@ -651,7 +682,10 @@ def add_min_continuous_free_period_constraint_hard(model, basic_ILP_vars, consta
         model.linear_constraints.add(
             lin_expr=[
                 cplex.SparsePair(
-                    [free_periods[(n, d)] for d in range(num_days - min_free_period + 1)],
+                    [
+                        free_periods[(n, d)]
+                        for d in range(num_days - min_free_period + 1)
+                    ],
                     [1] * (num_days - min_free_period + 1),
                 )
             ],
@@ -670,7 +704,9 @@ def add_max_min_total_working_days_constraint_hard(model, basic_ILP_vars, consta
     week_number = constants["h0_data"]["week"]
 
     for n in all_nurses:
-        if n in constants["wd_data"]["vacations_with_ids"]:
+        if constants["configuration"]["h12"] and (
+            n in constants["wd_data"]["vacations_with_ids"]
+        ):
             continue
 
         worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
@@ -880,8 +916,38 @@ def init_ilp_vars_for_soft_constraints(model, basic_ILP_vars, constants):
         types=["B"] * len(vars_to_add),
     )
 
+    vars_to_add = []
+    total_assignments_with_if_needed_skill = {}
+    for n in all_nurses:
+        var_name = f"total_assignments_with_if_needed_skill_n{n}"
+        total_assignments_with_if_needed_skill[(n)] = var_name
+        vars_to_add.append(var_name)
+    model.variables.add(
+        names=vars_to_add,
+        lb=[0] * len(vars_to_add),
+        ub=[28] * len(vars_to_add),
+        types=["N"] * len(vars_to_add),
+    )
+
+    vars_to_add = []
+    total_unsatisfied_overtime = {}
+    for n in all_nurses:
+        var_name = f"total_unsatisfied_overtime_n{n}"
+        total_unsatisfied_overtime[(n)] = var_name
+        vars_to_add.append(var_name)
+    model.variables.add(
+        names=vars_to_add,
+        lb=[0] * len(vars_to_add),
+        ub=[7] * len(vars_to_add),
+        types=["N"] * len(vars_to_add),
+    )
+
     soft_ILP_vars = {}
     soft_ILP_vars["insufficient_staffing"] = insufficient_staffing
+    soft_ILP_vars["total_unsatisfied_overtime"] = total_unsatisfied_overtime
+    soft_ILP_vars["total_assignments_with_if_needed_skill"] = (
+        total_assignments_with_if_needed_skill
+    )
     soft_ILP_vars["unsatisfied_preferences"] = unsatisfied_preferences
     soft_ILP_vars["total_working_weekends_over_limit"] = (
         total_working_weekends_over_limit
@@ -1011,7 +1077,7 @@ def add_insatisfied_preferences_reqs_constraint_soft(
     #         )
 
 
-def add_total_working_weekends_soft_constraints_soft(
+def add_total_working_weekends_constraints_soft(
     model, basic_ILP_vars, soft_ILP_vars, constants
 ):
     week_number = constants["h0_data"]["week"]
@@ -1113,8 +1179,13 @@ def add_total_working_days_out_of_bounds_constraint_soft(
     week_number = constants["h0_data"]["week"]
 
     for n in all_nurses:
-        if n in constants["wd_data"]["vacations_with_ids"]:
-            continue
+        if constants["configuration"]["h12"] and (
+            n in constants["wd_data"]["vacations_with_ids"]
+        ):  continue
+
+        if constants["configuration"]["s9"] and (
+            nurses_data[n]["wantedOvertime"] > 0
+        ):  continue
 
         worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
             "numberOfAssignments"
@@ -1265,6 +1336,9 @@ def add_min_consecutive_work_days_constraint_hard(model, basic_ILP_vars, constan
     not_working_days = basic_ILP_vars["not_working_days"]
 
     for n in all_nurses:
+        if n in constants["wd_data"]["vacations_with_ids"]:
+            continue
+
         consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveWorkingDays"
         ]
@@ -1738,6 +1812,8 @@ def add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
     working_days = basic_ILP_vars["working_days"]
 
     for n in all_nurses:
+        if n in constants["wd_data"]["vacations_with_ids"]:
+            continue
         consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
@@ -1767,51 +1843,161 @@ def add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
                     )
 
 
+def add_total_assignments_with_if_needed_skill_constraints_soft(
+    model, basic_ILP_vars, soft_ILP_vars, constants
+):
+    all_nurses = constants["all_nurses"]
+    all_days = constants["all_days"]
+    all_shifts = constants["all_shifts"]
+    nurses_data = constants["sc_data"]["nurses"]
+
+    shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
+    total_assignments_with_if_needed_skill = soft_ILP_vars[
+        "total_assignments_with_if_needed_skill"
+    ]
+
+    for n in all_nurses:
+        if len(nurses_data[n]["skillsIfNeeded"]) > 0:
+            model.linear_constraints.add(
+                lin_expr=[
+                    cplex.SparsePair(
+                        [total_assignments_with_if_needed_skill[(n)]]
+                        + [
+                            shifts_with_skills[n][d][s][utils.skill_to_int[sk]]
+                            for sk in nurses_data[n]["skillsIfNeeded"]
+                            for s in all_shifts
+                            for d in all_days
+                        ],
+                        [-1]
+                        + [1]
+                        * len(
+                            [
+                                shifts_with_skills[n][d][s][utils.skill_to_int[sk]]
+                                for sk in nurses_data[n]["skillsIfNeeded"]
+                                for s in all_shifts
+                                for d in all_days
+                            ]
+                        ),
+                    )
+                ],
+                senses=["E"],
+                rhs=[0],
+            )
+
+def add_total_unsatisfied_overtime_constraints_soft(
+    model, basic_ILP_vars, soft_ILP_vars, constants
+):
+    nurses_data = constants["sc_data"]["nurses"]
+    total_working_days = basic_ILP_vars["total_working_days"]
+    contracts_data = constants["sc_data"]["contracts"]
+    all_nurses = constants["all_nurses"]
+    num_weeks = constants["num_weeks"]
+    h0_data = constants["h0_data"]
+    week_number = constants["h0_data"]["week"]
+    total_working_days_over_limit = soft_ILP_vars["total_working_days_over_limit"]
+    total_unsatisfied_overtime = soft_ILP_vars["total_unsatisfied_overtime"]
+
+    for n in all_nurses:
+        if constants["configuration"]["h12"] and (
+            n in constants["wd_data"]["vacations_with_ids"]
+        ):  continue
+
+        if constants["configuration"]["s9"] and (
+            nurses_data[n]["wantedOvertime"] == 0
+        ):  continue
+
+        worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
+            "numberOfAssignments"
+        ]
+        upper_limit = math.ceil(
+            (contracts_data[utils.contract_to_int[nurses_data[n]["contract"]]][
+                "maximumNumberOfAssignments"
+            ] + nurses_data[n]["wantedOvertime"])
+            * ((week_number + 1) / num_weeks)
+        )
+        lower_limit = math.ceil(
+            (contracts_data[utils.contract_to_int[nurses_data[n]["contract"]]][
+                "maximumNumberOfAssignments"
+            ] + nurses_data[n]["wantedOvertime"])
+            * ((week_number + 1) / num_weeks)
+        )
+        model.linear_constraints.add(
+            lin_expr=[
+                cplex.SparsePair(
+                    [total_working_days_over_limit[(n)], total_working_days[(n)]],
+                    [-1, 1],
+                )
+            ],
+            senses=["L"],
+            rhs=[upper_limit - worked_days_in_previous_weeks],
+        )
+        model.linear_constraints.add(
+            lin_expr=[
+                cplex.SparsePair(
+                    [total_unsatisfied_overtime[(n)], total_working_days[(n)]],
+                    [1, 1],
+                )
+            ],
+            senses=["G"],
+            rhs=[lower_limit - worked_days_in_previous_weeks],
+        )
+
+
 def add_soft_constraints(model, basic_ILP_vars, soft_ILP_vars, constants):
 
-    add_shift_skill_req_optimal_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
+    if constants["configuration"]["s1"]:
+        add_shift_skill_req_optimal_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
 
-    add_insatisfied_preferences_reqs_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
+    if constants["configuration"]["s2"]:
+        add_min_consecutive_shifts_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+        add_max_consecutive_work_days_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+        add_max_consecutive_work_shifts_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+        add_min_consecutive_work_days_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
 
-    add_total_working_weekends_soft_constraints_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
+    if constants["configuration"]["s3"]:
+        add_max_consecutive_days_off_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+        add_min_consecutive_days_off_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
 
-    add_total_working_days_out_of_bounds_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
+    if constants["configuration"]["s4"]:
+        add_insatisfied_preferences_reqs_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+
+    if constants["configuration"]["s6"]:
+        add_total_working_days_out_of_bounds_constraint_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+
+    if constants["configuration"]["s7"]:
+        add_total_working_weekends_constraints_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+
+    if constants["configuration"]["s8"]:
+        add_total_assignments_with_if_needed_skill_constraints_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
+
+    if constants["configuration"]["s9"]:
+        add_total_unsatisfied_overtime_constraints_soft(
+            model, basic_ILP_vars, soft_ILP_vars, constants
+        )
 
     # add_incomplete_weekends_constraint_soft(model, basic_ILP_vars, soft_ILP_vars, constants)
-
-    add_max_consecutive_work_days_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    add_max_consecutive_work_shifts_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    add_max_consecutive_days_off_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    add_min_consecutive_work_days_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    add_min_consecutive_days_off_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    add_min_consecutive_shifts_constraint_soft(
-        model, basic_ILP_vars, soft_ILP_vars, constants
-    )
-
-    return
 
 
 def save_tmp_results(results, solver, constants, basic_ILP_vars, soft_ILP_vars):
@@ -1884,6 +2070,9 @@ def set_objective_function(c, constants, basic_ILP_vars, soft_ILP_vars):
     ]
     violations_of_min_consecutive_working_shifts = soft_ILP_vars[
         "violations_of_min_consecutive_working_shifts"
+    ]
+    total_assignments_with_if_needed_skill = soft_ILP_vars[
+        "total_assignments_with_if_needed_skill"
     ]
 
     c.objective.set_sense(c.objective.sense.minimize)
@@ -2002,6 +2191,13 @@ def set_objective_function(c, constants, basic_ILP_vars, soft_ILP_vars):
                             for s in all_shifts
                         ),
                         [15] * num_nurses * num_days * num_shifts,
+                    ),
+                    zip(
+                        (
+                            total_assignments_with_if_needed_skill[(n)]
+                            for n in all_nurses
+                        ),
+                        [15] * num_nurses,
                     ),
                 ]
             )

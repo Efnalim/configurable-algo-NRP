@@ -124,12 +124,12 @@ def display_schedule(results, constants, number_weeks, save, filename):
                     if results[(n, d, s, sk)] == 1:
                         schedule_table[n][d * num_shifts + s] = 0.85 - (0.175 * sk)
 
-    # for w in range(number_weeks):
-    #     for n in constants["all_wd_data"][w]["vacations"]:
-    #         # n = int(nurse_id.split("_")[1])
-    #         for d in range(num_days_in_week):
-    #             for s in range(num_shifts):
-    #                 schedule_table[n][(d + 7 * w)*num_shifts + s] = 1
+    for w in range(number_weeks):
+        for n in constants["all_wd_data"][w]["vacations"]:
+            nurse_id = int(n.split("_")[1])
+            for d in range(num_days_in_week):
+                for s in range(num_shifts):
+                    schedule_table[nurse_id][(d + 7 * w)*num_shifts + s] = 1
 
     for sk in range(num_skills):
         legend[0][sk] = 0.85 - (0.175 * sk)

@@ -77,6 +77,10 @@ def compute_helpful_values(results, constants, week_number):
             for s in range(num_shifts):
                 shifts[n][d][s] = sum(results[(n, d + 7 * week_number, s, sk)] for sk in range(num_skills))
             working_days[n][d] = sum(shifts[n][d][:])
+
+    constants["wd_data"]["vacations_with_ids"] = list(
+        map(lambda x: int(x.split("_")[1]), constants["wd_data"]["vacations"])
+    )
     
     return working_days, shifts
 

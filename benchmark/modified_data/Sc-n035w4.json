@@ -102,176 +102,255 @@
     "id" : "HN_0",
     "contract" : "HalfTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "HN_1",
     "contract" : "PartTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Night",
+      "limit" : 0
+    }],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_2",
     "contract" : "PartTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_3",
     "contract" : "PartTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "HN_4",
     "contract" : "HalfTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_5",
     "contract" : "HalfTime",
     "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_6",
     "contract" : "PartTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_7",
     "contract" : "PartTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Night",
+      "limit" : 0
+    }],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_8",
     "contract" : "FullTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_9",
     "contract" : "FullTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_10",
     "contract" : "PartTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_11",
     "contract" : "HalfTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_12",
     "contract" : "HalfTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_13",
     "contract" : "HalfTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_14",
     "contract" : "HalfTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_15",
     "contract" : "PartTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "NU_16",
     "contract" : "PartTime",
     "skills" : [ "Nurse", "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Early",
+      "limit" : 0
+    }],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_17",
     "contract" : "FullTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": ["Caretaker"]
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_18",
     "contract" : "FullTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_19",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_20",
     "contract" : "FullTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_21",
     "contract" : "PartTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_22",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_23",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_24",
     "contract" : "PartTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_25",
     "contract" : "FullTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_26",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_27",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_28",
     "contract" : "HalfTime",
     "skills" : [ "Caretaker" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_29",
     "contract" : "HalfTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_30",
     "contract" : "FullTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_31",
     "contract" : "PartTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_32",
     "contract" : "FullTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_33",
     "contract" : "PartTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_34",
     "contract" : "PartTime",
     "skills" : [ "Trainee" ],
-    "skillsIfNeeded": []
+    "skillsIfNeeded": [],
+    "restrictions": [],
+    "wantedOvertime": 0
   } ]
 }
