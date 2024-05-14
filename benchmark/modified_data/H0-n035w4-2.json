@@ -203,7 +203,7 @@
       "numberOfAssignments": 0,
       "numberOfWorkingWeekends": 0,
       "numberOfIncompleteWeekends": 0,
-      "lastAssignedShiftType": "Night",
+      "lastAssignedShiftType": "Late",
       "numberOfConsecutiveAssignments": 2,
       "numberOfConsecutiveWorkingDays": 2,
       "numberOfConsecutiveDaysOff": 0,
