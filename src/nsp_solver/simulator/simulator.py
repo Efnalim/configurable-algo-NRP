@@ -47,7 +47,6 @@ def update_history_for_next_week(results, constants, week_number):
             for s in range(num_shifts):
                 if shifts[n][6][s] == 1:
                     consecutive_shift = s
-                    break
             consecutive_shifts = 1
             for shift_name, shift_id in utils.shift_to_int.items():
                 if shift_id == consecutive_shift:

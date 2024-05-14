@@ -19,3 +19,7 @@ INCOMPLETE_WEEKEDN_WEIGHT = 30
 CONS_WORK_DAY_WEIGHT = 30
 TOTAL_ASSIGNMENTS_WEIGHT = 20
 TOTAL_WORKING_WEEKENDS_WEIGHT = 30
+
+def isPositiveNumber(number):
+    if number > 0: return 1
+    return 0
