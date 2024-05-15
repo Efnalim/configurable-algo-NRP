@@ -63,7 +63,10 @@ class ScheduleValidator:
             print("is_max_assignments_per_day_with_exception returns False")
             return False
 
-        if self.config["h11"] and not self.is_maximum_shifts_of_specific_type_satisfied():
+        if (
+            self.config["h11"]
+            and not self.is_maximum_shifts_of_specific_type_satisfied()
+        ):
             print("is_maximum_shifts_of_specific_type_satisfied returns False")
             return False
 
@@ -148,14 +151,17 @@ class ScheduleValidator:
                     return False
 
         return True
-    
+
     def is_maximum_shifts_of_specific_type_satisfied(self) -> bool:
         all_nurses = self.constants["all_nurses"]
         for n in all_nurses:
             for restriction in self.constants["sc_data"]["nurses"][n]["restrictions"]:
                 shift_id = utils.shift_to_int[restriction["type"]]
                 limit = restriction["limit"]
-                if sum(self.help_vars["shifts"][n][d][shift_id] for d in self.all_days) > limit:
+                if (
+                    sum(self.help_vars["shifts"][n][d][shift_id] for d in self.all_days)
+                    > limit
+                ):
                     print(f"n{n} res_s{shift_id}")
                     return False
 
@@ -334,6 +340,14 @@ class ScheduleValidator:
         sc_data = self.constants["sc_data"]
 
         for n in all_nurses:
+            if self.constants["configuration"]["h12"] and (
+                n
+                in [ id for w in self.constants["all_weeks"] for id in 
+                    self.help_vars["nurses_ids_on_vacation"][w]
+                ]
+            ):
+                continue
+
             min_total_assignments = sc_data["contracts"][
                 utils.contract_to_int[sc_data["nurses"][n]["contract"]]
             ]["minimumNumberOfAssignmentsHard"]
@@ -389,7 +403,7 @@ class ScheduleValidator:
             for d in self.all_days:
                 w = math.floor(d / 7)
                 if self.constants["configuration"]["h12"] and (
-                    n in self.constants["all_wd_data"][w]["vacations_with_ids"]
+                    self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     counter = 0
                     continue
@@ -415,6 +429,12 @@ class ScheduleValidator:
             ]["minimumNumberOfConsecutiveWorkingDaysHard"]
 
             for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.constants["configuration"]["h12"] and (
+                    self.help_vars["nurses_ids_on_vacation"][w]
+                ):
+                    counter = 0
+                    continue
                 if self.help_vars["working_days"][n][d] == 0:
                     if counter > 0 and counter < min_consecutive_working_days:
                         print(f"n_{n}_{d}_min{min_consecutive_working_days}_prev{prev}")
@@ -498,6 +518,13 @@ class ScheduleValidator:
                 if last_shift == s:
                     counter = consecutive_shifts_prev_week
                 for d in self.all_days:
+                    w = math.floor(d / 7)
+                    if self.constants["configuration"]["h12"] and (
+                        n in self.constants["all_wd_data"][w]["vacations_with_ids"]
+                    ):
+                        counter = 0
+                        continue
+
                     if self.help_vars["shifts"][n][d][s] == 0:
                         if counter > 0 and counter < min_consecutive_working_shifts:
                             if (

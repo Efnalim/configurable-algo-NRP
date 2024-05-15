@@ -20,6 +20,9 @@ CONS_WORK_DAY_WEIGHT = 30
 TOTAL_ASSIGNMENTS_WEIGHT = 20
 TOTAL_WORKING_WEEKENDS_WEIGHT = 30
 
+STATUS_OK = 'solution found'
+STATUS_FAIL = 'solution not found'
+
 def isPositiveNumber(number):
     if number > 0: return 1
     return 0

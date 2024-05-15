@@ -144,6 +144,7 @@ def display_schedule(results, constants, number_weeks, save, filename):
     ax0.set_title("Schedule")
     ax0.set_xticks(np.arange(num_days * num_shifts))
     ax0.set_xticklabels(np.arange(num_days * num_shifts) / 4)
+    ax0.tick_params(axis="x", bottom=True, top=True, labelbottom=True, labeltop=True)
 
     ax0.xaxis.set_major_locator(ticker.MultipleLocator(4))
 

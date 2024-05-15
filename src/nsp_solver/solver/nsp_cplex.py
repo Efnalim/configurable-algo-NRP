@@ -25,6 +25,8 @@ def prepare_help_constants(constants, results):
                 for sk in range(num_skills):
                     results[(n, d + 7 * week_number, s, sk)] = 0
 
+    results[(week_number, "status")] = utils.STATUS_FAIL
+
 
 def init_ilp_vars(model, constants):
     """
@@ -1464,6 +1466,10 @@ def add_min_consecutive_shifts_constraint_hard(model, basic_ILP_vars, constants)
     not_working_shifts = basic_ILP_vars["not_working_shifts"]
 
     for n in all_nurses:
+        if constants["configuration"]["h12"] and (
+            n in constants["wd_data"]["vacations_with_ids"]
+        ):
+            continue
         consecutive_working_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveAssignments"
         ]
@@ -1590,6 +1596,10 @@ def add_min_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
     not_working_days = basic_ILP_vars["not_working_days"]
 
     for n in all_nurses:
+        if constants["configuration"]["h12"] and (
+            n in constants["wd_data"]["vacations_with_ids"]
+        ):
+            continue
         consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
@@ -2040,26 +2050,17 @@ def save_tmp_results(results, solver, constants, basic_ILP_vars, soft_ILP_vars):
     working_days = basic_ILP_vars["working_days"]
 
     if solver.is_primal_feasible() == False:
-        results[(week_number, "status")] = "infeasible solution"
-        results[(week_number, "value")] = 99999
-        results[(week_number, "allweeksoft")] = 0
         return
 
-    results[(week_number, "status")] = solver.get_status()
-
-    if solver.get_status() == 101:
-        results[(week_number, "status")] = "Optimal solution found"
-
-    if solver.get_status() == 107:
-        results[(week_number, "status")] = "Stoped due time limit"
+    results[(week_number, "status")] = utils.STATUS_OK
 
     for n in range(num_nurses):
         for d in range(num_days):
             for s in range(num_shifts):
                 for sk in range(num_skills):
-                    results[(n, d + 7 * week_number, s, sk)] = solver.get_values(
+                    results[(n, d + 7 * week_number, s, sk)] = round(solver.get_values(
                         shifts_with_skills[n][d][s][sk]
-                    )
+                    ))
 
 
 def set_objective_function(c, constants, basic_ILP_vars, soft_ILP_vars):
