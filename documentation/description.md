@@ -41,7 +41,7 @@
 ### SC6 - Total assignments - optimal 
 	For each nurse the total number of assignments (working days) must be included within the limits (minimum and maximum) enforced by her/his contract. The difference (in either direction), multiplied by its weight (20), is added to the objective function.
 ### SC7 - Total weekends - optimal 
-	For each nurse the total number of assignments during weekends must be included within the limits (minimum and maximum) enforced by her/his contract. The difference (in either direction), multiplied by its weight (30), is added to the objective function.
+	For each nurse the total number of assignments during weekends must be included within the limits (maximum) enforced by her/his contract. The difference, multiplied by its weight (30), is added to the objective function.
 ### SC8 - Using "if needed" skill
 	If nurse is assigned to a shift with a skill in category "if needed" each such shift penalized by weight (15)
 ### SC9 - Overtime preferences

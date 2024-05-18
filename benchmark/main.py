@@ -4,6 +4,7 @@ import sys
 import json
 
 import matplotlib.pyplot as plt
+from nsp_solver.utils import utils
 import numpy as np
 import matplotlib.ticker as ticker
 import math
@@ -215,6 +216,8 @@ def main(
                 time_limit_for_week, week_number, constants, results
             )
         update_history_for_next_week(results, constants, week_number)
+        if results[(week_number, "status")] == utils.STATUS_FAIL:
+            break
     end = time.time()
     # display results
     if display:

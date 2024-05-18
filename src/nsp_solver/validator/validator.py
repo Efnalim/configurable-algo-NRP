@@ -78,11 +78,24 @@ class ScheduleValidator:
 
     def get_objective_value_of_schedule(self) -> int:
         total = 0
-        total += self.get_optimal_capacity_value()
-        total += self.get_consecutive_assignments_value()
-        total += self.get_consecutive_days_off_value()
-        total += self.get_assignment_preferences_value()
-        total += self.get_incomplete_weekends_value()
+        if self.config["s1"]:
+            total += self.get_optimal_capacity_value()
+        if self.config["s2"]:
+            total += self.get_consecutive_assignments_value()
+        if self.config["s3"]:
+            total += self.get_consecutive_days_off_value()
+        if self.config["s4"]:
+            total += self.get_assignment_preferences_value()
+        if self.config["s5"]:
+            total += self.get_incomplete_weekends_value()
+        if self.config["s6"]:
+            total += self.get_total_assignments_out_of_limits_value()
+        if self.config["s7"]:
+            total += self.get_total_weekends_over_limit_value()
+        if self.config["s8"]:
+            total += self.get_total_uses_of_ifneeded_skills_value()
+        if self.config["s9"]:
+            total += self.get_unsatisfied_overtime_preferences_value()
         return total
 
     def is_minimal_capacity_satisfied(self) -> bool:
@@ -146,7 +159,7 @@ class ScheduleValidator:
 
         for w in all_weeks:
             for n in self.help_vars["nurses_ids_on_vacation"][w]:
-                if sum(self.help_vars["working_days"][n][w * 7 : (w + 1) * 7]) > 1:
+                if sum(self.help_vars["working_days"][n][w * 7: (w + 1) * 7]) > 1:
                     print(f"{n} {w}")
                     return False
 
@@ -296,7 +309,7 @@ class ScheduleValidator:
 
             total_incomplete_weekends = 0
             for w in all_weeks:
-                if sum(self.help_vars["working_days"][n][w * 7 + 5 : w * 7 + 7]) == 1:
+                if sum(self.help_vars["working_days"][n][w * 7 + 5: w * 7 + 7]) == 1:
                     total_incomplete_weekends += 1
 
             if total_incomplete_weekends > max_total_incomplete_weekends:
@@ -340,12 +353,7 @@ class ScheduleValidator:
         sc_data = self.constants["sc_data"]
 
         for n in all_nurses:
-            if self.constants["configuration"]["h12"] and (
-                n
-                in [ id for w in self.constants["all_weeks"] for id in 
-                    self.help_vars["nurses_ids_on_vacation"][w]
-                ]
-            ):
+            if self.is_nurse_on_vacation_any_week(n):
                 continue
 
             min_total_assignments = sc_data["contracts"][
@@ -620,9 +628,9 @@ class ScheduleValidator:
                     ]
                     diff = opt_capacity > sum(skills_worked)
                     if diff > 0:
-                        subtotal += diff * utils.OPT_CAPACITY_WEIGHT
+                        subtotal += diff
 
-        return subtotal
+        return subtotal * utils.OPT_CAPACITY_WEIGHT
 
     def get_consecutive_assignments_value(self) -> int:
         subtotal = 0
@@ -649,13 +657,13 @@ class ScheduleValidator:
                     diff = (
                         sum(
                             self.help_vars["working_days"][n][
-                                d - max_consecutive_working_days : d + 1
+                                d - max_consecutive_working_days: d + 1
                             ]
                         )
                         - max_consecutive_working_days
                     )
                     if diff > 0:
-                        subtotal += diff * utils.CONS_WORK_DAY_WEIGHT
+                        subtotal += diff
                 else:
                     if (
                         consecutive_working_days_prev_week
@@ -663,9 +671,9 @@ class ScheduleValidator:
                     ):
                         diff = sum(self.help_vars["working_days"][n][0 : d + 1]) - d
                         if diff > 0:
-                            subtotal += diff * utils.CONS_WORK_DAY_WEIGHT
+                            subtotal += diff
 
-        return subtotal
+        return subtotal * utils.CONS_WORK_DAY_WEIGHT
 
     def get_max_consecutive_shifts_value(self) -> int:
         all_nurses = self.constants["all_nurses"]
@@ -732,11 +740,16 @@ class ScheduleValidator:
                 utils.contract_to_int[sc_data["nurses"][n]["contract"]]
             ]["minimumNumberOfConsecutiveWorkingDays"]
             for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.constants["configuration"]["h12"] and (
+                    n in self.constants["all_wd_data"][w]["vacations_with_ids"]
+                ):
+                    continue
                 for dd in range(1, min_consecutive_working_days):
                     if (d - dd) > 0:
                         diff = (
                             (1 - self.help_vars["working_days"][n][d])
-                            + sum(self.help_vars["working_days"][n][d - dd : d])
+                            + sum(self.help_vars["working_days"][n][d - dd:d])
                             + (1 - self.help_vars["working_days"][n][d - dd - 1])
                             - (dd + 1)
                         )
@@ -826,17 +839,17 @@ class ScheduleValidator:
                     if (
                         sum(
                             self.help_vars["working_days"][n][
-                                d - max_consecutive_days_off : d + 1
+                                d - max_consecutive_days_off:d + 1
                             ]
                         )
                         == 0
                     ):
-                        subtotal += utils.CONS_DAY_OFF_WEIGHT
+                        subtotal += 1
                 else:
                     if consecutive_days_off_prev_week >= max_consecutive_days_off - d:
-                        if sum(self.help_vars["working_days"][n][0 : d + 1]) == 0:
-                            subtotal += utils.CONS_DAY_OFF_WEIGHT
-        return subtotal
+                        if sum(self.help_vars["working_days"][n][0:d + 1]) == 0:
+                            subtotal += 1
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     def get_min_consecutive_days_off_value(self) -> int:
         subtotal = 0
@@ -879,8 +892,8 @@ class ScheduleValidator:
                                 - d
                             )
                             if diff > 0:
-                                subtotal += diff * utils.CONS_DAY_OFF_WEIGHT * dd
-        return subtotal
+                                subtotal += diff * dd
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     def get_assignment_preferences_value(self) -> int:
         subtotal = 0
@@ -892,11 +905,11 @@ class ScheduleValidator:
 
                 if shift_id != utils.shift_to_int["Any"]:
                     if self.help_vars["shifts"][nurse_id][day_id][shift_id] == 1:
-                        subtotal += utils.UNSATISFIED_PREFERENCE_WEIGHT
+                        subtotal += 1
                 else:
                     if self.help_vars["working_days"][nurse_id][day_id] == 1:
-                        subtotal += utils.UNSATISFIED_PREFERENCE_WEIGHT
-        return subtotal
+                        subtotal += 1
+        return subtotal * utils.UNSATISFIED_PREFERENCE_WEIGHT
 
     def get_incomplete_weekends_value(self) -> int:
         subtotal = 0
@@ -914,8 +927,98 @@ class ScheduleValidator:
                     + self.help_vars["working_days"][n][6]
                     == 1
                 ):
-                    subtotal += utils.INCOMPLETE_WEEKEDN_WEIGHT
-        return subtotal
+                    subtotal += 1
+        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+
+    def get_total_assignments_out_of_limits_value(self) -> int:
+        subtotal = 0
+        all_nurses = self.constants["all_nurses"]
+        all_shifts = self.constants["all_shifts"]
+        sc_data = self.constants["sc_data"]
+
+        for n in all_nurses:
+            max_total_assignments = sc_data["contracts"][
+                utils.contract_to_int[sc_data["nurses"][n]["contract"]]
+            ]["maximumNumberOfAssignments"]
+            min_total_assignments = sc_data["contracts"][
+                utils.contract_to_int[sc_data["nurses"][n]["contract"]]
+            ]["minimumNumberOfAssignments"]
+
+            total_assignments = sum(
+                [
+                    self.help_vars["shifts"][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments > max_total_assignments:
+                subtotal += total_assignments - max_total_assignments
+            if total_assignments < min_total_assignments:
+                if not self.is_nurse_on_vacation_any_week(n):
+                    subtotal += min_total_assignments - total_assignments
+        return subtotal * utils.TOTAL_ASSIGNMENTS_WEIGHT
+
+    def get_total_uses_of_ifneeded_skills_value(self) -> int:
+        subtotal = 0
+        all_nurses = self.constants["all_nurses"]
+        sc_data = self.constants["sc_data"]
+
+        for n in all_nurses:
+            ifneeded_skills = sc_data["nurses"][n]["skillsIfNeeded"]
+            total_assignments_to_ifneeded_skill = sum(
+                [
+                    self.help_vars["shifts"][n][d][utils.skill_to_int[s]]
+                    for d in self.all_days
+                    for s in ifneeded_skills
+                ]
+            )
+            subtotal += total_assignments_to_ifneeded_skill
+        return subtotal * utils.TOTAL_IFNEEDED_SKILL_WEIGHT
+
+    def get_unsatisfied_overtime_preferences_value(self) -> int:
+        subtotal = 0
+        all_nurses = self.constants["all_nurses"]
+        all_shifts = self.constants["all_shifts"]
+        sc_data = self.constants["sc_data"]
+
+        for n in all_nurses:
+            min_total_assignments = sc_data["contracts"][
+                utils.contract_to_int[sc_data["nurses"][n]["contract"]]
+            ]["maximumNumberOfAssignmentsHard"]
+            wanted_overtime = sc_data["nurses"][n]["wantedOvertime"]
+            ideal_total_assignments = min_total_assignments + wanted_overtime
+
+            total_assignments = sum(
+                [
+                    self.help_vars["shifts"][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments < ideal_total_assignments:
+                if not self.is_nurse_on_vacation_any_week(n):
+                    subtotal += ideal_total_assignments - total_assignments
+        return subtotal * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT
+
+    def get_total_weekends_over_limit_value(self) -> int:
+        subtotal = 0
+        all_nurses = self.constants["all_nurses"]
+        all_weeks = self.constants["all_weeks"]
+        sc_data = self.constants["sc_data"]
+
+        for n in all_nurses:
+            max_total_weekends = sc_data["contracts"][
+                utils.contract_to_int[sc_data["nurses"][n]["contract"]]
+            ]["maximumNumberOfWorkingWeekends"]
+
+            total_working_weekends = 0
+            for w in all_weeks:
+                if sum(self.help_vars["working_days"][n][w*7 + 5: (w+1)*7]) > 0:
+                    total_working_weekends += 1
+
+            if total_working_weekends > max_total_weekends:
+                subtotal += total_working_weekends - max_total_weekends
+        return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
 
     def get_all_weeks_objective_value(self) -> int:
         total = 0
@@ -1015,6 +1118,12 @@ class ScheduleValidator:
                 print("|", end="")
             print()
 
-    def export_schedule(self, file):
-        acc_text = ""
-        file.write(acc_text)
+    def is_nurse_on_vacation_any_week(self, nurse_id):
+        return self.constants["configuration"]["h12"] and (
+            nurse_id
+            in [
+                id
+                for w in self.constants["all_weeks"]
+                for id in self.help_vars["nurses_ids_on_vacation"][w]
+            ]
+        )

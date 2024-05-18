@@ -10,11 +10,11 @@ def update_history_for_next_week(results, constants, week_number):
     history_data["week"] += 1
 
     working_days, shifts = compute_helpful_values(results, constants, week_number)
-    
+
     for n in range(num_nurses):
         for d in range(num_days):
             history_data["nurseHistory"][n]["numberOfAssignments"] += working_days[n][d]
-            
+ 
         weekend_working_days = sum(working_days[n][5:7])
         history_data["nurseHistory"][n]["numberOfWorkingWeekends"] += isPositiveNumber(weekend_working_days)
         if weekend_working_days == 1:
@@ -63,6 +63,7 @@ def update_history_for_next_week(results, constants, week_number):
             ] = consecutive_shifts
     # print(history_data["nurseHistory"])
 
+
 def compute_helpful_values(results, constants, week_number):
     num_days = constants["num_days"]
     num_nurses = constants["num_nurses"]
@@ -80,8 +81,9 @@ def compute_helpful_values(results, constants, week_number):
     constants["wd_data"]["vacations_with_ids"] = list(
         map(lambda x: int(x.split("_")[1]), constants["wd_data"]["vacations"])
     )
-    
+
     return working_days, shifts
+
 
 def isPositiveNumber(number):
     if number > 0: return 1

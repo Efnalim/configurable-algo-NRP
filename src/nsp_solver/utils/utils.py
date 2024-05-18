@@ -19,10 +19,14 @@ INCOMPLETE_WEEKEDN_WEIGHT = 30
 CONS_WORK_DAY_WEIGHT = 30
 TOTAL_ASSIGNMENTS_WEIGHT = 20
 TOTAL_WORKING_WEEKENDS_WEIGHT = 30
+TOTAL_IFNEEDED_SKILL_WEIGHT = 15
+UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT = 10
 
 STATUS_OK = 'solution found'
 STATUS_FAIL = 'solution not found'
 
+
 def isPositiveNumber(number):
-    if number > 0: return 1
+    if number > 0: 
+        return 1
     return 0
