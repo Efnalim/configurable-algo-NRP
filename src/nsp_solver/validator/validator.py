@@ -211,9 +211,9 @@ class ScheduleValidator:
             for d in range(num_days - 1):
                 for s in all_shifts:
                     if restrictions[s]["succeedingShiftTypes"] == []:
-                        break
+                        continue
                     if shifts[n][d][s] == 0:
-                        break
+                        continue
                     for forbidden_shift_succession in restrictions[s][
                         "succeedingShiftTypes"
                     ]:
@@ -669,7 +669,7 @@ class ScheduleValidator:
                         consecutive_working_days_prev_week
                         >= max_consecutive_working_days - d
                     ):
-                        diff = sum(self.help_vars["working_days"][n][0 : d + 1]) - d
+                        diff = sum(self.help_vars["working_days"][n][0: d + 1]) - d
                         if diff > 0:
                             subtotal += diff
 

@@ -27,6 +27,6 @@ STATUS_FAIL = 'solution not found'
 
 
 def isPositiveNumber(number):
-    if number > 0: 
+    if number > 0:
         return 1
     return 0

@@ -1,4 +1,9 @@
-from nsp_solver.validator.validator import ScheduleValidator 
+"""
+Tests for solver
+"""
+
 
 def test_solver():
-    assert 2 - 1 is 1
+    """This is a mock test
+    """
+    assert 2 - 1 == 1

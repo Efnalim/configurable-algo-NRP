@@ -15,7 +15,7 @@ import copy
 from nsp_solver.solver.nsp_contest import compute_one_week as compute_one_week_or_tools
 from nsp_solver.solver.nsp_cplex import compute_one_week as compute_one_week_cplex
 from nsp_solver.solver.nsp_docplex import compute_one_week as compute_one_week_docplex
-from nsp_solver.simulator.simulator import update_history_for_next_week
+from nsp_solver.simulator.simulator import HistorySimulator
 from nsp_solver.validator.validator import ScheduleValidator
 
 
@@ -215,9 +215,10 @@ def main(
             compute_one_week_docplex(
                 time_limit_for_week, week_number, constants, results
             )
-        update_history_for_next_week(results, constants, week_number)
         if results[(week_number, "status")] == utils.STATUS_FAIL:
             break
+        simulator = HistorySimulator()
+        simulator.update_history_for_next_week(results, constants, week_number)
     end = time.time()
     # display results
     if display:

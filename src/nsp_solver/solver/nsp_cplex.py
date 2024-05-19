@@ -526,7 +526,7 @@ def add_max_one_shift_per_day_exception_constraint_hard(
             model.linear_constraints.add(
                 lin_expr=[
                     cplex.SparsePair(
-                        shifts[n][d][0 : (num_shifts - 1)], [1] * (num_shifts - 1)
+                        shifts[n][d][0: (num_shifts - 1)], [1] * (num_shifts - 1)
                     )
                 ],
                 senses=["L"],
@@ -674,7 +674,7 @@ def add_min_continuous_free_period_constraint_hard(model, basic_ILP_vars, consta
                 lin_expr=[
                     cplex.SparsePair(
                         [free_periods[(n, d)]]
-                        + working_days[n][d : d + min_free_period],
+                        + working_days[n][d: d + min_free_period],
                         [1] + [1] * min_free_period,
                     )
                 ],
@@ -1267,7 +1267,7 @@ def add_max_consecutive_work_days_constraint_soft(
                     lin_expr=[
                         cplex.SparsePair(
                             [violations_of_max_consecutive_working_days[(n, d)]]
-                            + working_days[n][d - max_consecutive_working_days : d + 1],
+                            + working_days[n][d - max_consecutive_working_days: d + 1],
                             [-1] + [1] * (max_consecutive_working_days + 1),
                         )
                     ],
@@ -1283,7 +1283,7 @@ def add_max_consecutive_work_days_constraint_soft(
                         lin_expr=[
                             cplex.SparsePair(
                                 [violations_of_max_consecutive_working_days[(n, d)]]
-                                + working_days[n][0 : d + 1],
+                                + working_days[n][0: d + 1],
                                 [-1] + [1] * (d + 1),
                             )
                         ],
@@ -1319,7 +1319,7 @@ def add_min_consecutive_work_days_constraint_soft(
                             cplex.SparsePair(
                                 [violations_of_min_consecutive_working_days[(n, d, dd)]]
                                 + [not_working_days[(n, d)]]
-                                + working_days[n][d - dd : d]
+                                + working_days[n][d - dd: d]
                                 + [not_working_days[(n, d - dd - 1)]],
                                 [-1] + [1] * (dd + 2),
                             )
@@ -1373,7 +1373,7 @@ def add_min_consecutive_work_days_constraint_hard(model, basic_ILP_vars, constan
                         lin_expr=[
                             cplex.SparsePair(
                                 [not_working_days[(n, d)]]
-                                + working_days[n][d - dd : d]
+                                + working_days[n][d - dd: d]
                                 + [not_working_days[(n, d - dd - 1)]],
                                 [1] * (dd + 2),
                             )
@@ -1405,7 +1405,6 @@ def add_min_consecutive_shifts_constraint_soft(
     all_days = constants["all_days"]
     all_shifts = constants["all_shifts"]
     sc_data = constants["sc_data"]
-    working_days = basic_ILP_vars["working_days"]
     shifts = basic_ILP_vars["shifts"]
     not_working_shifts = basic_ILP_vars["not_working_shifts"]
 
@@ -1739,7 +1738,7 @@ def add_max_consecutive_days_off_constraint_soft(
                     lin_expr=[
                         cplex.SparsePair(
                             [violations_of_max_consecutive_days_off[(n, d)]]
-                            + working_days[n][d - max_consecutive_working_days : d + 1],
+                            + working_days[n][d - max_consecutive_working_days: d + 1],
                             [1] + [1] * (max_consecutive_working_days + 1),
                         )
                     ],
@@ -1752,7 +1751,7 @@ def add_max_consecutive_days_off_constraint_soft(
                         lin_expr=[
                             cplex.SparsePair(
                                 [violations_of_max_consecutive_days_off[(n, d)]]
-                                + working_days[n][0 : d + 1],
+                                + working_days[n][0: d + 1],
                                 [1] + [1] * (d + 1),
                             )
                         ],
@@ -1829,7 +1828,7 @@ def add_max_consecutive_work_days_constraint_hard(model, basic_ILP_vars, constan
                 model.linear_constraints.add(
                     lin_expr=[
                         cplex.SparsePair(
-                            working_days[n][d - max_consecutive_working_days : d + 1],
+                            working_days[n][d - max_consecutive_working_days: d + 1],
                             [1] * (max_consecutive_working_days + 1),
                         )
                     ],
@@ -1843,7 +1842,7 @@ def add_max_consecutive_work_days_constraint_hard(model, basic_ILP_vars, constan
                 ):
                     model.linear_constraints.add(
                         lin_expr=[
-                            cplex.SparsePair(working_days[n][0 : d + 1], [1] * (d + 1))
+                            cplex.SparsePair(working_days[n][0: d + 1], [1] * (d + 1))
                         ],
                         senses=["L"],
                         rhs=[d],
@@ -1873,7 +1872,7 @@ def add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
                 model.linear_constraints.add(
                     lin_expr=[
                         cplex.SparsePair(
-                            working_days[n][d - max_consecutive_working_days : d + 1],
+                            working_days[n][d - max_consecutive_working_days: d + 1],
                             [1] * (max_consecutive_working_days + 1),
                         )
                     ],
@@ -1884,7 +1883,7 @@ def add_max_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
                 if consecutive_days_off_prev_week >= max_consecutive_working_days - d:
                     model.linear_constraints.add(
                         lin_expr=[
-                            cplex.SparsePair(working_days[n][0 : d + 1], [1] * (d + 1))
+                            cplex.SparsePair(working_days[n][0: d + 1], [1] * (d + 1))
                         ],
                         senses=["G"],
                         rhs=[1],
@@ -2063,9 +2062,8 @@ def save_tmp_results(results, solver, constants, basic_ILP_vars, soft_ILP_vars):
     week_number = constants["h0_data"]["week"]
 
     shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
-    working_days = basic_ILP_vars["working_days"]
 
-    if solver.is_primal_feasible() == False:
+    if not solver.is_primal_feasible():
         return
 
     results[(week_number, "status")] = utils.STATUS_OK
