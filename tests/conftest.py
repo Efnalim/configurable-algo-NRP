@@ -8,18 +8,18 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 # @pytest.fixture(scope="session")
 @pytest.fixture
 def constants_for_1_nurse():
-    path = "test_data"
-    file_name = path + "\\C1.json"
+    path = r"tests\test_data"
+    file_name = path + r"\C1.json"
     f3 = open(file_name)
     config_data = json.load(f3)
     f3.close()
 
-    file_name = path + "\\H0-n035w4-0.json"
+    file_name = path + r"\H0-n035w4-0.json"
     f0 = open(file_name)
     h0_data = json.load(f0)
     f0.close()
 
-    file_name = path + "\\Sc-n035w4.json"
+    file_name = path + r"\Sc-n035w4.json"
     f1 = open(file_name)
     sc_data = json.load(f1)
     f1.close()
@@ -28,7 +28,7 @@ def constants_for_1_nurse():
     for week in range(4):
         file_name = (
             path
-            + "\\WD-n035w4-"
+            + r"\WD-n035w4-"
             + str(week)
             + ".json"
         )
