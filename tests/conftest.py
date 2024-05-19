@@ -8,7 +8,7 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 # @pytest.fixture(scope="session")
 @pytest.fixture
 def constants_for_1_nurse():
-    path = r"tests\test_data"
+    path = r"test_data"
     file_name = path + r"\C1.json"
     f3 = open(file_name)
     config_data = json.load(f3)
