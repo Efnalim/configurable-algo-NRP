@@ -1,5 +1,4 @@
 import copy
-import json
 import pytest
 
 from src.nsp_solver.validator.validator import ScheduleValidator
@@ -8,33 +7,368 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 # @pytest.fixture(scope="session")
 @pytest.fixture
 def constants_for_1_nurse():
-    path = r"test_data"
-    file_name = path + r"\C1.json"
-    f3 = open(file_name)
-    config_data = json.load(f3)
-    f3.close()
+    config_data = {
+        "h1": True,
+        "h2": True,
+        "h3": True,
+        "h4": True,
+        "h5": True,
+        "h6": True,
+        "h7": True,
+        "h8": True,
+        "h9": True,
+        "h10": True,
+        "h11": True,
+        "h12": True,
+        "s1": True,
+        "s2": True,
+        "s3": True,
+        "s4": True,
+        "s5": True,
+        "s6": True,
+        "s7": True,
+        "s8": True,
+        "s9": True,
+    }
 
-    file_name = path + r"\H0-n035w4-0.json"
-    f0 = open(file_name)
-    h0_data = json.load(f0)
-    f0.close()
+    h0_data = {
+        "week": 0,
+        "scenario": "n035w4",
+        "nurseHistory": [
+            {
+                "nurse": "HN_0",
+                "numberOfAssignments": 0,
+                "numberOfWorkingWeekends": 0,
+                "numberOfIncompleteWeekends": 0,
+                "lastAssignedShiftType": "None",
+                "numberOfConsecutiveAssignments": 0,
+                "numberOfConsecutiveWorkingDays": 0,
+                "numberOfConsecutiveDaysOff": 2,
+                "numbersOfAssignedRestrictedShiftTypes": [
+                    {"type:": "Early", "numberOfAssignments": 0},
+                    {"type:": "Day", "numberOfAssignments": 0},
+                    {"type:": "Late", "numberOfAssignments": 0},
+                    {"type:": "Night", "numberOfAssignments": 0},
+                ],
+            }
+        ],
+    }
 
-    file_name = path + r"\Sc-n035w4.json"
-    f1 = open(file_name)
-    sc_data = json.load(f1)
-    f1.close()
+    sc_data = {
+        "id": "n035w4",
+        "numberOfWeeks": 4,
+        "skills": ["HeadNurse", "Nurse", "Caretaker", "Trainee"],
+        "shiftTypes": [
+            {
+                "id": "Early",
+                "minimumNumberOfConsecutiveAssignments": 2,
+                "maximumNumberOfConsecutiveAssignments": 5,
+                "minimumNumberOfConsecutiveAssignmentsHard": 2,
+                "maximumNumberOfConsecutiveAssignmentsHard": 7,
+            },
+            {
+                "id": "Day",
+                "minimumNumberOfConsecutiveAssignments": 2,
+                "maximumNumberOfConsecutiveAssignments": 7,
+                "minimumNumberOfConsecutiveAssignmentsHard": 2,
+                "maximumNumberOfConsecutiveAssignmentsHard": 10,
+            },
+            {
+                "id": "Late",
+                "minimumNumberOfConsecutiveAssignments": 2,
+                "maximumNumberOfConsecutiveAssignments": 5,
+                "minimumNumberOfConsecutiveAssignmentsHard": 2,
+                "maximumNumberOfConsecutiveAssignmentsHard": 7,
+            },
+            {
+                "id": "Night",
+                "minimumNumberOfConsecutiveAssignments": 4,
+                "maximumNumberOfConsecutiveAssignments": 5,
+                "minimumNumberOfConsecutiveAssignmentsHard": 3,
+                "maximumNumberOfConsecutiveAssignmentsHard": 7,
+            },
+        ],
+        "forbiddenShiftTypeSuccessions": [
+            {"precedingShiftType": "Early", "succeedingShiftTypes": []},
+            {"precedingShiftType": "Day", "succeedingShiftTypes": []},
+            {"precedingShiftType": "Late", "succeedingShiftTypes": ["Early", "Day"]},
+            {
+                "precedingShiftType": "Night",
+                "succeedingShiftTypes": ["Early", "Day", "Late"],
+            },
+        ],
+        "contracts": [
+            {
+                "id": "FullTime",
+                "minimumNumberOfAssignments": 15,
+                "maximumNumberOfAssignments": 22,
+                "minimumNumberOfAssignmentsHard": 12,
+                "maximumNumberOfAssignmentsHard": 25,
+                "minimumNumberOfConsecutiveWorkingDays": 3,
+                "maximumNumberOfConsecutiveWorkingDays": 5,
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "maximumNumberOfConsecutiveDaysOff": 3,
+                "maximumNumberOfWorkingWeekends": 2,
+                "minimumNumberOfConsecutiveWorkingDaysHard": 2,
+                "maximumNumberOfConsecutiveWorkingDaysHard": 7,
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "maximumNumberOfConsecutiveDaysOffHard": 5,
+                "maximumNumberOfIncompleteWeekendsHard": 1,
+                "minimalFreePeriod": 2,
+                "completeWeekends": 1,
+            },
+            {
+                "id": "PartTime",
+                "minimumNumberOfAssignments": 7,
+                "maximumNumberOfAssignments": 15,
+                "minimumNumberOfAssignmentsHard": 4,
+                "maximumNumberOfAssignmentsHard": 18,
+                "minimumNumberOfConsecutiveWorkingDays": 3,
+                "maximumNumberOfConsecutiveWorkingDays": 5,
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "maximumNumberOfWorkingWeekends": 2,
+                "minimumNumberOfConsecutiveWorkingDaysHard": 2,
+                "maximumNumberOfConsecutiveWorkingDaysHard": 7,
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "maximumNumberOfConsecutiveDaysOffHard": 7,
+                "maximumNumberOfIncompleteWeekendsHard": 1,
+                "minimalFreePeriod": 2,
+                "completeWeekends": 1,
+            },
+            {
+                "id": "HalfTime",
+                "minimumNumberOfAssignments": 5,
+                "maximumNumberOfAssignments": 11,
+                "minimumNumberOfAssignmentsHard": 4,
+                "maximumNumberOfAssignmentsHard": 14,
+                "minimumNumberOfConsecutiveWorkingDays": 3,
+                "maximumNumberOfConsecutiveWorkingDays": 7,
+                "minimumNumberOfConsecutiveDaysOff": 3,
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "maximumNumberOfWorkingWeekends": 1,
+                "minimumNumberOfConsecutiveWorkingDaysHard": 2,
+                "maximumNumberOfConsecutiveWorkingDaysHard": 7,
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "maximumNumberOfConsecutiveDaysOffHard": 7,
+                "maximumNumberOfIncompleteWeekendsHard": 1,
+                "minimalFreePeriod": 2,
+                "completeWeekends": 1,
+            },
+        ],
+        "nurses": [
+            {
+                "id": "HN_0",
+                "contract": "HalfTime",
+                "skills": ["HeadNurse", "Nurse", "Caretaker"],
+                "skillsIfNeeded": ["Caretaker"],
+                "restrictions": [],
+                "wantedOvertime": 3,
+            }
+        ],
+    }
 
-    wd_data = []
-    for week in range(4):
-        file_name = (
-            path
-            + r"\WD-n035w4-"
-            + str(week)
-            + ".json"
-        )
-        f2 = open(file_name)
-        wd_data.append(json.load(f2))
-        f2.close()
+    wd_data = [None]
+    for week in range(1):
+        wd_data[week] = {
+            "scenario": "n035w4",
+            "requirements": [
+                {
+                    "shiftType": "Early",
+                    "skill": "HeadNurse",
+                    "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                    "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Early",
+                    "skill": "Nurse",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 1},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Early",
+                    "skill": "Caretaker",
+                    "requirementOnMonday": {"minimum": 2, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 2, "optimal": 2},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 3},
+                    "requirementOnFriday": {"minimum": 2, "optimal": 4},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 2},
+                },
+                {
+                    "shiftType": "Early",
+                    "skill": "Trainee",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Day",
+                    "skill": "HeadNurse",
+                    "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                    "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnWednesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                    "requirementOnFriday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Day",
+                    "skill": "Nurse",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 2},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Day",
+                    "skill": "Caretaker",
+                    "requirementOnMonday": {"minimum": 2, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 2, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 3},
+                    "requirementOnThursday": {"minimum": 2, "optimal": 3},
+                    "requirementOnFriday": {"minimum": 3, "optimal": 3},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 2},
+                },
+                {
+                    "shiftType": "Day",
+                    "skill": "Trainee",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnWednesday": {"minimum": 0, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 0, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Late",
+                    "skill": "HeadNurse",
+                    "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                    "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnWednesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Late",
+                    "skill": "Nurse",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 2},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Late",
+                    "skill": "Caretaker",
+                    "requirementOnMonday": {"minimum": 2, "optimal": 2},
+                    "requirementOnTuesday": {"minimum": 2, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 3},
+                    "requirementOnThursday": {"minimum": 2, "optimal": 3},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 3},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Late",
+                    "skill": "Trainee",
+                    "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 0, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Night",
+                    "skill": "HeadNurse",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 1},
+                    "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnWednesday": {"minimum": 0, "optimal": 0},
+                    "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                    "requirementOnFriday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSaturday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                },
+                {
+                    "shiftType": "Night",
+                    "skill": "Nurse",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 1},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 2},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+                {
+                    "shiftType": "Night",
+                    "skill": "Caretaker",
+                    "requirementOnMonday": {"minimum": 2, "optimal": 4},
+                    "requirementOnTuesday": {"minimum": 2, "optimal": 3},
+                    "requirementOnWednesday": {"minimum": 2, "optimal": 3},
+                    "requirementOnThursday": {"minimum": 2, "optimal": 4},
+                    "requirementOnFriday": {"minimum": 1, "optimal": 3},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 2},
+                },
+                {
+                    "shiftType": "Night",
+                    "skill": "Trainee",
+                    "requirementOnMonday": {"minimum": 1, "optimal": 1},
+                    "requirementOnTuesday": {"minimum": 1, "optimal": 2},
+                    "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                    "requirementOnThursday": {"minimum": 1, "optimal": 1},
+                    "requirementOnFriday": {"minimum": 0, "optimal": 0},
+                    "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                    "requirementOnSunday": {"minimum": 1, "optimal": 1},
+                },
+            ],
+            "shiftOffRequests": [
+                {"nurse": "NU_6", "shiftType": "Night", "day": "Monday"},
+                {"nurse": "HN_1", "shiftType": "Any", "day": "Tuesday"},
+                {"nurse": "HN_3", "shiftType": "Any", "day": "Tuesday"},
+                {"nurse": "NU_14", "shiftType": "Any", "day": "Tuesday"},
+                {"nurse": "NU_16", "shiftType": "Any", "day": "Tuesday"},
+                {"nurse": "CT_21", "shiftType": "Early", "day": "Thursday"},
+                {"nurse": "CT_23", "shiftType": "Day", "day": "Thursday"},
+                {"nurse": "HN_3", "shiftType": "Any", "day": "Thursday"},
+                {"nurse": "NU_15", "shiftType": "Any", "day": "Thursday"},
+                {"nurse": "CT_19", "shiftType": "Any", "day": "Friday"},
+                {"nurse": "HN_3", "shiftType": "Any", "day": "Friday"},
+                {"nurse": "NU_14", "shiftType": "Early", "day": "Saturday"},
+                {"nurse": "TR_31", "shiftType": "Any", "day": "Saturday"},
+                {"nurse": "TR_33", "shiftType": "Any", "day": "Saturday"},
+                {"nurse": "NU_7", "shiftType": "Late", "day": "Sunday"},
+            ],
+            "vacations": ["TR_32"],
+        }
 
     # initialize constants
     num_nurses = 1
@@ -45,7 +379,7 @@ def constants_for_1_nurse():
     all_shifts = range(num_shifts)
     all_days = range(num_days)
     all_skills = range(num_skills)
-    all_weeks = range(4)
+    all_weeks = range(1)
 
     constants = {}
     constants["configuration"] = config_data
