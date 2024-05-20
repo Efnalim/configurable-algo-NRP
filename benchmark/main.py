@@ -200,9 +200,16 @@ def main(
         time_limit_for_week = 10 + 10 * (constants["num_nurses"] - 20)
         # time_limit_for_week = 10
 
-    # accumulate results over weeks
-    start = time.time()
     results = {}
+    for w in constants["all_weeks"]:
+        for n in constants["all_nurses"]:
+            for d in constants["all_days"]:
+                for s in constants["all_shifts"]:
+                    for sk in constants["all_skills"]:
+                        results[(n, d + 7 * w, s, sk)] = 0
+    fail = False
+    start = time.time()
+    # accumulate results over weeks
     for week_number in range(number_weeks):
         constants["wd_data"] = constants["all_wd_data"][week_number]
         if mode == 0:
@@ -216,6 +223,7 @@ def main(
                 time_limit_for_week, week_number, constants, results
             )
         if results[(week_number, "status")] == utils.STATUS_FAIL:
+            fail = True
             break
         simulator = HistorySimulator()
         simulator.update_history_for_next_week(results, constants, week_number)
@@ -225,8 +233,11 @@ def main(
         display_schedule(results, constants, number_weeks, False, None)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print("----------------------------------------------------------------")
-    validator = ScheduleValidator(results, constants)
-    total_value = validator.evaluate_results()
+    if fail:
+        total_value = 99999
+    else: 
+        validator = ScheduleValidator(results, constants)
+        total_value = validator.evaluate_results()
     # print(f"configuration: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}")
     print(
         f'inputs: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}'

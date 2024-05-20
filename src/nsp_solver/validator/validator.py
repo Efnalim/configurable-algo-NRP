@@ -528,7 +528,7 @@ class ScheduleValidator:
                 for d in self.all_days:
                     w = math.floor(d / 7)
                     if self.constants["configuration"]["h12"] and (
-                        n in self.constants["all_wd_data"][w]["vacations_with_ids"]
+                        n in self.help_vars["nurses_ids_on_vacation"][w]
                     ):
                         counter = 0
                         continue
