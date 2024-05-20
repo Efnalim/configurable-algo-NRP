@@ -350,24 +350,8 @@ def constants_for_1_nurse():
                     "requirementOnSunday": {"minimum": 1, "optimal": 1},
                 },
             ],
-            "shiftOffRequests": [
-                {"nurse": "NU_6", "shiftType": "Night", "day": "Monday"},
-                {"nurse": "HN_1", "shiftType": "Any", "day": "Tuesday"},
-                {"nurse": "HN_3", "shiftType": "Any", "day": "Tuesday"},
-                {"nurse": "NU_14", "shiftType": "Any", "day": "Tuesday"},
-                {"nurse": "NU_16", "shiftType": "Any", "day": "Tuesday"},
-                {"nurse": "CT_21", "shiftType": "Early", "day": "Thursday"},
-                {"nurse": "CT_23", "shiftType": "Day", "day": "Thursday"},
-                {"nurse": "HN_3", "shiftType": "Any", "day": "Thursday"},
-                {"nurse": "NU_15", "shiftType": "Any", "day": "Thursday"},
-                {"nurse": "CT_19", "shiftType": "Any", "day": "Friday"},
-                {"nurse": "HN_3", "shiftType": "Any", "day": "Friday"},
-                {"nurse": "NU_14", "shiftType": "Early", "day": "Saturday"},
-                {"nurse": "TR_31", "shiftType": "Any", "day": "Saturday"},
-                {"nurse": "TR_33", "shiftType": "Any", "day": "Saturday"},
-                {"nurse": "NU_7", "shiftType": "Late", "day": "Sunday"},
-            ],
-            "vacations": ["TR_32"],
+            "shiftOffRequests": [],
+            "vacations": [],
         }
 
     # initialize constants
