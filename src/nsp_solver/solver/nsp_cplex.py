@@ -9,21 +9,11 @@ from nsp_solver.utils import utils
 
 
 def prepare_help_constants(constants, results):
-    num_days = constants["num_days"]
-    num_nurses = constants["num_nurses"]
-    num_skills = constants["num_skills"]
-    num_shifts = constants["num_shifts"]
     week_number = constants["h0_data"]["week"]
 
     constants["wd_data"]["vacations_with_ids"] = list(
         map(lambda x: int(x.split("_")[1]), constants["wd_data"]["vacations"])
     )
-
-    for n in range(num_nurses):
-        for d in range(num_days):
-            for s in range(num_shifts):
-                for sk in range(num_skills):
-                    results[(n, d + 7 * week_number, s, sk)] = 0
 
     results[(week_number, "status")] = utils.STATUS_FAIL
 
@@ -1607,7 +1597,7 @@ def add_min_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
             n in constants["wd_data"]["vacations_with_ids"]
         ):
             continue
-        consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
         min_consecutive_days_off = sc_data["contracts"][
@@ -1632,7 +1622,7 @@ def add_min_consecutive_days_off_constraint_hard(model, basic_ILP_vars, constant
                         rhs=[dd + 1],
                     )
                 else:
-                    if consecutive_working_days_prev_week == d - dd:
+                    if consecutive_days_off_prev_week == d - dd:
                         model.linear_constraints.add(
                             lin_expr=[
                                 cplex.SparsePair(
