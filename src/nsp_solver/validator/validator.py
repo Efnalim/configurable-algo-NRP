@@ -159,7 +159,7 @@ class ScheduleValidator:
 
         for w in all_weeks:
             for n in self.help_vars["nurses_ids_on_vacation"][w]:
-                if sum(self.help_vars["working_days"][n][w * 7: (w + 1) * 7]) > 1:
+                if sum(self.help_vars["working_days"][n][w * 7: (w + 1) * 7]) > 0:
                     print(f"{n} {w}")
                     return False
 
@@ -742,7 +742,7 @@ class ScheduleValidator:
             for d in self.all_days:
                 w = math.floor(d / 7)
                 if self.constants["configuration"]["h12"] and (
-                    n in self.constants["all_wd_data"][w]["vacations_with_ids"]
+                    n in self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     continue
                 for dd in range(1, min_consecutive_working_days):
@@ -757,7 +757,7 @@ class ScheduleValidator:
                             subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
 
                     else:
-                        if consecutive_working_days_prev_week == d - dd:
+                        if consecutive_working_days_prev_week == dd - d:
                             diff = (
                                 (1 - self.help_vars["working_days"][n][d])
                                 + sum(self.help_vars["working_days"][n][0:d])
@@ -783,6 +783,11 @@ class ScheduleValidator:
             ]["lastAssignedShiftType"]
             lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.constants["configuration"]["h12"] and (
+                    n in self.help_vars["nurses_ids_on_vacation"][w]
+                ):
+                    continue
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data["shiftTypes"][s][
                         "minimumNumberOfConsecutiveAssignments"
@@ -803,15 +808,15 @@ class ScheduleValidator:
                             if diff > 0:
                                 subtotal += diff * utils.CONS_SHIFT_WEIGHT * dd
                         else:
-                            if (consecutive_working_shifts_prev_week == d - dd) and (
+                            if (consecutive_working_shifts_prev_week == dd - d) and (
                                 lastShittTypeAsInt == s
                             ):
                                 diff = (1 - self.help_vars["shifts"][n][d][s]) + sum(
                                     [
                                         self.help_vars["shifts"][n][ddd][s]
-                                        for ddd in range(d) - d
+                                        for ddd in range(d)
                                     ]
-                                )
+                                ) - d
                                 if diff > 0:
                                     subtotal += diff * utils.CONS_SHIFT_WEIGHT * dd
         return subtotal

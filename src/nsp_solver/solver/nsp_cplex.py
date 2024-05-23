@@ -1409,7 +1409,7 @@ def add_min_consecutive_shifts_constraint_soft(
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data["shiftTypes"][s][
-                    "minimumNumberOfConsecutiveAssignmentsHard"
+                    "minimumNumberOfConsecutiveAssignments"
                 ]
                 for dd in range(1, min_consecutive_shifts):
                     if (d - dd) > 0:
@@ -1433,7 +1433,7 @@ def add_min_consecutive_shifts_constraint_soft(
                             rhs=[dd + 1],
                         )
                     else:
-                        if (consecutive_working_shifts_prev_week == d - dd) and (
+                        if (consecutive_working_shifts_prev_week == dd - d) and (
                             lastShittTypeAsInt == s
                         ):
                             model.linear_constraints.add(

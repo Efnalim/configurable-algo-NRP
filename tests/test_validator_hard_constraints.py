@@ -188,7 +188,7 @@ def test_is_max_assignments_per_day_satisfied(
     ],
 )
 def test_is_shift_successsion_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -245,7 +245,7 @@ def test_is_shift_successsion_satisfied(
     ],
 )
 def test_is_required_skill_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -352,7 +352,7 @@ def test_is_required_skill_satisfied(
     ],
 )
 def test_is_max_consecutive_work_days_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -451,7 +451,7 @@ def test_is_max_consecutive_work_days_satisfied(
     ],
 )
 def test_is_min_consecutive_work_days_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -553,7 +553,7 @@ def test_is_min_consecutive_work_days_satisfied(
     ],
 )
 def test_is_max_consecutive_work_shifts_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -660,7 +660,7 @@ def test_is_max_consecutive_work_shifts_satisfied(
     ],
 )
 def test_is_min_max_consecutive_assignments_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -785,7 +785,7 @@ def test_is_min_max_consecutive_assignments_satisfied(
     ],
 )
 def test_is_min_consecutive_work_shifts_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -830,19 +830,70 @@ def test_is_min_consecutive_work_shifts_satisfied(
                 "maximumNumberOfConsecutiveDaysOffHard": 4,
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": [
-                    (0, 0, 0, 0),
-                    (0, 1, 0, 0),
-                    (0, 2, 0, 0),
-                    (0, 3, 0, 0),
                     (0, 4, 0, 0),
                 ],
             },
             True,
         ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOffHard": 4,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 3, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOffHard": 4,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOffHard": 4,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOffHard": 4,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 4, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOffHard": 4,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                ],
+            },
+            False,
+        ),
     ],
 )
 def test_is_max_consecutive_days_off_satisfied(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week, capfd
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -861,6 +912,778 @@ def test_is_max_consecutive_days_off_satisfied(
 
     # Execute
     retval = validator.is_max_consecutive_days_off_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOffHard": 2,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                ],
+            },
+            True,
+        ),
+    ],
+)
+def test_is_min_consecutive_days_off_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+        "numberOfConsecutiveDaysOff"
+    ] = input_data["numberOfConsecutiveDaysOff"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimumNumberOfConsecutiveDaysOffHard"] = input_data[
+        "minimumNumberOfConsecutiveDaysOffHard"
+    ]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_min_consecutive_days_off_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "maximumNumberOfIncompleteWeekendsHard": 0,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_max_total_incomplete_weekends_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfIncompleteWeekendsHard"] = input_data[
+        "maximumNumberOfIncompleteWeekendsHard"
+    ]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_max_total_incomplete_weekends_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimumNumberOfAssignmentsHard": 3,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimumNumberOfAssignmentsHard": 3,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimumNumberOfAssignmentsHard": 3,
+                "schedule": [],
+            },
+            False,
+        ),
+        (
+            {
+                "minimumNumberOfAssignmentsHard": 3,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_min_total_assignments_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimumNumberOfAssignmentsHard"] = input_data["minimumNumberOfAssignmentsHard"]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_min_total_assignments_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "maximumNumberOfAssignmentsHard": 5,
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfAssignmentsHard": 5,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "maximumNumberOfAssignmentsHard": 5,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "maximumNumberOfAssignmentsHard": 5,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_max_total_assignments_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfAssignmentsHard"] = input_data["maximumNumberOfAssignmentsHard"]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_max_total_assignments_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimalFreePeriod": 2,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "minimalFreePeriod": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimalFreePeriod": 2,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "minimalFreePeriod": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "minimalFreePeriod": 2,
+                "numberOfConsecutiveDaysOff": 4,
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_min_free_period_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+        "numberOfConsecutiveDaysOff"
+    ] = input_data["numberOfConsecutiveDaysOff"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimalFreePeriod"] = input_data["minimalFreePeriod"]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_min_free_period_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 1, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 0, 3, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 0, 1, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 0, 2, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 1, 0),
+                    (0, 0, 2, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 1, 0),
+                    (0, 0, 3, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 2, 0),
+                    (0, 0, 3, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_max_assignments_per_day_with_exception_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_max_assignments_per_day_with_exception_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "restriction": {"type": "Night", "limit": 3},
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "restriction": {"type": "Night", "limit": 3},
+                "schedule": [
+                    (0, 1, 3, 0),
+                    (0, 2, 3, 0),
+                    (0, 5, 3, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "restriction": {"type": "Night", "limit": 3},
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 3, 0),
+                    (0, 2, 3, 0),
+                    (0, 3, 3, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "restriction": {"type": "Night", "limit": 3},
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 3, 0),
+                    (0, 2, 3, 0),
+                    (0, 3, 3, 0),
+                    (0, 4, 3, 0),
+                    (0, 5, 3, 0),
+                    (0, 6, 3, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_maximum_shifts_of_specific_type_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["nurses"][0]["restrictions"] = [
+        input_data["restriction"]
+    ]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.is_maximum_shifts_of_specific_type_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 3, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 6, 3, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 3, 0),
+                    (0, 2, 3, 0),
+                    (0, 3, 3, 0),
+                    (0, 4, 3, 0),
+                    (0, 5, 3, 0),
+                    (0, 6, 3, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_planned_vacations_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["all_wd_data"][0]["vacations"] = ["HN_0"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    # Execute
+    retval = validator.is_planned_vacations_satisfied()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "requirements": [
+                    {
+                        "shiftType": "Early",
+                        "skill": "HeadNurse",
+                        "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                        "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                        "requirementOnWednesday": {"minimum": 0, "optimal": 1},
+                        "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                        "requirementOnFriday": {"minimum": 0, "optimal": 1},
+                        "requirementOnSaturday": {"minimum": 0, "optimal": 1},
+                        "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                    }
+                ],
+                "schedule": [],
+            },
+            True,
+        ),
+        (
+            {
+                "requirements": [
+                    {
+                        "shiftType": "Early",
+                        "skill": "HeadNurse",
+                        "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                        "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                        "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                        "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                        "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                        "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                        "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                    }
+                ],
+                "schedule": [
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 5, 0, 0),
+                ],
+            },
+            True,
+        ),
+        (
+            {
+                "requirements": [
+                    {
+                        "shiftType": "Early",
+                        "skill": "HeadNurse",
+                        "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                        "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                        "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                        "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                        "requirementOnFriday": {"minimum": 2, "optimal": 1},
+                        "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                        "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                    }
+                ],
+                "schedule": [
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                    (0, 3, 0, 0),
+                ],
+            },
+            False,
+        ),
+        (
+            {
+                "requirements": [
+                    {
+                        "shiftType": "Early",
+                        "skill": "HeadNurse",
+                        "requirementOnMonday": {"minimum": 0, "optimal": 0},
+                        "requirementOnTuesday": {"minimum": 0, "optimal": 0},
+                        "requirementOnWednesday": {"minimum": 1, "optimal": 1},
+                        "requirementOnThursday": {"minimum": 0, "optimal": 0},
+                        "requirementOnFriday": {"minimum": 1, "optimal": 1},
+                        "requirementOnSaturday": {"minimum": 1, "optimal": 1},
+                        "requirementOnSunday": {"minimum": 0, "optimal": 0},
+                    }
+                ],
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 3, 0),
+                    (0, 2, 3, 0),
+                    (0, 3, 3, 0),
+                    (0, 4, 3, 0),
+                    (0, 5, 3, 0),
+                    (0, 6, 3, 0),
+                ],
+            },
+            False,
+        ),
+    ],
+)
+def test_is_minimal_capacity_satisfied(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["all_wd_data"][0]["requirements"] = input_data["requirements"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    # Execute
+    retval = validator.is_minimal_capacity_satisfied()
 
     # Assert
     assert retval == expected

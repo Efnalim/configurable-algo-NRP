@@ -10,7 +10,6 @@ Tests for simulator.py
 def test_compute_helpful_values__1nurse_5shifts_5_days(
     constants_for_1_nurse, empty_results_1nurse_1week
 ):
-    """This is a mock test"""
     # Arrange
     results = empty_results_1nurse_1week
     results[(0, 0, 0, 0)] = 1
