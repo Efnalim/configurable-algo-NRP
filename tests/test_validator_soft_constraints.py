@@ -323,6 +323,7 @@ def test_get_min_consecutive_work_days_value(
     # Assert
     assert retval == expected
 
+
 @pytest.mark.skip(reason="not finished yet")
 @pytest.mark.parametrize(
     "input_data,expected",
@@ -428,6 +429,7 @@ def test_get_max_consecutive_shifts_value(
 
     # Assert
     assert retval == expected
+
 
 @pytest.mark.skip(reason="not finished yet")
 @pytest.mark.parametrize(
