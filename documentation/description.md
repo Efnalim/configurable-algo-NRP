@@ -12,7 +12,7 @@
 	The minimum and maximum number of consecutive assignments, per shift or global, must be respected.
 ### HC6 - Consecutive days off
 	The minimum and maximum number of consecutive days off must be respected.
-### HC7 - Maximum incomplete week-ends
+### HC7 - Maximum incomplete weekends
 	Every nurse that has the complete weekend value set to true, must work both week-end days or none. Maximum of incomplete weekends must be respected
 ### HC8 - Total assignments: 
 	For each nurse the total number of assignments (working days) must be included within the limits (minimum and maximum) enforced by her/his contract.
