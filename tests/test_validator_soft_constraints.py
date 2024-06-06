@@ -324,7 +324,6 @@ def test_get_min_consecutive_work_days_value(
     assert retval == expected
 
 
-@pytest.mark.skip(reason="not finished yet")
 @pytest.mark.parametrize(
     "input_data,expected",
     [
@@ -431,14 +430,13 @@ def test_get_max_consecutive_shifts_value(
     assert retval == expected
 
 
-@pytest.mark.skip(reason="not finished yet")
 @pytest.mark.parametrize(
     "input_data,expected",
     [
         (
             {
                 "lastAssignedShiftType": "None",
-                "minimumNumberOfConsecutiveAssignments": 2,
+                "minimumNumberOfConsecutiveAssignments": 3,
                 "numberOfConsecutiveAssignments": 0,
                 "schedule": [
                     (0, 0, 0, 0),
@@ -453,7 +451,7 @@ def test_get_max_consecutive_shifts_value(
         (
             {
                 "lastAssignedShiftType": "Early",
-                "minimumNumberOfConsecutiveAssignments": 2,
+                "minimumNumberOfConsecutiveAssignments": 3,
                 "numberOfConsecutiveAssignments": 1,
                 "schedule": [
                     (0, 1, 0, 0),
@@ -462,48 +460,48 @@ def test_get_max_consecutive_shifts_value(
                     (0, 5, 0, 0),
                 ],
             },
-            3 * utils.CONS_SHIFT_WEIGHT,
+            2 * utils.CONS_SHIFT_WEIGHT,
         ),
         (
             {
                 "lastAssignedShiftType": "Early",
-                "minimumNumberOfConsecutiveAssignments": 2,
+                "minimumNumberOfConsecutiveAssignments": 3,
                 "numberOfConsecutiveAssignments": 1,
                 "schedule": [(0, 0, 0, 0)],
-            },
-            0,
-        ),
-        (
-            {
-                "lastAssignedShiftType": "Early",
-                "minimumNumberOfConsecutiveAssignments": 2,
-                "numberOfConsecutiveAssignments": 1,
-                "schedule": [],
             },
             1 * utils.CONS_SHIFT_WEIGHT,
         ),
         (
             {
                 "lastAssignedShiftType": "Early",
-                "minimumNumberOfConsecutiveAssignments": 2,
-                "numberOfConsecutiveAssignments": 2,
+                "minimumNumberOfConsecutiveAssignments": 3,
+                "numberOfConsecutiveAssignments": 1,
                 "schedule": [],
             },
-            0,
+            2 * utils.CONS_SHIFT_WEIGHT,
         ),
         (
             {
                 "lastAssignedShiftType": "Early",
-                "minimumNumberOfConsecutiveAssignments": 2,
-                "numberOfConsecutiveAssignments": 0,
-                "schedule": [(0, 0, 0, 0)],
+                "minimumNumberOfConsecutiveAssignments": 3,
+                "numberOfConsecutiveAssignments": 3,
+                "schedule": [],
             },
-            1 * utils.CONS_SHIFT_WEIGHT,
+            0,
         ),
         (
             {
                 "lastAssignedShiftType": "None",
-                "minimumNumberOfConsecutiveAssignments": 2,
+                "minimumNumberOfConsecutiveAssignments": 3,
+                "numberOfConsecutiveAssignments": 0,
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "lastAssignedShiftType": "None",
+                "minimumNumberOfConsecutiveAssignments": 3,
                 "numberOfConsecutiveAssignments": 0,
                 "schedule": [
                     (0, 6, 0, 0),
@@ -529,11 +527,567 @@ def test_get_min_consecutive_shifts_value(
     constants_for_1_nurse["sc_data"]["shiftTypes"][0][
         "minimumNumberOfConsecutiveAssignments"
     ] = input_data["minimumNumberOfConsecutiveAssignments"]
+    # print(f'mincons{constants_for_1_nurse["sc_data"]["shiftTypes"][0]["minimumNumberOfConsecutiveAssignments"]}')
 
     validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    print(validator.constants["h0_data_original"]["nurseHistory"][0]["numberOfConsecutiveAssignments"])
 
     # Execute
     retval = validator.get_min_consecutive_shifts_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 5,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 5,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 6,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 6,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 5,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 5,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 5,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 5,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 5,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 5,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            6 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 6,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 5,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 6,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+    ],
+)
+def test_get_max_consecutive_days_off_value(
+    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+):
+    # Arrange
+    schedule = results_1nurse_1full_week
+    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+        "numberOfConsecutiveDaysOff"
+    ] = input_data["numberOfConsecutiveDaysOff"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfConsecutiveDaysOff"] = input_data[
+        "maximumNumberOfConsecutiveDaysOff"
+    ]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_max_consecutive_days_off_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            2 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 2,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 2,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 2,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            1 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 2,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 1,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 2,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "numberOfConsecutiveDaysOff": 2,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 0,
+                    "placement": utils.Shift_placement.MID
+                },
+            },
+            0,
+        ),
+    ],
+)
+def test_get_min_consecutive_days_off_value(
+    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+):
+    # Arrange
+    schedule = results_1nurse_1full_week
+    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+        "numberOfConsecutiveDaysOff"
+    ] = input_data["numberOfConsecutiveDaysOff"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimumNumberOfConsecutiveDaysOff"] = input_data[
+        "minimumNumberOfConsecutiveDaysOff"
+    ]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_min_consecutive_days_off_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 1,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 6,
+                    "placement": utils.Shift_placement.END
+                },
+            },
+            2 * utils.CONS_DAY_OFF_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfConsecutiveDaysOff": 2,
+                "maximumNumberOfConsecutiveDaysOff": 5,
+                "numberOfConsecutiveDaysOff": 0,
+                "schedule": {
+                    "numberOfConsecutiveDaysOff": 4,
+                    "placement": utils.Shift_placement.START
+                },
+            },
+            0,
+        ),
+    ],
+)
+def test_get_consecutive_days_off_value(
+    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+):
+    # Arrange
+    schedule = results_1nurse_1full_week
+    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+        "numberOfConsecutiveDaysOff"
+    ] = input_data["numberOfConsecutiveDaysOff"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimumNumberOfConsecutiveDaysOff"] = input_data[
+        "minimumNumberOfConsecutiveDaysOff"
+    ]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfConsecutiveDaysOff"] = input_data[
+        "maximumNumberOfConsecutiveDaysOff"
+    ]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_consecutive_days_off_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "preferences": [],
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "preferences": [
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Early",
+                        "day" : "Monday"
+                    }
+                ],
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "preferences": [
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Early",
+                        "day" : "Monday"
+                    },
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Night",
+                        "day" : "Tuesday"
+                    },
+                ],
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "preferences": [
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Any",
+                        "day" : "Monday"
+                    },
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Night",
+                        "day" : "Tuesday"
+                    },
+                ],
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            1 * utils.UNSATISFIED_PREFERENCE_WEIGHT,
+        ),
+        (
+            {
+                "preferences": [
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Any",
+                        "day" : "Monday"
+                    },
+                ],
+                "schedule": [
+                    (0, 0, 3, 0),
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            1 * utils.UNSATISFIED_PREFERENCE_WEIGHT,
+        ),
+        (
+            {
+                "preferences": [
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Any",
+                        "day" : "Monday"
+                    },
+                    {
+                        "nurse" : "HN_0",
+                        "shiftType" : "Night",
+                        "day" : "Tuesday"
+                    },
+                ],
+                "schedule": [
+                    (0, 1, 0, 0),
+                    (0, 2, 0, 0),
+                    (0, 3, 0, 0),
+                    (0, 4, 0, 0),
+                ],
+            },
+            0,
+        ),
+    ],
+)
+def test_get_assignment_preferences_value(
+    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["all_wd_data"][0]["shiftOffRequests"] = input_data[
+        "preferences"
+    ]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_assignment_preferences_value()
 
     # Assert
     assert retval == expected

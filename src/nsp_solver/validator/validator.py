@@ -599,6 +599,7 @@ class ScheduleValidator:
 
         return ret_val
 
+    @utils.soft_constr_value_print
     def get_optimal_capacity_value(self) -> int:
         subtotal = 0
         all_weeks = self.constants["all_weeks"]
@@ -629,9 +630,9 @@ class ScheduleValidator:
                     diff = opt_capacity > sum(skills_worked)
                     if diff > 0:
                         subtotal += diff
-
         return subtotal * utils.OPT_CAPACITY_WEIGHT
 
+    @utils.soft_constr_value_print
     def get_consecutive_assignments_value(self) -> int:
         subtotal = 0
         subtotal += self.get_max_consecutive_work_days_value()
@@ -696,7 +697,7 @@ class ScheduleValidator:
                     "maximumNumberOfConsecutiveAssignments"
                 ]
                 for d in self.all_days:
-                    if d > max_consecutive_working_shifts:
+                    if d >= max_consecutive_working_shifts:
                         diff = (
                             sum(
                                 [
@@ -777,7 +778,7 @@ class ScheduleValidator:
         for n in all_nurses:
             consecutive_working_shifts_prev_week = self.constants["h0_data_original"][
                 "nurseHistory"
-            ][n]["numberOfConsecutiveWorkingDays"]
+            ][n]["numberOfConsecutiveAssignments"]
             lastAssignedShiftType = self.constants["h0_data_original"]["nurseHistory"][
                 n
             ]["lastAssignedShiftType"]
@@ -789,6 +790,8 @@ class ScheduleValidator:
                 ):
                     continue
                 for s in all_shifts:
+                    if self.help_vars["shifts"][n][d][s] == 1:
+                        continue
                     min_consecutive_shifts = sc_data["shiftTypes"][s][
                         "minimumNumberOfConsecutiveAssignments"
                     ]
@@ -806,21 +809,27 @@ class ScheduleValidator:
                                 - (dd + 1)
                             )
                             if diff > 0:
-                                subtotal += diff * utils.CONS_SHIFT_WEIGHT * dd
+                                # print(f'diff{diff}_d{d}_dd{dd}_shifts{self.help_vars["shifts"]}')
+                                subtotal += utils.CONS_SHIFT_WEIGHT
                         else:
+                            # print(f's{s}_d{d}_dd{dd}_shifts{self.help_vars["shifts"]}_prev{consecutive_working_shifts_prev_week}_min{min_consecutive_shifts}')
                             if (consecutive_working_shifts_prev_week == dd - d) and (
                                 lastShittTypeAsInt == s
                             ):
-                                diff = (1 - self.help_vars["shifts"][n][d][s]) + sum(
+                                working_shifts = sum(
                                     [
                                         self.help_vars["shifts"][n][ddd][s]
-                                        for ddd in range(d)
+                                        for ddd in range(d + 1)
                                     ]
-                                ) - d
-                                if diff > 0:
-                                    subtotal += diff * utils.CONS_SHIFT_WEIGHT * dd
+                                )
+                                if working_shifts < d + 1:
+                                    print(f'diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars["shifts"]}_prev{consecutive_working_shifts_prev_week}')
+                                    subtotal += utils.CONS_SHIFT_WEIGHT
+                            # if lastShittTypeAsInt != s:
+
         return subtotal
 
+    @utils.soft_constr_value_print
     def get_consecutive_days_off_value(self) -> int:
         subtotal = 0
         subtotal += self.get_max_consecutive_days_off_value()
@@ -862,7 +871,7 @@ class ScheduleValidator:
         sc_data = self.constants["sc_data"]
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = self.constants["h0_data_original"][
+            consecutive_days_off_prev_week = self.constants["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveDaysOff"]
             min_consecutive_days_off = sc_data["contracts"][
@@ -883,23 +892,27 @@ class ScheduleValidator:
                             - (dd + 1)
                         )
                         if diff > 0:
-                            subtotal += diff * utils.CONS_DAY_OFF_WEIGHT * dd
+                            subtotal += 1
                     else:
-                        if consecutive_working_days_prev_week == d - dd:
-                            diff = (
-                                self.help_vars["working_days"][n][d]
-                                + sum(
+                        if consecutive_days_off_prev_week >= min_consecutive_days_off:
+                            continue
+                        if consecutive_days_off_prev_week == 0:
+                            continue
+                        if consecutive_days_off_prev_week == dd - d:
+                            working_days = (
+                                sum(
                                     [
-                                        (1 - self.help_vars["working_days"][n][ddd])
-                                        for ddd in range(0, d)
+                                        self.help_vars["working_days"][n][ddd]
+                                        for ddd in range(0, d + 1)
                                     ]
                                 )
-                                - d
+                            
                             )
-                            if diff > 0:
-                                subtotal += diff * dd
+                            if working_days > 0:
+                                subtotal += 1
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
+    @utils.soft_constr_value_print
     def get_assignment_preferences_value(self) -> int:
         subtotal = 0
         for w in self.constants["all_weeks"]:
@@ -916,6 +929,7 @@ class ScheduleValidator:
                         subtotal += 1
         return subtotal * utils.UNSATISFIED_PREFERENCE_WEIGHT
 
+    @utils.soft_constr_value_print
     def get_incomplete_weekends_value(self) -> int:
         subtotal = 0
         nurses_data = self.constants["sc_data"]["nurses"]
@@ -935,6 +949,7 @@ class ScheduleValidator:
                     subtotal += 1
         return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
 
+    @utils.soft_constr_value_print
     def get_total_assignments_out_of_limits_value(self) -> int:
         subtotal = 0
         all_nurses = self.constants["all_nurses"]
@@ -1005,6 +1020,7 @@ class ScheduleValidator:
                     subtotal += ideal_total_assignments - total_assignments
         return subtotal * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT
 
+    @utils.soft_constr_value_print
     def get_total_weekends_over_limit_value(self) -> int:
         subtotal = 0
         all_nurses = self.constants["all_nurses"]

@@ -1,4 +1,5 @@
 import copy
+from nsp_solver.utils import utils
 import pytest
 
 from src.nsp_solver.validator.validator import ScheduleValidator
@@ -404,7 +405,57 @@ def empty_results_1nurse_1week(constants_for_1_nurse):
 
     return results
 
+@pytest.fixture
+def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week):
+    num_days = constants_for_1_nurse["num_days"]
+    results = empty_results_1nurse_1week
+    for d in range(num_days):
+        results[(0, d, 0, 0)] = 1
+    return results
+
 
 @pytest.fixture
 def validator_for_1nurse_1week(constants_for_1_nurse, empty_results_1nurse_1week):
     return ScheduleValidator(empty_results_1nurse_1week, constants_for_1_nurse)
+
+class Schedule_modifier():
+    @staticmethod
+    def add_shifts(schedule, shift, skill, placement, number_of_shifts):
+        if placement == utils.Shift_placement.START:
+            for i in range(number_of_shifts):
+                if i > 6:
+                    break
+                schedule[(0, i, shift, skill)] = 1
+        if placement == utils.Shift_placement.MID:
+            for i in range(number_of_shifts):
+                if i > 6:
+                    break
+                schedule[(0, 1 + i, shift, skill)] = 1
+        if placement == utils.Shift_placement.END:
+            for i in range(number_of_shifts):
+                if i < 0:
+                    break
+                schedule[(0, 6 - i, shift, skill)] = 1
+
+    @staticmethod
+    def remove_shifts(schedule, shift, skill, placement, number_of_shifts):
+        if placement == utils.Shift_placement.START:
+            for i in range(number_of_shifts):
+                if i > 6:
+                    break
+                schedule[(0, i, shift, skill)] = 0
+        if placement == utils.Shift_placement.MID:
+            for i in range(number_of_shifts):
+                if i > 6:
+                    break
+                schedule[(0, 1 + i, shift, skill)] = 0
+        if placement == utils.Shift_placement.END:
+            for i in range(number_of_shifts):
+                if i < 0:
+                    break
+                schedule[(0, 6 - i, shift, skill)] = 0
+
+        
+@pytest.fixture
+def schedule_modifier():
+    return Schedule_modifier
