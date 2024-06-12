@@ -935,18 +935,20 @@ class ScheduleValidator:
         nurses_data = self.constants["sc_data"]["nurses"]
         contracts_data = self.constants["sc_data"]["contracts"]
         all_nurses = self.constants["all_nurses"]
+        all_weeks = self.constants["all_weeks"]
 
         for n in all_nurses:
             isCompleteWeekendRequested = contracts_data[
                 utils.contract_to_int[nurses_data[n]["contract"]]
             ]["completeWeekends"]
             if isCompleteWeekendRequested == 1:
-                if (
-                    self.help_vars["working_days"][n][5]
-                    + self.help_vars["working_days"][n][6]
-                    == 1
-                ):
-                    subtotal += 1
+                for w in all_weeks:
+                    if (
+                        self.help_vars["working_days"][n][w*7 + 5]
+                        + self.help_vars["working_days"][n][w*7 + 6]
+                        == 1
+                    ):
+                        subtotal += 1
         return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
 
     @utils.soft_constr_value_print
@@ -981,15 +983,17 @@ class ScheduleValidator:
     def get_total_uses_of_ifneeded_skills_value(self) -> int:
         subtotal = 0
         all_nurses = self.constants["all_nurses"]
+        all_skills = self.constants["all_skills"]
         sc_data = self.constants["sc_data"]
 
         for n in all_nurses:
             ifneeded_skills = sc_data["nurses"][n]["skillsIfNeeded"]
             total_assignments_to_ifneeded_skill = sum(
                 [
-                    self.help_vars["shifts"][n][d][utils.skill_to_int[s]]
+                    self.help_vars["shifts_and_skills"][n][d][s][utils.skill_to_int[sk]]
                     for d in self.all_days
-                    for s in ifneeded_skills
+                    for s in all_skills
+                    for sk in ifneeded_skills
                 ]
             )
             subtotal += total_assignments_to_ifneeded_skill

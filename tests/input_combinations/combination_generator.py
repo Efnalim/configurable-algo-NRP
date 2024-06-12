@@ -52,3 +52,59 @@ for i, pairs in enumerate(AllPairs(parameters, filter_func=is_valid_preference_c
 
 print("----------------------------------------------------------------")
 print("----------------------------------------------------------------")
+
+parameters = OrderedDict({
+    "complete_weekends": [False, True],
+    "working": ["none", "saturday", "sunday", "saturday and sunday"],
+})
+
+print("test_get_incomplete_weekends_value")
+print("----------------------------------------------------------------")
+for i, pairs in enumerate(AllPairs(parameters)):
+# for i, pairs in enumerate(AllPairs(parameters)):
+    print("{:2d}: {}".format(i, pairs))
+
+print("----------------------------------------------------------------")
+print("----------------------------------------------------------------")
+
+parameters = OrderedDict({
+    "working_days": ["n_under_min", "1_under_min", "exactly_min", "exactly_max", "1_over_max", "n_over_max"],
+    "limits": ["min_2__max_4"]
+})
+
+print("test_get_total_assignments_out_of_limits_value")
+print("----------------------------------------------------------------")
+for i, pairs in enumerate(AllPairs(parameters)):
+# for i, pairs in enumerate(AllPairs(parameters)):
+    print("{:2d}: {}".format(i, pairs))
+
+print("----------------------------------------------------------------")
+print("----------------------------------------------------------------")
+
+parameters = OrderedDict({
+    "working_days": ["none", "saturday only", "sunday only", "saturday and sunday"],
+    "max_total_weekends": [0, 1]
+})
+
+print("test_get_total_weekends_over_limit_value")
+print("----------------------------------------------------------------")
+for i, pairs in enumerate(AllPairs(parameters)):
+# for i, pairs in enumerate(AllPairs(parameters)):
+    print("{:2d}: {}".format(i, pairs))
+
+print("----------------------------------------------------------------")
+print("----------------------------------------------------------------")
+
+parameters = OrderedDict({
+    "working_days_skills": ["none", "all_skills"],
+    "ifneeded_skills": ["None", "few"]
+})
+
+print("test_get_total_uses_of_ifneeded_skills_value")
+print("----------------------------------------------------------------")
+for i, pairs in enumerate(AllPairs(parameters)):
+# for i, pairs in enumerate(AllPairs(parameters)):
+    print("{:2d}: {}".format(i, pairs))
+
+print("----------------------------------------------------------------")
+print("----------------------------------------------------------------")

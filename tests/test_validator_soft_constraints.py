@@ -530,7 +530,11 @@ def test_get_min_consecutive_shifts_value(
     # print(f'mincons{constants_for_1_nurse["sc_data"]["shiftTypes"][0]["minimumNumberOfConsecutiveAssignments"]}')
 
     validator = ScheduleValidator(schedule, constants_for_1_nurse)
-    print(validator.constants["h0_data_original"]["nurseHistory"][0]["numberOfConsecutiveAssignments"])
+    print(
+        validator.constants["h0_data_original"]["nurseHistory"][0][
+            "numberOfConsecutiveAssignments"
+        ]
+    )
 
     # Execute
     retval = validator.get_min_consecutive_shifts_value()
@@ -548,7 +552,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -559,7 +563,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             0,
@@ -570,7 +574,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 5,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 5,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -581,7 +585,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 6,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -592,7 +596,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 6,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 5,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             0,
@@ -603,7 +607,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 5,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -614,7 +618,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -625,7 +629,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -636,7 +640,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -647,7 +651,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 5,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -658,7 +662,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 5,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -669,7 +673,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 5,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -680,7 +684,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 5,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             6 * utils.CONS_DAY_OFF_WEIGHT,
@@ -691,7 +695,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 6,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -702,7 +706,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 5,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             0,
@@ -713,7 +717,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 6,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -724,7 +728,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -735,7 +739,7 @@ def test_get_min_consecutive_shifts_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -743,11 +747,21 @@ def test_get_min_consecutive_shifts_value(
     ],
 )
 def test_get_max_consecutive_days_off_value(
-    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    results_1nurse_1full_week,
+    schedule_modifier,
 ):
     # Arrange
     schedule = results_1nurse_1full_week
-    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    schedule_modifier.remove_shifts(
+        schedule,
+        0,
+        0,
+        input_data["schedule"]["placement"],
+        input_data["schedule"]["numberOfConsecutiveDaysOff"],
+    )
     constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
@@ -774,7 +788,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -785,7 +799,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             2 * utils.CONS_DAY_OFF_WEIGHT,
@@ -796,7 +810,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 2,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 2,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -807,7 +821,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 2,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -818,7 +832,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             1 * utils.CONS_DAY_OFF_WEIGHT,
@@ -829,7 +843,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 2,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             0,
@@ -840,7 +854,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 1,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             0,
@@ -851,7 +865,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 2,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -862,7 +876,7 @@ def test_get_max_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 2,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 0,
-                    "placement": utils.Shift_placement.MID
+                    "placement": utils.Shift_placement.MID,
                 },
             },
             0,
@@ -870,11 +884,21 @@ def test_get_max_consecutive_days_off_value(
     ],
 )
 def test_get_min_consecutive_days_off_value(
-    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    results_1nurse_1full_week,
+    schedule_modifier,
 ):
     # Arrange
     schedule = results_1nurse_1full_week
-    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    schedule_modifier.remove_shifts(
+        schedule,
+        0,
+        0,
+        input_data["schedule"]["placement"],
+        input_data["schedule"]["numberOfConsecutiveDaysOff"],
+    )
     constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
@@ -902,7 +926,7 @@ def test_get_min_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 1,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 6,
-                    "placement": utils.Shift_placement.END
+                    "placement": utils.Shift_placement.END,
                 },
             },
             2 * utils.CONS_DAY_OFF_WEIGHT,
@@ -914,7 +938,7 @@ def test_get_min_consecutive_days_off_value(
                 "numberOfConsecutiveDaysOff": 0,
                 "schedule": {
                     "numberOfConsecutiveDaysOff": 4,
-                    "placement": utils.Shift_placement.START
+                    "placement": utils.Shift_placement.START,
                 },
             },
             0,
@@ -922,11 +946,21 @@ def test_get_min_consecutive_days_off_value(
     ],
 )
 def test_get_consecutive_days_off_value(
-    input_data, expected, constants_for_1_nurse, results_1nurse_1full_week, schedule_modifier
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    results_1nurse_1full_week,
+    schedule_modifier,
 ):
     # Arrange
     schedule = results_1nurse_1full_week
-    schedule_modifier.remove_shifts(schedule, 0, 0, input_data["schedule"]["placement"], input_data["schedule"]["numberOfConsecutiveDaysOff"])
+    schedule_modifier.remove_shifts(
+        schedule,
+        0,
+        0,
+        input_data["schedule"]["placement"],
+        input_data["schedule"]["numberOfConsecutiveDaysOff"],
+    )
     constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
@@ -968,11 +1002,7 @@ def test_get_consecutive_days_off_value(
         (
             {
                 "preferences": [
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Early",
-                        "day" : "Monday"
-                    }
+                    {"nurse": "HN_0", "shiftType": "Early", "day": "Monday"}
                 ],
                 "schedule": [
                     (0, 1, 0, 0),
@@ -986,16 +1016,8 @@ def test_get_consecutive_days_off_value(
         (
             {
                 "preferences": [
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Early",
-                        "day" : "Monday"
-                    },
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Night",
-                        "day" : "Tuesday"
-                    },
+                    {"nurse": "HN_0", "shiftType": "Early", "day": "Monday"},
+                    {"nurse": "HN_0", "shiftType": "Night", "day": "Tuesday"},
                 ],
                 "schedule": [
                     (0, 1, 0, 0),
@@ -1009,16 +1031,8 @@ def test_get_consecutive_days_off_value(
         (
             {
                 "preferences": [
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Any",
-                        "day" : "Monday"
-                    },
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Night",
-                        "day" : "Tuesday"
-                    },
+                    {"nurse": "HN_0", "shiftType": "Any", "day": "Monday"},
+                    {"nurse": "HN_0", "shiftType": "Night", "day": "Tuesday"},
                 ],
                 "schedule": [
                     (0, 0, 3, 0),
@@ -1033,11 +1047,7 @@ def test_get_consecutive_days_off_value(
         (
             {
                 "preferences": [
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Any",
-                        "day" : "Monday"
-                    },
+                    {"nurse": "HN_0", "shiftType": "Any", "day": "Monday"},
                 ],
                 "schedule": [
                     (0, 0, 3, 0),
@@ -1052,16 +1062,8 @@ def test_get_consecutive_days_off_value(
         (
             {
                 "preferences": [
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Any",
-                        "day" : "Monday"
-                    },
-                    {
-                        "nurse" : "HN_0",
-                        "shiftType" : "Night",
-                        "day" : "Tuesday"
-                    },
+                    {"nurse": "HN_0", "shiftType": "Any", "day": "Monday"},
+                    {"nurse": "HN_0", "shiftType": "Night", "day": "Tuesday"},
                 ],
                 "schedule": [
                     (0, 1, 0, 0),
@@ -1075,7 +1077,10 @@ def test_get_consecutive_days_off_value(
     ],
 )
 def test_get_assignment_preferences_value(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week,
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -1088,6 +1093,353 @@ def test_get_assignment_preferences_value(
 
     # Execute
     retval = validator.get_assignment_preferences_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "completeWeekends": 0,
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "completeWeekends": 1,
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "completeWeekends": 1,
+                "schedule": [
+                    (0, 5, 0, 0),
+                ],
+            },
+            1 * utils.INCOMPLETE_WEEKEDN_WEIGHT,
+        ),
+        (
+            {
+                "completeWeekends": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "completeWeekends": 0,
+                "schedule": [
+                    (0, 6, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "completeWeekends": 1,
+                "schedule": [
+                    (0, 6, 0, 0),
+                ],
+            },
+            1 * utils.INCOMPLETE_WEEKEDN_WEIGHT,
+        ),
+        (
+            {
+                "completeWeekends": 1,
+                "schedule": [
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "completeWeekends": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            0,
+        ),
+    ],
+)
+def test_get_incomplete_weekends_value(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["completeWeekends"] = input_data["completeWeekends"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_incomplete_weekends_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 0,
+            },
+            2 * utils.TOTAL_ASSIGNMENTS_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 1,
+            },
+            1 * utils.TOTAL_ASSIGNMENTS_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 2,
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 4,
+            },
+            0,
+        ),
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 5,
+            },
+            1 * utils.TOTAL_ASSIGNMENTS_WEIGHT,
+        ),
+        (
+            {
+                "minimumNumberOfAssignments": 2,
+                "maximumNumberOfAssignments": 4,
+                "workingDays": 6,
+            },
+            2 * utils.TOTAL_ASSIGNMENTS_WEIGHT,
+        ),
+    ],
+)
+def test_get_total_assignments_out_of_limits_value(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+    schedule_modifier
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    schedule_modifier.add_shifts(
+        schedule,
+        0,
+        0,
+        utils.Shift_placement.START,
+        input_data["workingDays"],
+    )
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["minimumNumberOfAssignments"] = input_data["minimumNumberOfAssignments"]
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfAssignments"] = input_data["maximumNumberOfAssignments"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_total_assignments_out_of_limits_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 0,
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                ],
+            },
+            1 * utils.TOTAL_WORKING_WEEKENDS_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 0,
+                "schedule": [
+                    (0, 6, 0, 0),
+                ],
+            },
+            1 * utils.TOTAL_WORKING_WEEKENDS_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 0,
+                "schedule": [
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            1 * utils.TOTAL_WORKING_WEEKENDS_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 1,
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 1,
+                "schedule": [
+                    (0, 5, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 1,
+                "schedule": [
+                    (0, 6, 0, 0),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfWorkingWeekends": 1,
+                "schedule": [
+                    (0, 5, 0, 0),
+                    (0, 6, 0, 0),
+                ],
+            },
+            0,
+        ),
+    ],
+)
+def test_get_total_weekends_over_limit_value(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfWorkingWeekends"] = input_data["maximumNumberOfWorkingWeekends"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_total_weekends_over_limit_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "ifneeded_skills": [],
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "ifneeded_skills": [],
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 1, 1),
+                    (0, 2, 2, 2),
+                    (0, 3, 3, 0),
+                    (0, 4, 3, 0),
+                    (0, 5, 2, 1),
+                    (0, 6, 2, 2),
+                ],
+            },
+            0,
+        ),
+        (
+            {
+                "ifneeded_skills": ["Caretaker"],
+                "schedule": [
+                    (0, 0, 0, 0),
+                    (0, 1, 1, 1),
+                    (0, 2, 2, 2),
+                    (0, 3, 3, 0),
+                    (0, 4, 3, 0),
+                    (0, 5, 2, 1),
+                    (0, 6, 2, 2),
+                ],
+            },
+            2 * utils.TOTAL_IFNEEDED_SKILL_WEIGHT,
+        ),
+        (
+            {
+                "ifneeded_skills": ["Caretaker"],
+                "schedule": [],
+            },
+            0,
+        ),
+    ],
+)
+def test_get_total_uses_of_ifneeded_skills_value(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+    constants_for_1_nurse["sc_data"]["nurses"][0]["skillsIfNeeded"] = input_data["ifneeded_skills"]
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_total_uses_of_ifneeded_skills_value()
 
     # Assert
     assert retval == expected
