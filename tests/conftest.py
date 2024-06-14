@@ -459,3 +459,29 @@ class Schedule_modifier():
 @pytest.fixture
 def schedule_modifier():
     return Schedule_modifier
+
+@pytest.fixture
+def all_false_config_data():
+    return {
+        "h1": False,
+        "h2": False,
+        "h3": False,
+        "h4": False,
+        "h5": False,
+        "h6": False,
+        "h7": False,
+        "h8": False,
+        "h9": False,
+        "h10": False,
+        "h11": False,
+        "h12": False,
+        "s1": False,
+        "s2": False,
+        "s3": False,
+        "s4": False,
+        "s5": False,
+        "s6": False,
+        "s7": False,
+        "s8": False,
+        "s9": False,
+    }

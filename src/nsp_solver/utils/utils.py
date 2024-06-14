@@ -34,11 +34,29 @@ def isPositiveNumber(number):
     return 0
 
 def soft_constr_value_print(func):
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        print(f"Function {func.__name__} returned: {result}")
+    def wrapper(self, *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        self.soft_table.append([func.__name__, result])
+        # print(f"Function {func.__name__} returned: {result}")
         return result
     return wrapper
+
+def hard_constr_value_print(func):
+    def wrapper(self, *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        self.hard_table.append([func.__name__, result])
+        # print(f"Function {func.__name__} returned: {result}")
+        return result
+    return wrapper
+
+def print_table(table):
+    col_widths = [max(len(str(item)) for item in column) for column in zip(*table)]
+    for index, row in enumerate(table):
+        print(" | ".join(str(item).ljust(width) for item, width in zip(row, col_widths)))
+        if index == 0:
+            print("+" * (sum(col_widths) + len(col_widths) + 1))
+    print()
+
 
 class Shift_placement(Enum):
     START = 0

@@ -1253,7 +1253,7 @@ def test_get_total_assignments_out_of_limits_value(
     expected,
     constants_for_1_nurse,
     empty_results_1nurse_1week,
-    schedule_modifier
+    schedule_modifier,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
@@ -1435,11 +1435,130 @@ def test_get_total_uses_of_ifneeded_skills_value(
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["sc_data"]["nurses"][0]["skillsIfNeeded"] = input_data["ifneeded_skills"]
+    constants_for_1_nurse["sc_data"]["nurses"][0]["skillsIfNeeded"] = input_data[
+        "ifneeded_skills"
+    ]
     validator = ScheduleValidator(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.get_total_uses_of_ifneeded_skills_value()
+
+    # Assert
+    assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 0,
+                "totalAssignments": 0,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 2,
+                "totalAssignments": 4,
+            },
+            2 * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 2,
+                "totalAssignments": 5,
+            },
+            1 * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 0,
+                "totalAssignments": 6,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 0,
+                "totalAssignments": 7,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 2,
+                "totalAssignments": 7,
+            },
+            1 * utils.TOTAL_ASSIGNMENTS_WEIGHT,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 2,
+                "totalAssignments": 6,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 0,
+                "totalAssignments": 5,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 0,
+                "totalAssignments": 4,
+            },
+            0,
+        ),
+        (
+            {
+                "maximumNumberOfAssignments": 4,
+                "wantedOvertime": 2,
+                "totalAssignments": 0,
+            },
+            6 * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT,
+        ),
+    ],
+)
+def test_get_unsatisfied_overtime_preferences_value(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+    schedule_modifier,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    schedule_modifier.add_shifts(
+        schedule,
+        0,
+        0,
+        utils.Shift_placement.START,
+        input_data["totalAssignments"],
+    )
+    constants_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    ]["maximumNumberOfAssignments"] = input_data["maximumNumberOfAssignments"]
+    constants_for_1_nurse["sc_data"]["nurses"][0]["wantedOvertime"] = input_data[
+        "wantedOvertime"
+    ]
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.get_unsatisfied_overtime_preferences_value()
 
     # Assert
     assert retval == expected
