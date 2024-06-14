@@ -10,13 +10,17 @@ class ScheduleValidator:
         self.help_vars = self.compute_helpful_values()
         self.hard_table = []
         self.soft_table = []
-        self.hard_table.append(["Hard constraint", "is satisfied"])
-        self.soft_table.append(["Soft constraint", "objective value"])
+        self.hard_table.append(["constraint", "is satisfied"])
+        self.soft_table.append(["constraint", "objective value"])
 
     def evaluate_results(self) -> int:
         if self.is_schedule_valid():
-            utils.print_table(self.hard_table)
-            return self.get_objective_value_of_schedule()
+            retval = self.get_objective_value_of_schedule()
+            with utils.redirect_stdout_to_file('outputs/validator_result.txt'):
+                utils.print_table("Hard constraints", self.hard_table)
+                utils.print_table("Soft constraints", self.soft_table)
+                print(f'Total objective value: {retval}')
+            return retval
         else:
             return 99999
 
@@ -100,7 +104,6 @@ class ScheduleValidator:
             total += self.get_total_uses_of_ifneeded_skills_value()
         if self.config["s9"]:
             total += self.get_unsatisfied_overtime_preferences_value()
-        utils.print_table(self.soft_table)
         return total
 
     @utils.hard_constr_value_print

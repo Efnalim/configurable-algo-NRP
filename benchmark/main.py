@@ -239,12 +239,19 @@ def main(
         validator = ScheduleValidator(results, constants)
         total_value = validator.evaluate_results()
     # print(f"configuration: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}")
-    print(
-        f'inputs: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}'
-    )
-    print(f"value total: {total_value}")
-    print(f"time total: {math.ceil(end - start)} s")
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    with open('outputs/results.txt', 'a') as file:
+        file.write(f'n0{number_nurses}_w{number_weeks}_h{history_data_file_id}_{"-".join(map(str, week_data_files_ids))}')
+        file.write(' | ')
+        file.write(f'{total_value}'.ljust(5))
+        file.write(' | ')
+        file.write(f'{math.ceil(end - start)} s'.ljust(7) + '\n')
+
+    # print(
+    #     f'inputs: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}'
+    # )
+    # print(f"value total: {total_value}")
+    # print(f"time total: {math.ceil(end - start)} s")
+    # print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
     tool_name = ""
     if mode == 0:

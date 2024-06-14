@@ -286,3 +286,50 @@ def test_get_objective_value_of_schedule(
         assert retval > 0
     else:
         assert retval == expected
+
+
+@pytest.mark.parametrize(
+    "input_data,expected",
+    [
+        (
+            {
+                "tested_constraints": [],
+                "schedule": [],
+            },
+            0,
+        ),
+        (
+            {
+                "tested_constraints": ["h2"],
+                "schedule": [],
+            },
+            99999,
+        ),
+    ],
+)
+def test_evaluate_results(
+    input_data,
+    expected,
+    constants_for_1_nurse,
+    empty_results_1nurse_1week,
+    all_false_config_data,
+):
+    # Arrange
+    schedule = empty_results_1nurse_1week
+    for input in input_data["schedule"]:
+        schedule[input] = 1
+
+    constants_for_1_nurse["configuration"] = all_false_config_data
+    for constr in input_data["tested_constraints"]:
+        constants_for_1_nurse["configuration"][constr] = True
+
+    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+
+    # Execute
+    retval = validator.evaluate_results()
+
+    # Assert
+    if expected > 0:
+        assert retval > 0
+    else:
+        assert retval == expected

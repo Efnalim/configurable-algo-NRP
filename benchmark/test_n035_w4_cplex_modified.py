@@ -4,18 +4,9 @@ import os
 import sys
 import subprocess
 
-from contextlib import contextmanager
+from nsp_solver.utils import utils
 
 original_stdout = sys.stdout
-
-@contextmanager
-def redirect_stdout_to_file(file_path):
-    original_stdout = sys.stdout
-    with open(file_path, 'w') as file:
-        sys.stdout = file
-        yield
-    sys.stdout = original_stdout
-
 
 try:
     output_file = 'outputs\\logs\\output_test_n035_w4_cplex_modified.txt'
@@ -37,8 +28,13 @@ try:
     with open('input\\week_combinations.txt') as f:
         week_combinations = [line.strip() for line in f.readlines()]
 
+
+    with open('outputs/results.txt', 'w') as file:
+        file.write("configuration".ljust(18) + " | " + "value" + " | " + "time\n")
+        file.write("----------------------------------\n")
+
     # list of input for benchmark
-    with redirect_stdout_to_file(output_file):
+    with utils.redirect_stdout_to_file(output_file):
         arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} {config_file_id} ' + combination for combination in week_combinations]
         # print(arguments_list)
         # run the main script in iterations

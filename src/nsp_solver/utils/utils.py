@@ -1,4 +1,6 @@
 from enum import Enum
+from contextlib import contextmanager
+import sys
 
 shift_to_int = {"Early": 0, "Day": 1, "Late": 2, "Night": 3, "Any": 4, "None": 5}
 skill_to_int = {"HeadNurse": 0, "Nurse": 1, "Caretaker": 2, "Trainee": 3}
@@ -49,12 +51,15 @@ def hard_constr_value_print(func):
         return result
     return wrapper
 
-def print_table(table):
+def print_table(name, table):
+    print(name)
+
     col_widths = [max(len(str(item)) for item in column) for column in zip(*table)]
+    print("+" * (sum(col_widths) + len(col_widths) + 1))
     for index, row in enumerate(table):
         print(" | ".join(str(item).ljust(width) for item, width in zip(row, col_widths)))
         if index == 0:
-            print("+" * (sum(col_widths) + len(col_widths) + 1))
+            print("-" * (sum(col_widths) + len(col_widths) + 1))
     print()
 
 
@@ -62,3 +67,12 @@ class Shift_placement(Enum):
     START = 0
     MID = 1
     END = 2
+
+
+@contextmanager
+def redirect_stdout_to_file(file_path):
+    original_stdout = sys.stdout
+    with open(file_path, 'w') as file:
+        sys.stdout = file
+        yield
+    sys.stdout = original_stdout
