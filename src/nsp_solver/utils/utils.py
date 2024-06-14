@@ -35,6 +35,7 @@ def isPositiveNumber(number):
         return 1
     return 0
 
+
 def soft_constr_value_print(func):
     def wrapper(self, *args, **kwargs):
         result = func(self, *args, **kwargs)
@@ -43,6 +44,7 @@ def soft_constr_value_print(func):
         return result
     return wrapper
 
+
 def hard_constr_value_print(func):
     def wrapper(self, *args, **kwargs):
         result = func(self, *args, **kwargs)
@@ -50,6 +52,7 @@ def hard_constr_value_print(func):
         # print(f"Function {func.__name__} returned: {result}")
         return result
     return wrapper
+
 
 def print_table(name, table):
     print(name)

@@ -40,15 +40,17 @@ parameters = OrderedDict({
     "preferences_type": ["shift", "whole_day"],
 })
 
+
 def is_valid_preference_combination(row):
     if len(row) >= 2:
-        return row[1] <= row[0] 
+        return row[1] <= row[0]
     return True
+
 
 print("test_get_assignment_preferences_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters, filter_func=is_valid_preference_combination)):
-# for i, pairs in enumerate(AllPairs(parameters)):
+    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")
@@ -61,7 +63,7 @@ parameters = OrderedDict({
 print("test_get_incomplete_weekends_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters)):
-# for i, pairs in enumerate(AllPairs(parameters)):
+    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")
@@ -74,7 +76,7 @@ parameters = OrderedDict({
 print("test_get_total_assignments_out_of_limits_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters)):
-# for i, pairs in enumerate(AllPairs(parameters)):
+    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")
@@ -87,7 +89,7 @@ parameters = OrderedDict({
 print("test_get_total_weekends_over_limit_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters)):
-# for i, pairs in enumerate(AllPairs(parameters)):
+    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")
@@ -100,7 +102,7 @@ parameters = OrderedDict({
 print("test_get_total_uses_of_ifneeded_skills_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters)):
-# for i, pairs in enumerate(AllPairs(parameters)):
+    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")
@@ -114,7 +116,6 @@ parameters = OrderedDict({
 print("test_get_unsatisfied_overtime_preferences_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters)):
-# for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")

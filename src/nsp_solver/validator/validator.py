@@ -1,6 +1,7 @@
 import math
 from nsp_solver.utils import utils
 
+
 class ScheduleValidator:
     def __init__(self, schedule, constants):
         self.schedule = schedule
@@ -151,7 +152,7 @@ class ScheduleValidator:
                     return False
 
         return True
-    
+
     @utils.hard_constr_value_print
     def is_max_assignments_per_day_with_exception_satisfied(self) -> bool:
         all_nurses = self.constants["all_nurses"]
@@ -173,7 +174,7 @@ class ScheduleValidator:
 
         for w in all_weeks:
             for n in self.help_vars["nurses_ids_on_vacation"][w]:
-                if sum(self.help_vars["working_days"][n][w * 7 : (w + 1) * 7]) > 0:
+                if sum(self.help_vars["working_days"][n][w * 7: (w + 1) * 7]) > 0:
                     # print(f"{n} {w}")
                     return False
 
@@ -283,7 +284,7 @@ class ScheduleValidator:
         if not self.is_min_consecutive_days_off_satisfied():
             return False
         return True
-        
+
     @utils.hard_constr_value_print
     def is_min_max_total_assignments_satisfied(self):
         if not self.is_max_total_assignments_satisfied():
@@ -330,7 +331,7 @@ class ScheduleValidator:
 
             total_incomplete_weekends = 0
             for w in all_weeks:
-                if sum(self.help_vars["working_days"][n][w * 7 + 5 : w * 7 + 7]) == 1:
+                if sum(self.help_vars["working_days"][n][w * 7 + 5: w * 7 + 7]) == 1:
                     total_incomplete_weekends += 1
 
             if total_incomplete_weekends > max_total_incomplete_weekends:
@@ -680,7 +681,7 @@ class ScheduleValidator:
                     diff = (
                         sum(
                             self.help_vars["working_days"][n][
-                                d - max_consecutive_working_days : d + 1
+                                d - max_consecutive_working_days: d + 1
                             ]
                         )
                         - max_consecutive_working_days
@@ -692,7 +693,7 @@ class ScheduleValidator:
                         consecutive_working_days_prev_week
                         >= max_consecutive_working_days - d
                     ):
-                        diff = sum(self.help_vars["working_days"][n][0 : d + 1]) - d
+                        diff = sum(self.help_vars["working_days"][n][0: d + 1]) - d
                         if diff > 0:
                             subtotal += diff
 
@@ -772,7 +773,7 @@ class ScheduleValidator:
                     if (d - dd) > 0:
                         diff = (
                             (1 - self.help_vars["working_days"][n][d])
-                            + sum(self.help_vars["working_days"][n][d - dd : d])
+                            + sum(self.help_vars["working_days"][n][d - dd: d])
                             + (1 - self.help_vars["working_days"][n][d - dd - 1])
                             - (dd + 1)
                         )
@@ -875,7 +876,7 @@ class ScheduleValidator:
                     if (
                         sum(
                             self.help_vars["working_days"][n][
-                                d - max_consecutive_days_off : d + 1
+                                d - max_consecutive_days_off: d + 1
                             ]
                         )
                         == 0
@@ -883,7 +884,7 @@ class ScheduleValidator:
                         subtotal += 1
                 else:
                     if consecutive_days_off_prev_week >= max_consecutive_days_off - d:
-                        if sum(self.help_vars["working_days"][n][0 : d + 1]) == 0:
+                        if sum(self.help_vars["working_days"][n][0: d + 1]) == 0:
                             subtotal += 1
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
@@ -1069,40 +1070,12 @@ class ScheduleValidator:
 
             total_working_weekends = 0
             for w in all_weeks:
-                if sum(self.help_vars["working_days"][n][w * 7 + 5 : (w + 1) * 7]) > 0:
+                if sum(self.help_vars["working_days"][n][w * 7 + 5: (w + 1) * 7]) > 0:
                     total_working_weekends += 1
 
             if total_working_weekends > max_total_weekends:
                 subtotal += total_working_weekends - max_total_weekends
         return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
-
-
-    # def print_current_week(self):
-    #     num_days = self.constants["num_days"]
-    #     num_nurses = self.constants["num_nurses"]
-    #     num_skills = self.constants["num_skills"]
-    #     num_shifts = self.constants["num_shifts"]
-    #     for n in range(num_nurses):
-    #         for d in range(num_days):
-    #             for s in range(num_shifts):
-    #                 for sk in range(num_skills):
-    #                     print(
-    #                         f'{self.help_vars["shifts_and_skills"][n][d][s][sk]} ',
-    #                         end="",
-    #                     )
-    #                 print("|", end="")
-    #             print("||", end="")
-    #         print()
-
-    #     for n in range(num_nurses):
-    #         for d in range(num_days):
-    #             for s in range(num_shifts):
-    #                 print(
-    #                     f'{self.help_vars["shifts"][n][d][s]} ',
-    #                     end="",
-    #                 )
-    #             print("|", end="")
-    #         print()
 
     def is_nurse_on_vacation_any_week(self, nurse_id):
         return self.constants["configuration"]["h12"] and (

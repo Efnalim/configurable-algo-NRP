@@ -405,6 +405,7 @@ def empty_results_1nurse_1week(constants_for_1_nurse):
 
     return results
 
+
 @pytest.fixture
 def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week):
     num_days = constants_for_1_nurse["num_days"]
@@ -417,6 +418,7 @@ def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week)
 @pytest.fixture
 def validator_for_1nurse_1week(constants_for_1_nurse, empty_results_1nurse_1week):
     return ScheduleValidator(empty_results_1nurse_1week, constants_for_1_nurse)
+
 
 class Schedule_modifier():
     @staticmethod
@@ -455,10 +457,11 @@ class Schedule_modifier():
                     break
                 schedule[(0, 6 - i, shift, skill)] = 0
 
-        
+
 @pytest.fixture
 def schedule_modifier():
     return Schedule_modifier
+
 
 @pytest.fixture
 def all_false_config_data():
