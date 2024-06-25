@@ -35,8 +35,8 @@ for i, pairs in enumerate(AllPairs(parameters)):
 print(Fore.MAGENTA + "================================================================")
 
 parameters = OrderedDict({
-    "number_of_preferences": [0, 1, 2],
-    "number_of_preferences_satisfied": [0, 1, 2],
+    "preferences_num": [0, 1, 2],
+    "satisfied_num": [0, 1, 2],
     "preferences_type": ["shift", "whole_day"],
 })
 
@@ -50,7 +50,6 @@ def is_valid_preference_combination(row):
 print("test_get_assignment_preferences_value")
 print("----------------------------------------------------------------")
 for i, pairs in enumerate(AllPairs(parameters, filter_func=is_valid_preference_combination)):
-    # for i, pairs in enumerate(AllPairs(parameters)):
     print("{:2d}: {}".format(i, pairs))
 
 print(Fore.MAGENTA + "================================================================")

@@ -1,4 +1,5 @@
 import copy
+import json
 from nsp_solver.utils import utils
 import pytest
 
@@ -488,3 +489,75 @@ def all_false_config_data():
         "s8": False,
         "s9": False,
     }
+
+
+class Constants_generator():
+    @staticmethod
+    def get_constants(history_file_id, week_ids):
+
+        constants = {}
+
+        Constants_generator.add_configuration_data(constants)
+        Constants_generator.add_history_data(constants, history_file_id)
+        Constants_generator.add_scenario_data(constants)
+        Constants_generator.add_weeks_data(constants, week_ids)
+
+        return constants
+
+    @staticmethod
+    def add_configuration_data(constants):
+        with open("test_data\\C0.json", "r") as file:
+            config_data = json.load(file)
+        constants["configuration"] = config_data
+
+    @staticmethod
+    def add_history_data(constants, history_file_id):
+
+        with open(f"test_data\\H0-n035w4-{history_file_id}.json", "r") as file:
+            history_data = json.load(file)
+
+        constants["h0_data"] = history_data
+        constants["h0_data_original"] = copy.deepcopy(history_data)
+
+    @staticmethod
+    def add_scenario_data(constants):
+
+        with open("test_data\\Sc-n035w4.json", "r") as file:
+            scenario_data = json.load(file)
+
+        num_nurses = len(scenario_data["nurses"])
+        num_shifts = len(scenario_data["shiftTypes"])
+        num_skills = len(scenario_data["skills"])
+        num_days = 7
+        all_nurses = range(num_nurses)
+        all_shifts = range(num_shifts)
+        all_days = range(num_days)
+        all_skills = range(num_skills)
+        all_weeks = range(4)
+        constants["sc_data"] = scenario_data
+        constants["num_nurses"] = num_nurses
+        constants["num_shifts"] = num_shifts
+        constants["num_skills"] = num_skills
+        constants["num_days"] = num_days
+        constants["num_weeks"] = 4
+        constants["all_nurses"] = all_nurses
+        constants["all_shifts"] = all_shifts
+        constants["all_days"] = all_days
+        constants["all_skills"] = all_skills
+        constants["all_weeks"] = all_weeks
+
+    @staticmethod
+    def add_weeks_data(constants, week_ids):
+
+        weeks_data = []
+        for week_id in week_ids:
+            with open(f"test_data\\WD-n035w4-{week_id}.json", "r") as file:
+                weeks_data.append(json.load(file))
+
+        constants["all_wd_data"] = weeks_data
+        constants["wd_data"] = weeks_data[0]
+
+
+@pytest.fixture
+def integration_tests_constants_generator():
+    return Constants_generator
