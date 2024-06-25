@@ -30,8 +30,9 @@ try:
 
 
     with open('outputs/results.txt', 'w') as file:
-        file.write("configuration".ljust(18) + " | " + "value" + " | " + "time\n")
-        file.write("----------------------------------\n")
+        ajustmnet = 7 + len(week_combinations[0])
+        file.write("configuration".ljust(ajustmnet) + " | " + "value" + " | " + "time\n")
+        file.write("-----------------------------------------------------------\n")
 
     # list of input for benchmark
     with utils.redirect_stdout_to_file(output_file):

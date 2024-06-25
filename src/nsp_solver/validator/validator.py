@@ -1,3 +1,4 @@
+import logging
 import math
 from nsp_solver.utils import utils
 
@@ -17,10 +18,13 @@ class ScheduleValidator:
     def evaluate_results(self) -> int:
         if self.is_schedule_valid():
             retval = self.get_objective_value_of_schedule()
-            with utils.redirect_stdout_to_file('outputs/validator_result.txt'):
-                utils.print_table("Hard constraints", self.hard_table)
-                utils.print_table("Soft constraints", self.soft_table)
-                print(f'Total objective value: {retval}')
+            try:
+                with utils.redirect_stdout_to_file('outputs/validator_result.txt'):
+                    utils.print_table("Hard constraints", self.hard_table)
+                    utils.print_table("Soft constraints", self.soft_table)
+                    print(f'Total objective value: {retval}')
+            except FileNotFoundError:
+                logging.error("Output directory does not exist")
             return retval
         else:
             return 99999
