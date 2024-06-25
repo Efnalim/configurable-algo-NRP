@@ -609,5 +609,6 @@
     "nurse" : "TR_31",
     "shiftType" : "Early",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["NU_7", "TR_32"]
 }

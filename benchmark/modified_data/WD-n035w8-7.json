@@ -521,5 +521,6 @@
     "nurse" : "HN_4",
     "shiftType" : "Any",
     "day" : "Friday"
-  } ]
+  } ],
+  "vacations" : ["HN_1", "TR_30"]
 }

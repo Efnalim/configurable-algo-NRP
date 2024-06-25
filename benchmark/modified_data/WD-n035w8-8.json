@@ -593,5 +593,6 @@
     "nurse" : "CT_27",
     "shiftType" : "Any",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["NU_14", "NU_11"]
 }

@@ -569,5 +569,6 @@
     "nurse" : "CT_21",
     "shiftType" : "Early",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["CT_19", "TR_34"]
 }

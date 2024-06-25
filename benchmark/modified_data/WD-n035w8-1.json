@@ -581,5 +581,6 @@
     "nurse" : "TR_30",
     "shiftType" : "Day",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["HN_0", "NU_13"]
 }

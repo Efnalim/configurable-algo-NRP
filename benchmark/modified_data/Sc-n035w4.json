@@ -11,9 +11,9 @@
   }, {
     "id" : "Day",
     "minimumNumberOfConsecutiveAssignments" : 2,
-    "maximumNumberOfConsecutiveAssignments" : 7,
+    "maximumNumberOfConsecutiveAssignments" : 28,
     "minimumNumberOfConsecutiveAssignmentsHard" : 2,
-    "maximumNumberOfConsecutiveAssignmentsHard" : 10
+    "maximumNumberOfConsecutiveAssignmentsHard" : 28
   }, {
     "id" : "Late",
     "minimumNumberOfConsecutiveAssignments" : 2,
@@ -92,7 +92,7 @@
     "minimumNumberOfConsecutiveDaysOffHard" : 2,
     "maximumNumberOfConsecutiveDaysOffHard" : 7,
     "maximumNumberOfIncompleteWeekendsHard" : 1,
-    "minimalFreePeriod": 2,
+    "minimalFreePeriod": 0,
     "completeWeekends" : 1
   } ],
   "nurses" : [ {

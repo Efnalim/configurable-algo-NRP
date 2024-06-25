@@ -569,5 +569,6 @@
     "nurse" : "HN_0",
     "shiftType" : "Any",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["HN_2", "TR_33"]
 }

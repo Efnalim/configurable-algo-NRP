@@ -541,5 +541,6 @@
     "nurse" : "NU_12",
     "shiftType" : "Night",
     "day" : "Saturday"
-  } ]
+  } ],
+  "vacations" : ["NU_14", "CT_23"]
 }

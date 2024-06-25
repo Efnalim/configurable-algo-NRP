@@ -561,5 +561,6 @@
     "nurse" : "NU_10",
     "shiftType" : "Any",
     "day" : "Sunday"
-  } ]
+  } ],
+  "vacations" : ["NU_10", "HN_4"]
 }

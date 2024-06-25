@@ -5,19 +5,27 @@
   "shiftTypes" : [ {
     "id" : "Early",
     "minimumNumberOfConsecutiveAssignments" : 2,
-    "maximumNumberOfConsecutiveAssignments" : 5
+    "maximumNumberOfConsecutiveAssignments" : 5,
+    "minimumNumberOfConsecutiveAssignmentsHard" : 2,
+    "maximumNumberOfConsecutiveAssignmentsHard" : 7
   }, {
     "id" : "Day",
     "minimumNumberOfConsecutiveAssignments" : 2,
-    "maximumNumberOfConsecutiveAssignments" : 28
+    "maximumNumberOfConsecutiveAssignments" : 28,
+    "minimumNumberOfConsecutiveAssignmentsHard" : 2,
+    "maximumNumberOfConsecutiveAssignmentsHard" : 28
   }, {
     "id" : "Late",
     "minimumNumberOfConsecutiveAssignments" : 2,
-    "maximumNumberOfConsecutiveAssignments" : 5
+    "maximumNumberOfConsecutiveAssignments" : 5,
+    "minimumNumberOfConsecutiveAssignmentsHard" : 2,
+    "maximumNumberOfConsecutiveAssignmentsHard" : 7
   }, {
     "id" : "Night",
     "minimumNumberOfConsecutiveAssignments" : 4,
-    "maximumNumberOfConsecutiveAssignments" : 5
+    "maximumNumberOfConsecutiveAssignments" : 5,
+    "minimumNumberOfConsecutiveAssignmentsHard" : 3,
+    "maximumNumberOfConsecutiveAssignmentsHard" : 7
   } ],
   "forbiddenShiftTypeSuccessions" : [ {
     "precedingShiftType" : "Early",
@@ -36,172 +44,310 @@
     "id" : "FullTime",
     "minimumNumberOfAssignments" : 25,
     "maximumNumberOfAssignments" : 37,
+    "minimumNumberOfAssignmentsHard" : 22,
+    "maximumNumberOfAssignmentsHard" : 40,
     "minimumNumberOfConsecutiveWorkingDays" : 3,
     "maximumNumberOfConsecutiveWorkingDays" : 5,
     "minimumNumberOfConsecutiveDaysOff" : 2,
     "maximumNumberOfConsecutiveDaysOff" : 3,
     "maximumNumberOfWorkingWeekends" : 4,
+    "minimumNumberOfConsecutiveWorkingDaysHard" : 2,
+    "maximumNumberOfConsecutiveWorkingDaysHard" : 7,
+    "minimumNumberOfConsecutiveDaysOffHard" : 2,
+    "maximumNumberOfConsecutiveDaysOffHard" : 5,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 2,
     "completeWeekends" : 1
   }, {
     "id" : "PartTime",
     "minimumNumberOfAssignments" : 15,
     "maximumNumberOfAssignments" : 25,
+    "minimumNumberOfAssignmentsHard" : 18,
+    "maximumNumberOfAssignmentsHard" : 28,
     "minimumNumberOfConsecutiveWorkingDays" : 4,
     "maximumNumberOfConsecutiveWorkingDays" : 7,
     "minimumNumberOfConsecutiveDaysOff" : 3,
     "maximumNumberOfConsecutiveDaysOff" : 4,
     "maximumNumberOfWorkingWeekends" : 3,
+    "minimumNumberOfConsecutiveWorkingDaysHard" : 2,
+    "maximumNumberOfConsecutiveWorkingDaysHard" : 7,
+    "minimumNumberOfConsecutiveDaysOffHard" : 2,
+    "maximumNumberOfConsecutiveDaysOffHard" : 7,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 0,
     "completeWeekends" : 1
   }, {
     "id" : "HalfTime",
     "minimumNumberOfAssignments" : 10,
     "maximumNumberOfAssignments" : 22,
+    "minimumNumberOfAssignmentsHard" : 13,
+    "maximumNumberOfAssignmentsHard" : 25,
     "minimumNumberOfConsecutiveWorkingDays" : 3,
     "maximumNumberOfConsecutiveWorkingDays" : 5,
     "minimumNumberOfConsecutiveDaysOff" : 3,
     "maximumNumberOfConsecutiveDaysOff" : 5,
     "maximumNumberOfWorkingWeekends" : 2,
+    "minimumNumberOfConsecutiveWorkingDaysHard" : 2,
+    "maximumNumberOfConsecutiveWorkingDaysHard" : 7,
+    "minimumNumberOfConsecutiveDaysOffHard" : 2,
+    "maximumNumberOfConsecutiveDaysOffHard" : 7,
+    "maximumNumberOfIncompleteWeekendsHard" : 1,
+    "minimalFreePeriod": 0,
     "completeWeekends" : 0
   } ],
   "nurses" : [ {
     "id" : "HN_0",
     "contract" : "PartTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Night",
+      "limit" : 0
+    }],
+    "wantedOvertime": 3
   }, {
     "id" : "HN_1",
     "contract" : "HalfTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_2",
     "contract" : "FullTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_3",
     "contract" : "PartTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "HN_4",
     "contract" : "FullTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "HN_5",
     "contract" : "HalfTime",
-    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ]
+    "skills" : [ "HeadNurse", "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_6",
     "contract" : "PartTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "NU_7",
     "contract" : "FullTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_8",
     "contract" : "PartTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_9",
     "contract" : "HalfTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Night",
+      "limit" : 0
+    }],
+    "wantedOvertime": 3
   }, {
     "id" : "NU_10",
     "contract" : "FullTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_11",
     "contract" : "FullTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_12",
     "contract" : "FullTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_13",
     "contract" : "HalfTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_14",
     "contract" : "PartTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "NU_15",
     "contract" : "FullTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "NU_16",
     "contract" : "HalfTime",
-    "skills" : [ "Nurse", "Caretaker" ]
+    "skills" : [ "Nurse", "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_17",
     "contract" : "PartTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_18",
     "contract" : "HalfTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_19",
     "contract" : "HalfTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "CT_20",
     "contract" : "FullTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_21",
     "contract" : "HalfTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_22",
     "contract" : "FullTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_23",
     "contract" : "PartTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "CT_24",
     "contract" : "FullTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [{
+      "type" : "Night",
+      "limit" : 0
+    }],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_25",
     "contract" : "HalfTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_26",
     "contract" : "PartTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_27",
     "contract" : "PartTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "CT_28",
     "contract" : "FullTime",
-    "skills" : [ "Caretaker" ]
+    "skills" : [ "Caretaker" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_29",
     "contract" : "PartTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   }, {
     "id" : "TR_30",
     "contract" : "PartTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_31",
     "contract" : "FullTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_32",
     "contract" : "FullTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_33",
     "contract" : "FullTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 0
   }, {
     "id" : "TR_34",
     "contract" : "PartTime",
-    "skills" : [ "Trainee" ]
+    "skills" : [ "Trainee" ],
+    "skillsIfNeeded": ["Caretaker"],
+    "restrictions": [],
+    "wantedOvertime": 3
   } ]
 }
