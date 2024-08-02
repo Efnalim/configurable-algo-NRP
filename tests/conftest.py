@@ -499,7 +499,7 @@ class Constants_generator():
 
         Constants_generator.add_configuration_data(constants)
         Constants_generator.add_history_data(constants, history_file_id)
-        Constants_generator.add_scenario_data(constants)
+        Constants_generator.add_scenario_data(constants, week_ids)
         Constants_generator.add_weeks_data(constants, week_ids)
 
         return constants
@@ -520,7 +520,7 @@ class Constants_generator():
         constants["h0_data_original"] = copy.deepcopy(history_data)
 
     @staticmethod
-    def add_scenario_data(constants):
+    def add_scenario_data(constants, week_ids):
 
         with open("test_data\\Sc-n035w4.json", "r") as file:
             scenario_data = json.load(file)
@@ -533,13 +533,13 @@ class Constants_generator():
         all_shifts = range(num_shifts)
         all_days = range(num_days)
         all_skills = range(num_skills)
-        all_weeks = range(4)
+        all_weeks = range(len(week_ids))
         constants["sc_data"] = scenario_data
         constants["num_nurses"] = num_nurses
         constants["num_shifts"] = num_shifts
         constants["num_skills"] = num_skills
         constants["num_days"] = num_days
-        constants["num_weeks"] = 4
+        constants["num_weeks"] = len(week_ids)
         constants["all_nurses"] = all_nurses
         constants["all_shifts"] = all_shifts
         constants["all_days"] = all_days

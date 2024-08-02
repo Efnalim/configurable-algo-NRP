@@ -7,6 +7,7 @@ from nsp_solver.solver.nsp_cplex import compute_one_week
 from nsp_solver.simulator.simulator import HistorySimulator
 from nsp_solver.validator.validator import ScheduleValidator
 import pytest
+from contextlib import nullcontext as does_not_raise
 
 
 @pytest.mark.parametrize(
@@ -79,23 +80,24 @@ def test_solver(input_data, integration_tests_constants_generator):
                 for s in constants["all_shifts"]:
                     for sk in constants["all_skills"]:
                         results[(n, d + 7 * w, s, sk)] = 0
-    time_limit_for_week = 10
+    time_limit_for_week = 2
     fail = False
 
     # Execute
-    for week_number in constants["all_weeks"]:
-        constants["wd_data"] = constants["all_wd_data"][week_number]
-        compute_one_week(time_limit_for_week, constants, results)
-        if results[(week_number, "status")] == utils.STATUS_FAIL:
-            fail = True
-            break
-        simulator = HistorySimulator()
-        simulator.update_history_for_next_week(results, constants, week_number)
-    if fail:
-        total_value = 99999
-    else:
-        validator = ScheduleValidator(results, constants)
-        total_value = validator.evaluate_results()
+    with does_not_raise():
+        for week_number in constants["all_weeks"]:
+            constants["wd_data"] = constants["all_wd_data"][week_number]
+            compute_one_week(time_limit_for_week, constants, results)
+            if results[(week_number, "status")] == utils.STATUS_FAIL:
+                fail = True
+                break
+            simulator = HistorySimulator()
+            simulator.update_history_for_next_week(results, constants, week_number)
+        if fail:
+            total_value = 99999
+        else:
+            validator = ScheduleValidator(results, constants)
+            total_value = validator.evaluate_results()
 
     # Assert
     assert total_value < 99999

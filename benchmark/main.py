@@ -5,6 +5,7 @@ import json
 
 import matplotlib.pyplot as plt
 from nsp_solver.utils import utils
+from nsp_solver.validator.conf_validator import CONF_EVAL, ConfigValidator
 import numpy as np
 import matplotlib.ticker as ticker
 import math
@@ -12,7 +13,7 @@ import time
 import copy
 
 
-from nsp_solver.solver.nsp_contest import compute_one_week as compute_one_week_or_tools
+from nsp_solver.solver.nsp_or_tools import compute_one_week as compute_one_week_or_tools
 from nsp_solver.solver.nsp_cplex import compute_one_week as compute_one_week_cplex
 from nsp_solver.solver.nsp_docplex import compute_one_week as compute_one_week_docplex
 from nsp_solver.simulator.simulator import HistorySimulator
@@ -193,6 +194,10 @@ def main(
         print(
             f"configuration: CPLEX-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
         )
+
+    conf_validator = ConfigValidator()
+    if conf_validator.evaluate_configuration(constants) is CONF_EVAL.STOP:
+        return
 
     display = True
     if time_limit_for_week == 0:
