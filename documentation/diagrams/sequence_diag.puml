@@ -1,0 +1,47 @@
+@startuml Sequence_diagram
+actor User
+participant "Simulator" as sim
+participant "Validator" as val
+participant "Solver" as sol
+participant "Python API" as api
+participant "CPLEX" as cplex
+
+User -> sim: simulate_computation()
+sim -> sim: load_data()
+sim -> val: evaluate_configuration()
+
+alt decisions needed
+        loop for each needed desision 
+            val -> User: get_user_choice()
+            User --> val: user_choice
+        end
+    alt stop
+        val --> sim: retval: CONF_EVAL.STOP
+        sim --> User
+    else continue
+        val --> sim: retval: CONF_EVAL.CONTINUE
+    end
+else no decision needed
+    val --> sim: retval: CONF_EVAL.OK
+end
+    
+
+loop for week in all_weeks
+    sim -> sol: comupute_week()
+    sol -> sol: setup_problem()
+    sol -> api: solve()
+    api -> cplex: solve()
+    cplex --> api: solution
+    api --> sol: solution
+    sol --> sim: results: dict
+    sim -> sim: update_history()
+end
+
+sim -> val: evaluate_schedule()
+val --> sim: value: int
+val --> User: validator_result.txt
+sim --> User: schedule: dict, value: int
+sim -> sim: display_schedule()
+sim --> User: schedule.png
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml Component diagram
+
+[Simulator] as Sim
+[Validator] as Val
+[Solver] as Sol
+[CPLEX] as cplex
+[ORTOOLS] as ortools
+[DOCPLEX] as docplex
+Python_API_1 - cplex
+Python_API_2 - ortools
+Python_API_3 - docplex
+
+Sim -down-> Val: uses
+Sim -right-> Sol: uses
+Sol --> Python_API_1: uses
+Sol --> Python_API_2: uses
+Sol --> Python_API_3: uses
+
+@enduml

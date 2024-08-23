@@ -37,7 +37,7 @@ with Diagram("Realtionships between conditions", show=False):
 
     h9 >> Edge(style="curved", label="possibly contradicts") << h6
     h1 >> Edge(style="curved", label="overrides") << h10
-    h2 >> Edge(style="curved", label="affects") >> s1
+    # h2 >> Edge(style="curved", label="affects") >> s1
     h5 >> Edge(style="curved", label="affects") >> s2
     h6 >> Edge(style="curved", label="affects") >> s3
     h8 >> Edge(style="curved", label="affects") >> s6

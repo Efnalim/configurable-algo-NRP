@@ -1,0 +1,63 @@
+@startuml
+
+skinparam maxWidth 400
+
+
+package "nsp_solver" <<Folder>> #DDEEFF {
+    abstract class NSP_solver {
+        +compute_one_week(time_limit: int, constants: dict, results: dict)
+    }
+
+    NSP_solver <|-- NSP_cplex
+    NSP_solver <|-- NSP_docplex
+    NSP_solver <|-- NSP_or_tools
+}
+
+
+package "validator" <<Folder>> #DDEEEE {
+    class ScheduleValidator {
+        +evaluate_schedule(schedule: dict, constants: dict)
+    }
+
+    class ConfigValidator {
+        +evaluate_configuration(constants: dict)
+    }
+}
+
+package "simulator" <<Folder>> #EEEEDD {
+    class Simulator {
+        +simulate_computation(input: SimulatorInput)
+    }
+
+    class SimulatorInput{
+        config_file_path: str
+        history_file_path: str
+        scenario_file_path: str
+        week_files_paths: list[str]
+        timelimit: int
+        solver: NSP_solver
+        schedule_validator: ScheduleValidator
+        config_validator: ConfigValidator
+        historySimulator: HistorySimulator
+        graph_output_path: str
+        validator_output_path: str
+    }
+
+    class HistorySimulator{
+        +update_history_for_next_week(results: dict, data: dict, week_number: int)
+    }
+}
+
+SimulatorInput o-down- NSP_solver
+SimulatorInput o-down- ScheduleValidator
+SimulatorInput o-down- ConfigValidator
+SimulatorInput o-up- HistorySimulator
+SimulatorInput -right-o Simulator
+
+
+legend bottom right
+This diagram shows all classes, 
+their relationships and public methods.
+endlegend
+
+@enduml
