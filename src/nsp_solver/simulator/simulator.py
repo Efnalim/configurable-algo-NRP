@@ -9,6 +9,7 @@ from nsp_solver.validator.conf_validator import CONF_EVAL, ConfigValidator
 from nsp_solver.validator.validator import ScheduleValidator
 import numpy as np
 
+
 @dataclass
 class SimulatorInput():
     config_file_path: str
@@ -22,6 +23,7 @@ class SimulatorInput():
     historySimulator: HistorySimulator
     graph_output_path: str
     validator_output_path: str
+
 
 class Simulator:
     data: dict = {}
@@ -50,7 +52,7 @@ class Simulator:
 
         if fail:
             total_value = 99999
-        else: 
+        else:
             validator = ScheduleValidator()
             # total_value = validator.evaluate_schedule(results, self.data, 'outputs/validator_result.txt')
             total_value = validator.evaluate_schedule(results, self.data, input.validator_output_path)
@@ -63,10 +65,10 @@ class Simulator:
     def _load_data(self, input: SimulatorInput):
         with open(input.config_file_path) as config_file:
             config_data = json.load(config_file)
-        
+
         with open(input.history_file_path) as history_file:
             history_data = json.load(history_file)
-        
+
         with open(input.scenario_file_path) as scenario_file:
             sc_data = json.load(scenario_file)
 
@@ -105,7 +107,6 @@ class Simulator:
         self.data["all_skills"] = all_skills
         self.data["all_weeks"] = all_weeks
 
-
     def _get_empty_results(self) -> dict:
         results = {}
         for w in self.data["all_weeks"]:
@@ -115,8 +116,7 @@ class Simulator:
                         for sk in self.data["all_skills"]:
                             results[(n, d + 7 * w, s, sk)] = 0
         return results
-    
-    
+
     def _display_schedule(self, results, filename):
         """
         Displays computed schedule as table in a figure.
@@ -171,4 +171,3 @@ class Simulator:
 
         fig.tight_layout()
         plt.savefig(filename)
-

@@ -15,7 +15,6 @@ class ScheduleValidator:
         self.hard_table.append(["constraint", "is satisfied"])
         self.soft_table.append(["constraint", "objective value"])
 
-
     def evaluate_schedule(self, schedule, constants, output_file_path) -> int:
         self._init_variables(schedule, constants)
         if self.is_schedule_valid():

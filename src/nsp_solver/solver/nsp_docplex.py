@@ -11,6 +11,7 @@ from nsp_solver.utils import utils
 max_consecutive_work_days = 7
 max_consecutive_days_off = 7
 
+
 class DOCPLEX_Solver(NSP_solver):
     name = 'DOCPLEX'
 
@@ -114,7 +115,6 @@ class DOCPLEX_Solver(NSP_solver):
         basic_cp_vars["minimal_capacities"] = minimal_capacities
         return basic_cp_vars
 
-
     def add_shift_succession_reqs(
         self, model, shifts, all_nurses, all_days, all_shifts, num_days, constants, basic_cp_vars
     ):
@@ -168,7 +168,6 @@ class DOCPLEX_Solver(NSP_solver):
                             <= 1
                         )
 
-
     def add_missing_skill_req(
         self,
         model,
@@ -193,7 +192,6 @@ class DOCPLEX_Solver(NSP_solver):
                     for d in all_days:
                         for s in all_shifts:
                             model.add(shifts_with_skills[n][d][s][sk] == 0)
-
 
     def add_hard_constrains(self, model, basic_cp_vars, constants):
         """
@@ -245,7 +243,6 @@ class DOCPLEX_Solver(NSP_solver):
         for req in wd_data["requirements"]:
             self.add_shift_skill_req_minimal(model, req, basic_cp_vars, constants)
 
-
     def add_shift_skill_req_minimal(self, model, req, basic_cp_vars, constants):
         """
         Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
@@ -271,7 +268,6 @@ class DOCPLEX_Solver(NSP_solver):
                 sum([shifts_with_skills[n][d][s][sk] for n in all_nurses])
                 >= min_capacity
             )
-
 
     def init_cp_vars_for_soft_constraints(self, model, basic_cp_vars, constants):
         all_nurses = constants["all_nurses"]
@@ -473,7 +469,6 @@ class DOCPLEX_Solver(NSP_solver):
 
         return soft_cp_vars
 
-
     def add_shift_skill_req_optimal(self, model, req, basic_cp_vars, soft_cp_vars, constants):
         all_nurses = constants["all_nurses"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
@@ -499,7 +494,6 @@ class DOCPLEX_Solver(NSP_solver):
                 )
                 >= opt_capacity
             )
-
 
     def add_insatisfied_preferences_reqs(
         self, model, wd_data, basic_cp_vars, soft_cp_vars, constants
@@ -530,7 +524,6 @@ class DOCPLEX_Solver(NSP_solver):
         #     if shift_id != utils.shift_to_int["Any"]:
         #         model.add((unsatisfied_preferences[(nurse_id, day_id, shift_id)] + shifts[nurse_id][day_id][shift_id]) == 1)
 
-
     def add_total_working_weekends_soft_constraints(
         self, model, basic_cp_vars, soft_cp_vars, constants, week_number
     ):
@@ -550,7 +543,6 @@ class DOCPLEX_Solver(NSP_solver):
             model.add(working_weekends[(n)] - working_days[n][6] == 0)
 
         for n in all_nurses:
-            # worked_weekends_limit_for_this_week = sc_data["contracts"][utils.contract_to_int[sc_data["nurses"][n]["contract"]]]["maximumNumberOfWorkingWeekends"]
             worked_weekends_limit_for_this_week = sc_data["contracts"][
                 utils.contract_to_int[sc_data["nurses"][n]["contract"]]
             ]["maximumNumberOfWorkingWeekends"] * ((week_number + 1) / num_weeks)
@@ -561,7 +553,6 @@ class DOCPLEX_Solver(NSP_solver):
                 (-total_working_weekends_over_limit[(n)] + working_weekends[(n)])
                 <= worked_weekends_limit_for_this_week - worked_weekends_in_previous_weeks
             )
-
 
     def add_incomplete_weekends_constraint(self, model, basic_cp_vars, soft_cp_vars, constants):
         nurses_data = constants["sc_data"]["nurses"]
@@ -583,7 +574,6 @@ class DOCPLEX_Solver(NSP_solver):
                     - working_days[n][6]
                     == 0
                 )
-
 
     def add_total_working_days_out_of_bounds_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants, week_number
@@ -621,7 +611,6 @@ class DOCPLEX_Solver(NSP_solver):
                 (total_working_days_under_limit[(n)] + total_working_days[(n)])
                 > lower_limit - worked_days_in_previous_weeks
             )
-
 
     def add_max_consecutive_work_days_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
@@ -684,7 +673,6 @@ class DOCPLEX_Solver(NSP_solver):
                     ):
                         model.add(sum(working_days[n][0: d + 1]) <= d)
 
-
     def add_min_consecutive_work_days_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
     ):
@@ -726,7 +714,6 @@ class DOCPLEX_Solver(NSP_solver):
                                 )
                                 <= d
                             )
-
 
     def add_min_consecutive_shifts_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
@@ -786,7 +773,6 @@ class DOCPLEX_Solver(NSP_solver):
                                     <= d
                                 )
 
-
     def add_min_consecutive_days_off_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
     ):
@@ -832,7 +818,6 @@ class DOCPLEX_Solver(NSP_solver):
                                 )
                                 <= d
                             )
-
 
     def add_max_consecutive_work_shifts_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
@@ -886,7 +871,6 @@ class DOCPLEX_Solver(NSP_solver):
                                 <= d
                             )
 
-
     def add_max_consecutive_days_off_constraint(
         self, model, basic_cp_vars, soft_cp_vars, constants
     ):
@@ -938,7 +922,6 @@ class DOCPLEX_Solver(NSP_solver):
                     if consecutive_days_off_prev_week >= max_consecutive_working_days - d:
                         model.add(sum(working_days[n][0: d + 1]) >= 1)
 
-
     def add_soft_constraints(self, model, basic_cp_vars, soft_cp_vars, constants, week_number):
         wd_data = constants["wd_data"]
 
@@ -983,7 +966,6 @@ class DOCPLEX_Solver(NSP_solver):
 
         return
 
-
     def save_tmp_results(
         self, results, solver, constants, basic_cp_vars, soft_cp_vars, week_number, model
     ):
@@ -1010,7 +992,6 @@ class DOCPLEX_Solver(NSP_solver):
         else:
             results[(week_number, "status")] = False
             print("No solution found")
-
 
     def set_objective_function(self, model, constants, basic_cp_vars, soft_cp_vars):
         all_nurses = constants["all_nurses"]
@@ -1182,7 +1163,6 @@ class DOCPLEX_Solver(NSP_solver):
             )
         )
 
-
     def setup_problem(self, c, constants, week_number):
         # Create ILP variables.
         basic_cp_vars = self.init_cp_vars(c, constants)
@@ -1198,7 +1178,6 @@ class DOCPLEX_Solver(NSP_solver):
         self.set_objective_function(c, constants, basic_cp_vars, soft_cp_vars)
 
         return basic_cp_vars, soft_cp_vars
-
 
     def compute_one_week(self, time_limit_for_week, week_number, constants, results):
         mdl = CpoModel()

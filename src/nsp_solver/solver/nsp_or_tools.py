@@ -19,6 +19,7 @@ day_to_int = {
     "Sunday": 6,
 }
 
+
 class ORTOOLS_Solver(NSP_solver):
     name = 'ORTOOLS'
 
@@ -65,7 +66,6 @@ class ORTOOLS_Solver(NSP_solver):
         basic_ILP_vars["shifts_with_skills"] = shifts_with_skills
         basic_ILP_vars["insufficient_staffing"] = insufficient_staffing
         return basic_ILP_vars
-
 
     def init_ilp_vars_for_soft_constraints(self, model, basic_ILP_vars, constants):
         all_nurses = constants["all_nurses"]
@@ -364,7 +364,6 @@ class ORTOOLS_Solver(NSP_solver):
 
         return soft_ILP_vars
 
-
     def add_hard_constrains(self, model, basic_ILP_vars, constants):
         all_nurses = constants["all_nurses"]
         all_shifts = constants["all_shifts"]
@@ -410,9 +409,7 @@ class ORTOOLS_Solver(NSP_solver):
         self.add_missing_skill_req(
             model, sc_data["nurses"], shifts_with_skills, all_days, all_shifts, all_skills
         )
-
         return
-
 
     def add_soft_constraints(self, model, basic_ILP_vars, soft_ILP_vars, constants):
         all_nurses = constants["all_nurses"]
@@ -494,7 +491,6 @@ class ORTOOLS_Solver(NSP_solver):
 
         return
 
-
     def add_min_consecutive_days_off_constraint(
         self, model, basic_ILP_vars, soft_ILP_vars, constants
     ):
@@ -541,7 +537,6 @@ class ORTOOLS_Solver(NSP_solver):
                                 )
                             )
 
-
     def add_min_consecutive_working_days_constraint(
         self, model, basic_ILP_vars, soft_ILP_vars, constants
     ):
@@ -587,7 +582,6 @@ class ORTOOLS_Solver(NSP_solver):
                                     + list(working_days[(n, ddd)] for ddd in range(0, d))
                                 )
                             )
-
 
     def add_min_consecutive_shifts_constraint(
         self, model, basic_ILP_vars, soft_ILP_vars, constants
@@ -647,9 +641,8 @@ class ORTOOLS_Solver(NSP_solver):
                                     )
                                 )
 
-
     def add_total_incomplete_weekends_constraint(
-        self, 
+        self,
         model,
         nurses_data,
         contracts_data,
@@ -685,9 +678,8 @@ class ORTOOLS_Solver(NSP_solver):
                 model.Add(total_incomplete_weekends[(n)] == sum(incomplete_weekends_n))
         return
 
-
     def add_total_working_days_out_of_bounds_constraint(
-        self, 
+        self,
         model,
         nurses_data,
         contracts_data,
@@ -723,7 +715,6 @@ class ORTOOLS_Solver(NSP_solver):
                 total_working_days_under_limit[(n)] >= lower_limit - total_working_days[(n)]
             )
         return
-
 
     def add_shift_skill_req(self, model, req, basic_ILP_vars, soft_ILP_vars, constants):
         all_nurses = constants["all_nurses"]
@@ -766,7 +757,6 @@ class ORTOOLS_Solver(NSP_solver):
                 <= insufficient_staffing[(day, shift, skill)]
             )
         return
-
 
     def add_shift_succession_reqs(
         self, model, shifts, all_nurses, all_days, all_shifts, num_days, constants
@@ -811,7 +801,6 @@ class ORTOOLS_Solver(NSP_solver):
                         )
         return
 
-
     def add_missing_skill_req(
         self, model, nurses_data, shifts_with_skills, all_days, all_shifts, all_skills
     ):
@@ -830,9 +819,8 @@ class ORTOOLS_Solver(NSP_solver):
 
         return
 
-
     def add_insatisfied_preferences_reqs(
-        self, 
+        self,
         model,
         preferences,
         unsatisfied_preferences,
@@ -860,9 +848,8 @@ class ORTOOLS_Solver(NSP_solver):
                     )
         return
 
-
     def add_total_working_weekends_soft_constraints(
-        self, 
+        self,
         model,
         nurses_data,
         contracts_data,
@@ -892,7 +879,6 @@ class ORTOOLS_Solver(NSP_solver):
                 )
             )
         return
-
 
     def set_objective_function(self, model, basic_ILP_vars, soft_ILP_vars, constants):
         all_nurses = constants["all_nurses"]
@@ -1020,7 +1006,6 @@ class ORTOOLS_Solver(NSP_solver):
         )
         return
 
-
     def print_results(self, solver, solution_printer, basic_ILP_vars, soft_ILP_vars, constants):
         num_days = constants["num_days"]
         num_nurses = constants["num_nurses"]
@@ -1038,7 +1023,6 @@ class ORTOOLS_Solver(NSP_solver):
                         if solver.Value(shifts_with_skills[(n, d, s, sk)]) == 1:
                             schedule_table[n][d * num_shifts + s] = 1 - (0.2 * sk)
 
-
     def handle_status(self, status):
         switch = {
             cp_model.FEASIBLE: "A feasible solution has been found, but it might not be optimal.",
@@ -1050,7 +1034,6 @@ class ORTOOLS_Solver(NSP_solver):
 
         result = switch.get(status, "Unknown status code: {}".format(status))
         return result
-
 
     def save_tmp_results(
         self, results, solver, status, constants, basic_ILP_vars, soft_ILP_vars, week_number
@@ -1137,7 +1120,6 @@ class ORTOOLS_Solver(NSP_solver):
                 ] = consecutive_shifts
 
         return
-
 
     def compute_one_week(self, time_limit_for_week, week_number, constants, results):
         # Creates the model.
