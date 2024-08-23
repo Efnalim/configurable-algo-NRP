@@ -15,10 +15,12 @@ class ScheduleValidator:
         self.hard_table.append(["constraint", "is satisfied"])
         self.soft_table.append(["constraint", "objective value"])
 
-    def evaluate_schedule(self, schedule, constants, output_file_path) -> int:
+    def evaluate_schedule(self, schedule, constants, output_file_path=None) -> int:
         self._init_variables(schedule, constants)
         if self.is_schedule_valid():
             retval = self.get_objective_value_of_schedule()
+            if output_file_path is None:
+                return retval
             try:
                 with utils.redirect_stdout_to_file(output_file_path):
                     utils.print_table("Hard constraints", self.hard_table)

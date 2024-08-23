@@ -140,7 +140,8 @@ def test_is_schedule_valid(
     ]
     constants_for_1_nurse["all_wd_data"][0]["vacations"] = ["HN_0"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_schedule_valid()
@@ -276,7 +277,8 @@ def test_get_objective_value_of_schedule(
         {"nurse": "HN_0", "shiftType": "Any", "day": "Monday"}
     ]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.get_objective_value_of_schedule()
@@ -323,10 +325,10 @@ def test_evaluate_schedule(
     for constr in input_data["tested_constraints"]:
         constants_for_1_nurse["configuration"][constr] = True
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
 
     # Execute
-    retval = validator.evaluate_schedule()
+    retval = validator.evaluate_schedule(schedule, constants_for_1_nurse)
 
     # Assert
     if expected > 0:

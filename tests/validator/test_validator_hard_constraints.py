@@ -83,7 +83,8 @@ def test_is_max_assignments_per_day_satisfied(
     schedule = empty_results_1nurse_1week
     for input in input_data:
         schedule[input] = 1
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_assignments_per_day_satisfied()
@@ -197,7 +198,8 @@ def test_is_shift_successsion_satisfied(
     constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "lastAssignedShiftType"
     ] = input_data["lastAssignedShiftType"]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_shift_successsion_satisfied()
@@ -252,7 +254,8 @@ def test_is_required_skill_satisfied(
     for input in input_data["schedule"]:
         schedule[input] = 1
     constants_for_1_nurse["sc_data"]["nurses"][0]["skills"] = input_data["skills"]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_required_skill_satisfied()
@@ -366,7 +369,8 @@ def test_is_max_consecutive_work_days_satisfied(
     ]["maximumNumberOfConsecutiveWorkingDaysHard"] = input_data[
         "maximumNumberOfConsecutiveWorkingDaysHard"
     ]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_consecutive_work_days_satisfied()
@@ -465,7 +469,8 @@ def test_is_min_consecutive_work_days_satisfied(
     ]["minimumNumberOfConsecutiveWorkingDaysHard"] = input_data[
         "minimumNumberOfConsecutiveWorkingDaysHard"
     ]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_consecutive_work_days_satisfied()
@@ -569,7 +574,8 @@ def test_is_max_consecutive_work_shifts_satisfied(
         "maximumNumberOfConsecutiveAssignmentsHard"
     ] = input_data["maximumNumberOfConsecutiveAssignmentsHard"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_consecutive_work_shifts_satisfied()
@@ -676,7 +682,8 @@ def test_is_min_max_consecutive_assignments_satisfied(
         "minimumNumberOfConsecutiveAssignmentsHard"
     ] = input_data["minimumNumberOfConsecutiveAssignmentsHard"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_consecutive_work_shifts_satisfied()
@@ -813,7 +820,8 @@ def test_is_min_consecutive_work_shifts_satisfied(
         "minimumNumberOfConsecutiveAssignmentsHard"
     ] = input_data["minimumNumberOfConsecutiveAssignmentsHard"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_max_consecutive_assignments_satisfied()
@@ -908,7 +916,8 @@ def test_is_max_consecutive_days_off_satisfied(
         "maximumNumberOfConsecutiveDaysOffHard"
     ]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_consecutive_days_off_satisfied()
@@ -1000,7 +1009,8 @@ def test_is_min_consecutive_days_off_satisfied(
         "minimumNumberOfConsecutiveDaysOffHard"
     ]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_consecutive_days_off_satisfied()
@@ -1094,7 +1104,8 @@ def test_is_max_total_incomplete_weekends_satisfied(
         "maximumNumberOfIncompleteWeekendsHard"
     ]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_total_incomplete_weekends_satisfied()
@@ -1163,7 +1174,8 @@ def test_is_min_total_assignments_satisfied(
         utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimumNumberOfAssignmentsHard"] = input_data["minimumNumberOfAssignmentsHard"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_total_assignments_satisfied()
@@ -1240,7 +1252,8 @@ def test_is_max_total_assignments_satisfied(
         utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfAssignmentsHard"] = input_data["maximumNumberOfAssignmentsHard"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_total_assignments_satisfied()
@@ -1335,7 +1348,8 @@ def test_is_min_free_period_satisfied(
         utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimalFreePeriod"] = input_data["minimalFreePeriod"]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_min_free_period_satisfied()
@@ -1428,7 +1442,8 @@ def test_is_max_assignments_per_day_with_exception_satisfied(
     for input in input_data["schedule"]:
         schedule[input] = 1
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_max_assignments_per_day_with_exception_satisfied()
@@ -1502,7 +1517,8 @@ def test_is_maximum_shifts_of_specific_type_satisfied(
         input_data["restriction"]
     ]
 
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
     retval = validator.is_maximum_shifts_of_specific_type_satisfied()
@@ -1563,7 +1579,8 @@ def test_is_planned_vacations_satisfied(
     for input in input_data["schedule"]:
         schedule[input] = 1
     constants_for_1_nurse["all_wd_data"][0]["vacations"] = ["HN_0"]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
     # Execute
     retval = validator.is_planned_vacations_satisfied()
 
@@ -1681,7 +1698,8 @@ def test_is_minimal_capacity_satisfied(
     for input in input_data["schedule"]:
         schedule[input] = 1
     constants_for_1_nurse["all_wd_data"][0]["requirements"] = input_data["requirements"]
-    validator = ScheduleValidator(schedule, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(schedule, constants_for_1_nurse)
     # Execute
     retval = validator.is_minimal_capacity_satisfied()
 

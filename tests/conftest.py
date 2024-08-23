@@ -418,7 +418,9 @@ def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week)
 
 @pytest.fixture
 def validator_for_1nurse_1week(constants_for_1_nurse, empty_results_1nurse_1week):
-    return ScheduleValidator(empty_results_1nurse_1week, constants_for_1_nurse)
+    validator = ScheduleValidator()
+    validator._init_variables(empty_results_1nurse_1week, constants_for_1_nurse)
+    return validator
 
 
 class Schedule_modifier():
