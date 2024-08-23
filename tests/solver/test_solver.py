@@ -4,7 +4,7 @@ Tests for solver
 
 from nsp_solver.utils import utils
 from nsp_solver.solver.nsp_cplex import compute_one_week
-from nsp_solver.simulator.simulator import HistorySimulator
+from nsp_solver.simulator.history_simulator import HistorySimulator
 from nsp_solver.validator.validator import ScheduleValidator
 import pytest
 from contextlib import nullcontext as does_not_raise
@@ -97,7 +97,7 @@ def test_solver(input_data, integration_tests_constants_generator):
             total_value = 99999
         else:
             validator = ScheduleValidator(results, constants)
-            total_value = validator.evaluate_results()
+            total_value = validator.evaluate_schedule()
 
     # Assert
     assert total_value < 99999

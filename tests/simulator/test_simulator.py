@@ -1,4 +1,4 @@
-from nsp_solver.simulator.simulator import HistorySimulator
+from nsp_solver.simulator.history_simulator import HistorySimulator
 import numpy as np
 import pytest
 

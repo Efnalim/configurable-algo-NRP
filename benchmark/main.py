@@ -1,167 +1,17 @@
 #!/usr/bin/python
 
-import sys
-import json
-
-import matplotlib.pyplot as plt
-from nsp_solver.utils import utils
-from nsp_solver.validator.conf_validator import CONF_EVAL, ConfigValidator
-import numpy as np
-import matplotlib.ticker as ticker
 import math
+import sys
 import time
-import copy
 
-
-from nsp_solver.solver.nsp_or_tools import compute_one_week as compute_one_week_or_tools
-from nsp_solver.solver.nsp_cplex import compute_one_week as compute_one_week_cplex
-from nsp_solver.solver.nsp_docplex import compute_one_week as compute_one_week_docplex
-from nsp_solver.simulator.simulator import HistorySimulator
+from nsp_solver.simulator.history_simulator import HistorySimulator
+from nsp_solver.simulator.simulator import Simulator, SimulatorInput
+from nsp_solver.solver.nsp_cplex import CplexSolver
+from nsp_solver.solver.nsp_docplex import DOCPLEX_Solver
+from nsp_solver.solver.nsp_or_tools import ORTOOLS_Solver
+from nsp_solver.solver.nsp_solver import NSP_solver
+from nsp_solver.validator.conf_validator import ConfigValidator
 from nsp_solver.validator.validator import ScheduleValidator
-
-
-def load_data(
-    number_nurses: int,
-    number_weeks: int,
-    history_data_file_id: int,
-    week_data_files_ids: list,
-    config_data_file_id: int,
-):
-    """
-    Loads and prepairs data for computation.
-    Returns a dictionary named 'constants' containing loaded data.
-    """
-
-    path = "modified_data"
-    file_name = path + f"\C{config_data_file_id}.json"
-    f3 = open(file_name)
-    config_data = json.load(f3)
-    f3.close()
-
-    file_name = (
-        path
-        + "\H0-n0"
-        + str(number_nurses)
-        + "w"
-        + str(number_weeks)
-        + "-"
-        + str(history_data_file_id)
-        + ".json"
-    )
-    f0 = open(file_name)
-    h0_data = json.load(f0)
-    f0.close()
-
-    file_name = path + "\Sc-n0" + str(number_nurses) + "w" + str(number_weeks) + ".json"
-    f1 = open(file_name)
-    sc_data = json.load(f1)
-    f1.close()
-
-    wd_data = []
-    for week in range(number_weeks):
-        file_name = (
-            path
-            + "\WD-n0"
-            + str(number_nurses)
-            + "w"
-            + str(number_weeks)
-            + "-"
-            + str(week_data_files_ids[week])
-            + ".json"
-        )
-        f2 = open(file_name)
-        wd_data.append(json.load(f2))
-        f2.close()
-
-    # initialize constants
-    num_nurses = len(sc_data["nurses"])
-    num_shifts = len(sc_data["shiftTypes"])
-    num_skills = len(sc_data["skills"])
-    num_days = 7
-    all_nurses = range(num_nurses)
-    all_shifts = range(num_shifts)
-    all_days = range(num_days)
-    all_skills = range(num_skills)
-    all_weeks = range(number_weeks)
-
-    constants = {}
-    constants["configuration"] = config_data
-    constants["h0_data"] = h0_data
-    constants["h0_data_original"] = copy.deepcopy(h0_data)
-    constants["sc_data"] = sc_data
-    constants["wd_data"] = wd_data[0]
-    constants["all_wd_data"] = wd_data
-    constants["num_nurses"] = num_nurses
-    constants["num_shifts"] = num_shifts
-    constants["num_skills"] = num_skills
-    constants["num_days"] = num_days
-    constants["num_weeks"] = number_weeks
-    constants["all_nurses"] = all_nurses
-    constants["all_shifts"] = all_shifts
-    constants["all_days"] = all_days
-    constants["all_skills"] = all_skills
-    constants["all_weeks"] = all_weeks
-
-    return constants
-
-
-def display_schedule(results, constants, number_weeks, save, filename):
-    """
-    Displays computed schedule as table in a figure.
-    """
-
-    num_days = constants["num_days"] * number_weeks
-    num_nurses = constants["num_nurses"]
-    num_skills = constants["num_skills"]
-    num_shifts = constants["num_shifts"]
-    num_days_in_week = constants["num_days"]
-
-    schedule_table = np.zeros([num_nurses, num_days * num_shifts])
-    legend = np.zeros([1, num_skills + 2])
-
-    for d in range(num_days):
-        for n in range(num_nurses):
-            for s in range(num_shifts):
-                for sk in range(num_skills):
-                    if results[(n, d, s, sk)] == 1:
-                        schedule_table[n][d * num_shifts + s] = 0.85 - (0.175 * sk)
-
-    if constants["configuration"]["h12"]:
-        for w in range(number_weeks):
-            for n in constants["all_wd_data"][w]["vacations"]:
-                nurse_id = int(n.split("_")[1])
-                for d in range(num_days_in_week):
-                    for s in range(num_shifts):
-                        schedule_table[nurse_id][(d + 7 * w)*num_shifts + s] = 1
-
-    for sk in range(num_skills):
-        legend[0][sk] = 0.85 - (0.175 * sk)
-    legend[0][num_skills + 1] = 1
-
-    fig, (ax0, ax1) = plt.subplots(
-        2, 1, figsize=(16, 9), gridspec_kw={"height_ratios": [10, 1]}
-    )
-
-    c = ax0.pcolor(schedule_table)
-    ax0.set_title("Schedule")
-    ax0.set_xticks(np.arange(num_days * num_shifts))
-    ax0.set_xticklabels(np.arange(num_days * num_shifts) / 4)
-    ax0.tick_params(axis="x", bottom=True, top=True, labelbottom=True, labeltop=True)
-
-    ax0.xaxis.set_major_locator(ticker.MultipleLocator(4))
-
-    c = ax1.pcolor(legend, edgecolors="k", linewidths=5)
-    ax1.set_title("Legend - skills")
-    ax1.set_xticks(np.arange(num_skills + 2) + 0.5)
-    ax1.set_xticklabels(
-        ["HeadNurse", "Nurse", "Caretaker", "Trainee", "Not working", "Vacation"]
-    )
-
-    fig.tight_layout()
-    if save:
-        plt.savefig(filename)
-    else:
-        plt.show()
 
 
 def main(
@@ -173,103 +23,74 @@ def main(
     week_data_files_ids: list,
     config_data_file_id: int,
 ):
-    # Loading Data and init constants
-    constants = load_data(
-        number_nurses,
-        number_weeks,
-        history_data_file_id,
-        week_data_files_ids,
-        config_data_file_id,
-    )
+    solver: NSP_solver
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     if mode == 0:
+        solver = CplexSolver()
         print(
-            f"configuration: ILP-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
+            f"configuration: CPLEX-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
         )
     if mode == 1:
+        solver = ORTOOLS_Solver()
         print(
             f"configuration: OR_TOOLS-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
         )
     if mode == 2:
+        solver = DOCPLEX_Solver()
         print(
-            f"configuration: CPLEX-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
+            f"configuration: DOCPLEX-w{number_weeks}_n{number_nurses}_h{history_data_file_id}_{' '.join(map(str, week_data_files_ids))}"
         )
 
-    conf_validator = ConfigValidator()
-    if conf_validator.evaluate_configuration(constants) is CONF_EVAL.STOP:
-        return
-
-    display = True
     if time_limit_for_week == 0:
-        display = False
-        time_limit_for_week = 10 + 10 * (constants["num_nurses"] - 20)
+        time_limit_for_week = 10 + 10 * (number_nurses - 20)
         # time_limit_for_week = 10
 
-    results = {}
-    for w in constants["all_weeks"]:
-        for n in constants["all_nurses"]:
-            for d in constants["all_days"]:
-                for s in constants["all_shifts"]:
-                    for sk in constants["all_skills"]:
-                        results[(n, d + 7 * w, s, sk)] = 0
-    fail = False
-    start = time.time()
+    graph_file = f'outputs\\schedules\\{solver.name}_n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}.png'
+    validator_out_file = 'outputs/validator_result.txt'
     # accumulate results over weeks
-    for week_number in range(number_weeks):
-        constants["wd_data"] = constants["all_wd_data"][week_number]
-        if mode == 0:
-            compute_one_week_cplex(time_limit_for_week, constants, results)
-        if mode == 1:
-            compute_one_week_or_tools(
-                time_limit_for_week, week_number, constants, results
-            )
-        if mode == 2:
-            compute_one_week_docplex(
-                time_limit_for_week, week_number, constants, results
-            )
-        if results[(week_number, "status")] == utils.STATUS_FAIL:
-            fail = True
-            break
-        simulator = HistorySimulator()
-        simulator.update_history_for_next_week(results, constants, week_number)
+    path = "modified_data"
+    config_file = path + f"\C{config_data_file_id}.json"
+    hist_file = (
+        path + f"\H0-n0{number_nurses}w{number_weeks}-{history_data_file_id}.json"
+    )
+    scen_file = path + f"\Sc-n0{number_nurses}w{number_weeks}.json"
+    wd_files = []
+    for week in range(number_weeks):
+        wd_files.append(
+            path
+            + f"\WD-n0{number_nurses}w{number_weeks}-{week_data_files_ids[week]}.json"
+        )
+
+    simulator = Simulator()
+    input = SimulatorInput(
+        config_file,
+        hist_file,
+        scen_file,
+        wd_files,
+        time_limit_for_week,
+        solver,
+        ScheduleValidator(),
+        ConfigValidator(),
+        HistorySimulator(),
+        graph_file,
+        validator_out_file
+    )
+    start = time.time()
+    total_value, _ = simulator.simulate_computation(input)
     end = time.time()
+
     # display results
-    if display:
-        display_schedule(results, constants, number_weeks, False, None)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print("----------------------------------------------------------------")
-    if fail:
-        total_value = 99999
-    else: 
-        validator = ScheduleValidator(results, constants)
-        total_value = validator.evaluate_results()
     # print(f"configuration: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}")
-    with open('outputs/results.txt', 'a') as file:
-        file.write(f'n0{number_nurses}_w{number_weeks}_h{history_data_file_id}_{"-".join(map(str, week_data_files_ids))}')
-        file.write(' | ')
-        file.write(f'{total_value}'.ljust(5))
-        file.write(' | ')
-        file.write(f'{math.ceil(end - start)} s'.ljust(7) + '\n')
-
-    # print(
-    #     f'inputs: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}'
-    # )
-    # print(f"value total: {total_value}")
-    # print(f"time total: {math.ceil(end - start)} s")
-    # print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-
-    tool_name = ""
-    if mode == 0:
-        tool_name = "CPLEX"
-    if mode == 1:
-        tool_name = "OR TOOLS"
-    if mode == 2:
-        tool_name = "DOCPLEX"
-
-    schedule_file_name = f'outputs\\schedules\\{tool_name}_n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}.png'
-    # with open(schedule_file_name, "w") as f:
-    display_schedule(results, constants, number_weeks, True, schedule_file_name)
-    # validator.export_schedule(f)
+    with open("outputs/results.txt", "a") as file:
+        file.write(
+            f'n0{number_nurses}_w{number_weeks}_h{history_data_file_id}_{"-".join(map(str, week_data_files_ids))}'
+        )
+        file.write(" | ")
+        file.write(f"{total_value}".ljust(5))
+        file.write(" | ")
+        file.write(f"{math.ceil(end - start)} s".ljust(7) + "\n")
 
 
 if __name__ == "__main__":

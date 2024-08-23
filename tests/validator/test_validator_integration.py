@@ -307,7 +307,7 @@ def test_get_objective_value_of_schedule(
         ),
     ],
 )
-def test_evaluate_results(
+def test_evaluate_schedule(
     input_data,
     expected,
     constants_for_1_nurse,
@@ -326,7 +326,7 @@ def test_evaluate_results(
     validator = ScheduleValidator(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.evaluate_results()
+    retval = validator.evaluate_schedule()
 
     # Assert
     if expected > 0:

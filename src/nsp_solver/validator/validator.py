@@ -4,7 +4,7 @@ from nsp_solver.utils import utils
 
 
 class ScheduleValidator:
-    def __init__(self, schedule, constants):
+    def _init_variables(self, schedule, constants):
         self.schedule = schedule
         self.constants = constants
         self.config = constants["configuration"]
@@ -15,11 +15,13 @@ class ScheduleValidator:
         self.hard_table.append(["constraint", "is satisfied"])
         self.soft_table.append(["constraint", "objective value"])
 
-    def evaluate_results(self) -> int:
+
+    def evaluate_schedule(self, schedule, constants, output_file_path) -> int:
+        self._init_variables(schedule, constants)
         if self.is_schedule_valid():
             retval = self.get_objective_value_of_schedule()
             try:
-                with utils.redirect_stdout_to_file('outputs/validator_result.txt'):
+                with utils.redirect_stdout_to_file(output_file_path):
                     utils.print_table("Hard constraints", self.hard_table)
                     utils.print_table("Soft constraints", self.soft_table)
                     print(f'Total objective value: {retval}')
