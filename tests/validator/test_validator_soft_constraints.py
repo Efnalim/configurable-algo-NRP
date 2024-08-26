@@ -110,16 +110,16 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 def test_get_optimal_capacity_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["all_wd_data"][0]["requirements"] = input_data["requirements"]
+    data_for_1_nurse["all_wd_data"][0]["requirements"] = input_data["requirements"]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
     # Execute
     retval = validator._get_optimal_capacity_value()
 
@@ -212,22 +212,22 @@ def test_get_optimal_capacity_value(
     ],
 )
 def test_get_max_consecutive_work_days_value(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveWorkingDays"
     ] = input_data["numberOfConsecutiveWorkingDays"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfConsecutiveWorkingDays"] = input_data[
         "maximumNumberOfConsecutiveWorkingDays"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_max_consecutive_work_days_value()
@@ -303,22 +303,22 @@ def test_get_max_consecutive_work_days_value(
     ],
 )
 def test_get_min_consecutive_work_days_value(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveWorkingDays"
     ] = input_data["numberOfConsecutiveWorkingDays"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimumNumberOfConsecutiveWorkingDays"] = input_data[
         "minimumNumberOfConsecutiveWorkingDays"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_min_consecutive_work_days_value()
@@ -408,24 +408,24 @@ def test_get_min_consecutive_work_days_value(
     ],
 )
 def test_get_max_consecutive_shifts_value(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "lastAssignedShiftType"
     ] = input_data["lastAssignedShiftType"]
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveAssignments"
     ] = input_data["numberOfConsecutiveAssignments"]
-    constants_for_1_nurse["sc_data"]["shiftTypes"][0][
+    data_for_1_nurse["sc_data"]["shiftTypes"][0][
         "maximumNumberOfConsecutiveAssignments"
     ] = input_data["maximumNumberOfConsecutiveAssignments"]
 
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_max_consecutive_shifts_value()
@@ -516,27 +516,27 @@ def test_get_max_consecutive_shifts_value(
     ],
 )
 def test_get_min_consecutive_shifts_value(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "lastAssignedShiftType"
     ] = input_data["lastAssignedShiftType"]
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveAssignments"
     ] = input_data["numberOfConsecutiveAssignments"]
-    constants_for_1_nurse["sc_data"]["shiftTypes"][0][
+    data_for_1_nurse["sc_data"]["shiftTypes"][0][
         "minimumNumberOfConsecutiveAssignments"
     ] = input_data["minimumNumberOfConsecutiveAssignments"]
-    # print(f'mincons{constants_for_1_nurse["sc_data"]["shiftTypes"][0]["minimumNumberOfConsecutiveAssignments"]}')
+    # print(f'mincons{data_for_1_nurse["sc_data"]["shiftTypes"][0]["minimumNumberOfConsecutiveAssignments"]}')
 
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
     print(
-        validator.constants["h0_data_original"]["nurseHistory"][0][
+        validator.data["h0_data_original"]["nurseHistory"][0][
             "numberOfConsecutiveAssignments"
         ]
     )
@@ -754,7 +754,7 @@ def test_get_min_consecutive_shifts_value(
 def test_get_max_consecutive_days_off_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     results_1nurse_1full_week,
     schedule_modifier,
 ):
@@ -767,16 +767,16 @@ def test_get_max_consecutive_days_off_value(
         input_data["schedule"]["placement"],
         input_data["schedule"]["numberOfConsecutiveDaysOff"],
     )
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfConsecutiveDaysOff"] = input_data[
         "maximumNumberOfConsecutiveDaysOff"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_max_consecutive_days_off_value()
@@ -892,7 +892,7 @@ def test_get_max_consecutive_days_off_value(
 def test_get_min_consecutive_days_off_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     results_1nurse_1full_week,
     schedule_modifier,
 ):
@@ -905,16 +905,16 @@ def test_get_min_consecutive_days_off_value(
         input_data["schedule"]["placement"],
         input_data["schedule"]["numberOfConsecutiveDaysOff"],
     )
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimumNumberOfConsecutiveDaysOff"] = input_data[
         "minimumNumberOfConsecutiveDaysOff"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_min_consecutive_days_off_value()
@@ -955,7 +955,7 @@ def test_get_min_consecutive_days_off_value(
 def test_get_consecutive_days_off_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     results_1nurse_1full_week,
     schedule_modifier,
 ):
@@ -968,21 +968,21 @@ def test_get_consecutive_days_off_value(
         input_data["schedule"]["placement"],
         input_data["schedule"]["numberOfConsecutiveDaysOff"],
     )
-    constants_for_1_nurse["h0_data_original"]["nurseHistory"][0][
+    data_for_1_nurse["h0_data_original"]["nurseHistory"][0][
         "numberOfConsecutiveDaysOff"
     ] = input_data["numberOfConsecutiveDaysOff"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimumNumberOfConsecutiveDaysOff"] = input_data[
         "minimumNumberOfConsecutiveDaysOff"
     ]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfConsecutiveDaysOff"] = input_data[
         "maximumNumberOfConsecutiveDaysOff"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_consecutive_days_off_value()
@@ -1087,18 +1087,18 @@ def test_get_consecutive_days_off_value(
 def test_get_assignment_preferences_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["all_wd_data"][0]["shiftOffRequests"] = input_data[
+    data_for_1_nurse["all_wd_data"][0]["shiftOffRequests"] = input_data[
         "preferences"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_assignment_preferences_value()
@@ -1185,18 +1185,18 @@ def test_get_assignment_preferences_value(
 def test_get_incomplete_weekends_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["completeWeekends"] = input_data["completeWeekends"]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_incomplete_weekends_value()
@@ -1261,7 +1261,7 @@ def test_get_incomplete_weekends_value(
 def test_get_total_assignments_out_of_limits_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
     schedule_modifier,
 ):
@@ -1274,14 +1274,14 @@ def test_get_total_assignments_out_of_limits_value(
         utils.Shift_placement.START,
         input_data["workingDays"],
     )
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["minimumNumberOfAssignments"] = input_data["minimumNumberOfAssignments"]
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfAssignments"] = input_data["maximumNumberOfAssignments"]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_total_assignments_out_of_limits_value()
@@ -1368,18 +1368,18 @@ def test_get_total_assignments_out_of_limits_value(
 def test_get_total_weekends_over_limit_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfWorkingWeekends"] = input_data["maximumNumberOfWorkingWeekends"]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_total_weekends_over_limit_value()
@@ -1440,18 +1440,18 @@ def test_get_total_weekends_over_limit_value(
 def test_get_total_uses_of_ifneeded_skills_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
 ):
     # Arrange
     schedule = empty_results_1nurse_1week
     for input in input_data["schedule"]:
         schedule[input] = 1
-    constants_for_1_nurse["sc_data"]["nurses"][0]["skillsIfNeeded"] = input_data[
+    data_for_1_nurse["sc_data"]["nurses"][0]["skillsIfNeeded"] = input_data[
         "ifneeded_skills"
     ]
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_total_uses_of_ifneeded_skills_value()
@@ -1548,7 +1548,7 @@ def test_get_total_uses_of_ifneeded_skills_value(
 def test_get_unsatisfied_overtime_preferences_value(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
     schedule_modifier,
 ):
@@ -1561,15 +1561,15 @@ def test_get_unsatisfied_overtime_preferences_value(
         utils.Shift_placement.START,
         input_data["totalAssignments"],
     )
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfAssignments"] = input_data["maximumNumberOfAssignments"]
-    constants_for_1_nurse["sc_data"]["nurses"][0]["wantedOvertime"] = input_data[
+    data_for_1_nurse["sc_data"]["nurses"][0]["wantedOvertime"] = input_data[
         "wantedOvertime"
     ]
 
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_unsatisfied_overtime_preferences_value()

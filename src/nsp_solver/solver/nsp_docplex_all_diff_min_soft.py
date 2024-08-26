@@ -10,18 +10,18 @@ max_consecutive_work_days = 7
 max_consecutive_days_off = 7
 
 
-def init_cp_vars(model, constants):
+def init_cp_vars(model, data):
     """
     Initializes basic variables for primarly for hard contraints.
     Returns a dictionary 'basic_cp_vars' containing the names of those variables for further manipulation.
     """
 
-    all_skills = constants["all_skills"]
-    all_shifts = constants["all_shifts"]
-    all_days = constants["all_days"]
-    all_nurses = constants["all_nurses"]
-    wd_data = constants["wd_data"]
-    num_nurses = constants["num_nurses"]
+    all_skills = data["all_skills"]
+    all_shifts = data["all_shifts"]
+    all_days = data["all_days"]
+    all_nurses = data["all_nurses"]
+    wd_data = data["wd_data"]
+    num_nurses = data["num_nurses"]
 
     minimal_capacities = [
         [[0 for _ in all_skills] for _ in all_shifts] for _ in all_days
@@ -113,7 +113,7 @@ def init_cp_vars(model, constants):
 
 
 def add_shift_succession_reqs(
-    model, shifts, all_nurses, all_days, all_shifts, num_days, constants, basic_cp_vars
+    model, shifts, all_nurses, all_days, all_shifts, num_days, data, basic_cp_vars
 ):
     """
     Adds hard constraint that disables invalid pairs of succcessive shift types.
@@ -121,7 +121,7 @@ def add_shift_succession_reqs(
 
     for n in all_nurses:
         last_shift = utils.shift_to_int[
-            constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
+            data["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
         ]
         if last_shift == 2:
             model.add(sum([shifts[n][0][0], shifts[n][0][1]]) == 0)
@@ -201,17 +201,17 @@ def add_missing_skill_req(
                 )
 
 
-def add_hard_constrains(model, basic_cp_vars, constants):
+def add_hard_constrains(model, basic_cp_vars, data):
     """
     Adds all hard constraints to the model.
     """
 
-    all_nurses = constants["all_nurses"]
-    all_shifts = constants["all_shifts"]
-    all_days = constants["all_days"]
-    all_skills = constants["all_skills"]
-    num_days = constants["num_days"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_shifts = data["all_shifts"]
+    all_days = data["all_days"]
+    all_skills = data["all_skills"]
+    num_days = data["num_days"]
+    sc_data = data["sc_data"]
     shifts = basic_cp_vars["shifts"]
     # working_days = basic_cp_vars["working_days"]
     shifts_with_skills = basic_cp_vars["shifts_with_skills"]
@@ -237,7 +237,7 @@ def add_hard_constrains(model, basic_cp_vars, constants):
         all_days,
         all_shifts,
         num_days,
-        constants,
+        data,
         basic_cp_vars,
     )
     add_missing_skill_req(
@@ -250,15 +250,15 @@ def add_hard_constrains(model, basic_cp_vars, constants):
         basic_cp_vars,
     )
     # for req in wd_data["requirements"]:
-    #     add_shift_skill_req_minimal(model, req, basic_cp_vars, constants)
+    #     add_shift_skill_req_minimal(model, req, basic_cp_vars, data)
 
 
-def add_shift_skill_req_minimal(model, req, basic_cp_vars, constants):
+def add_shift_skill_req_minimal(model, req, basic_cp_vars, data):
     """
     Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
     """
 
-    all_nurses = constants["all_nurses"]
+    all_nurses = data["all_nurses"]
     shifts_with_skills = basic_cp_vars["shifts_with_skills"]
 
     s = utils.shift_to_int[req["shiftType"]]
@@ -279,17 +279,17 @@ def add_shift_skill_req_minimal(model, req, basic_cp_vars, constants):
         )
 
 
-def init_cp_vars_for_soft_constraints(model, basic_cp_vars, constants):
-    all_nurses = constants["all_nurses"]
-    all_shifts = constants["all_shifts"]
-    all_skills = constants["all_skills"]
-    all_days = constants["all_days"]
-    num_days = constants["num_days"]
-    num_nurses = constants["num_nurses"]
+def init_cp_vars_for_soft_constraints(model, basic_cp_vars, data):
+    all_nurses = data["all_nurses"]
+    all_shifts = data["all_shifts"]
+    all_skills = data["all_skills"]
+    all_days = data["all_days"]
+    num_days = data["num_days"]
+    num_nurses = data["num_nurses"]
     shifts = basic_cp_vars["shifts"]
     working_days = basic_cp_vars["working_days"]
-    wd_data = constants["wd_data"]
-    sc_data = constants["sc_data"]
+    wd_data = data["wd_data"]
+    sc_data = data["sc_data"]
 
     minimal_capacities = basic_cp_vars["minimal_capacities"]
 
@@ -515,11 +515,11 @@ def init_cp_vars_for_soft_constraints(model, basic_cp_vars, constants):
     return soft_cp_vars
 
 
-def add_shift_skill_req_optimal(model, basic_cp_vars, soft_cp_vars, constants):
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    all_skills = constants["all_skills"]
-    all_shifts = constants["all_shifts"]
+def add_shift_skill_req_optimal(model, basic_cp_vars, soft_cp_vars, data):
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    all_skills = data["all_skills"]
+    all_shifts = data["all_shifts"]
     shifts = basic_cp_vars["shifts"]
     shifts_with_skills = basic_cp_vars["shifts_with_skills"]
     shifts_with_skills_optimal = soft_cp_vars["shifts_with_skills_optimal"]
@@ -580,7 +580,7 @@ def add_shift_skill_req_optimal(model, basic_cp_vars, soft_cp_vars, constants):
 
 
 def add_insatisfied_preferences_reqs(
-    model, wd_data, basic_cp_vars, soft_cp_vars, constants
+    model, wd_data, basic_cp_vars, soft_cp_vars, data
 ):
     unsatisfied_preferences = soft_cp_vars["unsatisfied_preferences"]
     shifts = basic_cp_vars["shifts"]
@@ -610,17 +610,17 @@ def add_insatisfied_preferences_reqs(
 
 
 def add_total_working_weekends_soft_constraints(
-    model, basic_cp_vars, soft_cp_vars, constants, week_number
+    model, basic_cp_vars, soft_cp_vars, data, week_number
 ):
-    sc_data = constants["sc_data"]
-    h0_data = constants["h0_data"]
+    sc_data = data["sc_data"]
+    h0_data = data["h0_data"]
     total_working_weekends_over_limit = soft_cp_vars[
         "total_working_weekends_over_limit"
     ]
     working_weekends = soft_cp_vars["working_weekends"]
 
-    all_nurses = constants["all_nurses"]
-    num_weeks = constants["num_weeks"]
+    all_nurses = data["all_nurses"]
+    num_weeks = data["num_weeks"]
     working_days = basic_cp_vars["working_days"]
 
     for n in all_nurses:
@@ -641,13 +641,13 @@ def add_total_working_weekends_soft_constraints(
         )
 
 
-def add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, constants):
-    nurses_data = constants["sc_data"]["nurses"]
-    contracts_data = constants["sc_data"]["contracts"]
+def add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, data):
+    nurses_data = data["sc_data"]["nurses"]
+    contracts_data = data["sc_data"]["contracts"]
     incomplete_weekends = soft_cp_vars["incomplete_weekends"]
     working_weekends = soft_cp_vars["working_weekends"]
     working_days = basic_cp_vars["working_days"]
-    all_nurses = constants["all_nurses"]
+    all_nurses = data["all_nurses"]
 
     for n in all_nurses:
         isCompleteWeekendRequested = contracts_data[
@@ -664,16 +664,16 @@ def add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, const
 
 
 def add_total_working_days_out_of_bounds_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants, week_number
+    model, basic_cp_vars, soft_cp_vars, data, week_number
 ):
-    nurses_data = constants["sc_data"]["nurses"]
-    contracts_data = constants["sc_data"]["contracts"]
+    nurses_data = data["sc_data"]["nurses"]
+    contracts_data = data["sc_data"]["contracts"]
     total_working_days = soft_cp_vars["total_working_days"]
     total_working_days_over_limit = soft_cp_vars["total_working_days_over_limit"]
     total_working_days_under_limit = soft_cp_vars["total_working_days_under_limit"]
-    all_nurses = constants["all_nurses"]
-    num_weeks = constants["num_weeks"]
-    h0_data = constants["h0_data"]
+    all_nurses = data["all_nurses"]
+    num_weeks = data["num_weeks"]
+    h0_data = data["h0_data"]
 
     for n in all_nurses:
         worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
@@ -702,18 +702,18 @@ def add_total_working_days_out_of_bounds_constraint(
 
 
 def add_max_consecutive_work_days_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_max_consecutive_working_days = soft_cp_vars[
         "violations_of_max_consecutive_working_days"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    sc_data = data["sc_data"]
     working_days = basic_cp_vars["working_days"]
 
     for n in all_nurses:
-        consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveWorkingDays"
         ]
         max_consecutive_working_days = sc_data["contracts"][
@@ -742,7 +742,7 @@ def add_max_consecutive_work_days_constraint(
                     )
 
     for n in all_nurses:
-        consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveWorkingDays"
         ]
         max_consecutive_working_days = max_consecutive_work_days
@@ -764,19 +764,19 @@ def add_max_consecutive_work_days_constraint(
 
 
 def add_min_consecutive_work_days_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_min_consecutive_working_days = soft_cp_vars[
         "violations_of_min_consecutive_working_days"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    sc_data = data["sc_data"]
     working_days = basic_cp_vars["working_days"]
     not_working_days = soft_cp_vars["not_working_days"]
 
     for n in all_nurses:
-        consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveWorkingDays"
         ]
         min_consecutive_working_days = sc_data["contracts"][
@@ -807,23 +807,23 @@ def add_min_consecutive_work_days_constraint(
 
 
 def add_min_consecutive_shifts_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_min_consecutive_working_shifts = soft_cp_vars[
         "violations_of_min_consecutive_working_shifts"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    all_shifts = constants["all_shifts"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    all_shifts = data["all_shifts"]
+    sc_data = data["sc_data"]
     shifts = basic_cp_vars["shifts"]
     not_working_shifts = soft_cp_vars["not_working_shifts"]
 
     for n in all_nurses:
-        consecutive_working_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_working_shifts_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveWorkingDays"
         ]
-        lastAssignedShiftType = constants["h0_data"]["nurseHistory"][n][
+        lastAssignedShiftType = data["h0_data"]["nurseHistory"][n][
             "lastAssignedShiftType"
         ]
         lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
@@ -866,19 +866,19 @@ def add_min_consecutive_shifts_constraint(
 
 
 def add_min_consecutive_days_off_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_min_consecutive_days_off = soft_cp_vars[
         "violations_of_min_consecutive_days_off"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    sc_data = data["sc_data"]
     working_days = basic_cp_vars["working_days"]
     not_working_days = soft_cp_vars["not_working_days"]
 
     for n in all_nurses:
-        consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
         min_consecutive_days_off = sc_data["contracts"][
@@ -913,22 +913,22 @@ def add_min_consecutive_days_off_constraint(
 
 
 def add_max_consecutive_work_shifts_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_max_consecutive_working_shifts = soft_cp_vars[
         "violations_of_max_consecutive_working_shifts"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    all_shifts = constants["all_shifts"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    all_shifts = data["all_shifts"]
+    sc_data = data["sc_data"]
     shifts = basic_cp_vars["shifts"]
 
     for n in all_nurses:
         last_shift = utils.shift_to_int[
-            constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
+            data["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
         ]
-        consecutive_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_shifts_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveAssignments"
         ]
         for s in all_shifts:
@@ -966,18 +966,18 @@ def add_max_consecutive_work_shifts_constraint(
 
 
 def add_max_consecutive_days_off_constraint(
-    model, basic_cp_vars, soft_cp_vars, constants
+    model, basic_cp_vars, soft_cp_vars, data
 ):
     violations_of_max_consecutive_days_off = soft_cp_vars[
         "violations_of_max_consecutive_days_off"
     ]
-    all_nurses = constants["all_nurses"]
-    all_days = constants["all_days"]
-    sc_data = constants["sc_data"]
+    all_nurses = data["all_nurses"]
+    all_days = data["all_days"]
+    sc_data = data["sc_data"]
     working_days = basic_cp_vars["working_days"]
 
     for n in all_nurses:
-        consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_days_off_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
         max_consecutive_working_days = sc_data["contracts"][
@@ -1003,7 +1003,7 @@ def add_max_consecutive_days_off_constraint(
                     )
 
     for n in all_nurses:
-        consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
+        consecutive_days_off_prev_week = data["h0_data"]["nurseHistory"][n][
             "numberOfConsecutiveDaysOff"
         ]
         max_consecutive_working_days = max_consecutive_days_off
@@ -1017,56 +1017,56 @@ def add_max_consecutive_days_off_constraint(
                     model.add(sum(working_days[n][0: d + 1]) >= 1)
 
 
-def add_soft_constraints(model, basic_cp_vars, soft_cp_vars, constants, week_number):
+def add_soft_constraints(model, basic_cp_vars, soft_cp_vars, data, week_number):
     # for req in wd_data["requirements"]:
-    add_shift_skill_req_optimal(model, basic_cp_vars, soft_cp_vars, constants)
+    add_shift_skill_req_optimal(model, basic_cp_vars, soft_cp_vars, data)
 
     # add_insatisfied_preferences_reqs(
-    #     model, wd_data, basic_cp_vars, soft_cp_vars, constants
+    #     model, wd_data, basic_cp_vars, soft_cp_vars, data
     # )
 
     # add_total_working_weekends_soft_constraints(
-    #     model, basic_cp_vars, soft_cp_vars, constants, week_number
+    #     model, basic_cp_vars, soft_cp_vars, data, week_number
     # )
 
     # add_total_working_days_out_of_bounds_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants, week_number
+    #     model, basic_cp_vars, soft_cp_vars, data, week_number
     # )
 
-    # add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, constants)
+    # add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, data)
 
     # add_max_consecutive_work_days_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants
+    #     model, basic_cp_vars, soft_cp_vars, data
     # )
 
     # add_max_consecutive_work_shifts_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants
+    #     model, basic_cp_vars, soft_cp_vars, data
     # )
 
     # add_max_consecutive_days_off_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants
+    #     model, basic_cp_vars, soft_cp_vars, data
     # )
 
     # add_min_consecutive_work_days_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants
+    #     model, basic_cp_vars, soft_cp_vars, data
     # )
 
     # add_min_consecutive_days_off_constraint(
-    #     model, basic_cp_vars, soft_cp_vars, constants
+    #     model, basic_cp_vars, soft_cp_vars, data
     # )
 
-    # add_min_consecutive_shifts_constraint(model, basic_cp_vars, soft_cp_vars, constants)
+    # add_min_consecutive_shifts_constraint(model, basic_cp_vars, soft_cp_vars, data)
 
     return
 
 
 def save_tmp_results(
-    results, solver, constants, basic_cp_vars, soft_cp_vars, week_number, model
+    results, solver, data, basic_cp_vars, soft_cp_vars, week_number, model
 ):
-    num_days = constants["num_days"]
-    num_nurses = constants["num_nurses"]
-    num_skills = constants["num_skills"]
-    num_shifts = constants["num_shifts"]
+    num_days = data["num_days"]
+    num_nurses = data["num_nurses"]
+    num_skills = data["num_skills"]
+    num_shifts = data["num_shifts"]
     shifts_with_skills = basic_cp_vars["shifts_with_skills"]
     shifts_with_skills_optimal = soft_cp_vars["shifts_with_skills_optimal"]
 
@@ -1102,13 +1102,13 @@ def save_tmp_results(
         print("No solution found")
 
 
-def set_objective_function(model, constants, basic_cp_vars, soft_cp_vars):
-    all_nurses = constants["all_nurses"]
-    all_shifts = constants["all_shifts"]
-    all_skills = constants["all_skills"]
-    all_days = constants["all_days"]
+def set_objective_function(model, data, basic_cp_vars, soft_cp_vars):
+    all_nurses = data["all_nurses"]
+    all_shifts = data["all_shifts"]
+    all_skills = data["all_skills"]
+    all_days = data["all_days"]
 
-    sc_data = constants["sc_data"]
+    sc_data = data["sc_data"]
 
     unsatisfied_preferences = soft_cp_vars["unsatisfied_preferences"]
     total_working_weekends_over_limit = soft_cp_vars[
@@ -1283,24 +1283,24 @@ def set_objective_function(model, constants, basic_cp_vars, soft_cp_vars):
     )
 
 
-def setup_problem(c, constants, week_number):
+def setup_problem(c, data, week_number):
     # Create ILP variables.
-    basic_cp_vars = init_cp_vars(c, constants)
+    basic_cp_vars = init_cp_vars(c, data)
 
     # Add hard constrains to model
-    add_hard_constrains(c, basic_cp_vars, constants)
+    add_hard_constrains(c, basic_cp_vars, data)
 
     soft_cp_vars = {}
-    soft_cp_vars = init_cp_vars_for_soft_constraints(c, basic_cp_vars, constants)
+    soft_cp_vars = init_cp_vars_for_soft_constraints(c, basic_cp_vars, data)
 
-    add_soft_constraints(c, basic_cp_vars, soft_cp_vars, constants, week_number)
+    add_soft_constraints(c, basic_cp_vars, soft_cp_vars, data, week_number)
 
-    set_objective_function(c, constants, basic_cp_vars, soft_cp_vars)
+    set_objective_function(c, data, basic_cp_vars, soft_cp_vars)
 
     return basic_cp_vars, soft_cp_vars
 
 
-def compute_one_week(time_limit_for_week, week_number, constants, results):
+def compute_one_week(time_limit_for_week, week_number, data, results):
     mdl = CpoModel()
     # c.parameters.mip.display.set(0)
     # c.parameters.output.clonelog.set(0)
@@ -1310,13 +1310,13 @@ def compute_one_week(time_limit_for_week, week_number, constants, results):
     # c.parameters.emphasis.mip.set(
     #     c.parameters.emphasis.mip.values.optimality)
 
-    basic_cp_vars, soft_cp_vars = setup_problem(mdl, constants, week_number)
+    basic_cp_vars, soft_cp_vars = setup_problem(mdl, data, week_number)
 
     # msol = mdl.solve(TimeLimit=10)
     msol = mdl.solve(TimeLimit=time_limit_for_week)
     if msol:
         save_tmp_results(
-            results, msol, constants, basic_cp_vars, soft_cp_vars, week_number, mdl
+            results, msol, data, basic_cp_vars, soft_cp_vars, week_number, mdl
         )
     else:
         print("No solution")

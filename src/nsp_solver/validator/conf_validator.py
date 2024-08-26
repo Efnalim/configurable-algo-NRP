@@ -12,34 +12,34 @@ class ConfigValidator:
     def __init__(self):
         pass
 
-    def evaluate_configuration(self, constants) -> CONF_EVAL:
+    def evaluate_configuration(self, data) -> CONF_EVAL:
         retval = CONF_EVAL.OK
 
         retval = self.__update_conf_eval_retval(
-            retval, self._check_overriding(constants)
+            retval, self._check_overriding(data)
         )
         retval = self.__update_conf_eval_retval(
-            retval, self._check_contradicting(constants)
+            retval, self._check_contradicting(data)
         )
         retval = self.__update_conf_eval_retval(
-            retval, self._check_affecting(constants)
+            retval, self._check_affecting(data)
         )
 
         return retval
 
-    def _check_overriding(self, constants) -> CONF_EVAL:
-        conf = constants["configuration"]
+    def _check_overriding(self, data) -> CONF_EVAL:
+        conf = data["configuration"]
         if conf["h1"] and conf["h10"]:
             return self._get_user_choice(
                 "Hard constraint H1 overrides hard constraint H10. \nDo you want to continue?"
             )
         return CONF_EVAL.OK
 
-    def _check_contradicting(self, constants) -> CONF_EVAL:
-        conf = constants["configuration"]
+    def _check_contradicting(self, data) -> CONF_EVAL:
+        conf = data["configuration"]
         if not conf["h6"] or not conf["h9"]:
             return CONF_EVAL.OK
-        for contract in constants["sc_data"]["contracts"]:
+        for contract in data["sc_data"]["contracts"]:
             if (
                 contract["minimalFreePeriod"]
                 > contract["maximumNumberOfConsecutiveDaysOffHard"]
@@ -51,11 +51,11 @@ class ConfigValidator:
                 )
         return CONF_EVAL.OK
 
-    def _check_affecting(self, constants) -> CONF_EVAL:
-        conf = constants["configuration"]
+    def _check_affecting(self, data) -> CONF_EVAL:
+        conf = data["configuration"]
         if not conf["h5"] or not conf["s2"]:
             return CONF_EVAL.OK
-        for contract in constants["sc_data"]["contracts"]:
+        for contract in data["sc_data"]["contracts"]:
             if (
                 contract["maximumNumberOfConsecutiveWorkingDaysHard"]
                 < contract["minimumNumberOfConsecutiveWorkingDays"]

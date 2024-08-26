@@ -8,7 +8,7 @@ Tests for simulator.py
 
 
 def test_compute_helpful_values__1nurse_5shifts_5_days(
-    constants_for_1_nurse, empty_results_1nurse_1week
+    data_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
     results = empty_results_1nurse_1week
@@ -21,7 +21,7 @@ def test_compute_helpful_values__1nurse_5shifts_5_days(
 
     # Execute
     working_days, shifts = simulator._compute_helpful_values(
-        results, constants_for_1_nurse, 0
+        results, data_for_1_nurse, 0
     )
 
     # Assert
@@ -41,7 +41,7 @@ def test_compute_helpful_values__1nurse_5shifts_5_days(
 
 
 def test_compute_helpful_values__1nurse_5shifts_4_days(
-    constants_for_1_nurse, empty_results_1nurse_1week
+    data_for_1_nurse, empty_results_1nurse_1week
 ):
     """This is a mock test"""
     # Arrange
@@ -55,7 +55,7 @@ def test_compute_helpful_values__1nurse_5shifts_4_days(
 
     # Execute
     working_days, shifts = simulator._compute_helpful_values(
-        results, constants_for_1_nurse, 0
+        results, data_for_1_nurse, 0
     )
 
     # Assert
@@ -74,7 +74,7 @@ def test_compute_helpful_values__1nurse_5shifts_4_days(
 
 
 def test_compute_helpful_values__1nurse_0shifts(
-    constants_for_1_nurse, empty_results_1nurse_1week
+    data_for_1_nurse, empty_results_1nurse_1week
 ):
     """This is a mock test"""
     # Arrange
@@ -83,7 +83,7 @@ def test_compute_helpful_values__1nurse_0shifts(
 
     # Execute
     working_days, shifts = simulator._compute_helpful_values(
-        results, constants_for_1_nurse, 0
+        results, data_for_1_nurse, 0
     )
 
     # Assert
@@ -129,7 +129,7 @@ def test_compute_helpful_values__1nurse_0shifts(
     ],
 )
 def test_update_cumulative_data__1nurse(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     """This is a mock test"""
     # Arrange
@@ -138,23 +138,23 @@ def test_update_cumulative_data__1nurse(
         results[input] = 1
     simulator = HistorySimulator()
     working_days, shifts = simulator._compute_helpful_values(
-        results, constants_for_1_nurse, 0
+        results, data_for_1_nurse, 0
     )
 
     # Execute
-    simulator._update_cumulative_data(constants_for_1_nurse, working_days, shifts)
+    simulator._update_cumulative_data(data_for_1_nurse, working_days, shifts)
 
     # Assert
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfAssignments"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfAssignments"]
         == expected["numberOfAssignments"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfWorkingWeekends"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfWorkingWeekends"]
         == expected["numberOfWorkingWeekends"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfIncompleteWeekends"
         ]
         == expected["numberOfIncompleteWeekends"]
@@ -212,7 +212,7 @@ def test_update_cumulative_data__1nurse(
     ],
 )
 def test_update_border_data(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     """This is a mock test"""
     # Arrange
@@ -221,32 +221,32 @@ def test_update_border_data(
         results[input] = 1
     simulator = HistorySimulator()
     working_days, shifts = simulator._compute_helpful_values(
-        results, constants_for_1_nurse, 0
+        results, data_for_1_nurse, 0
     )
     # Execute
-    simulator._update_border_data(constants_for_1_nurse, working_days, shifts)
+    simulator._update_border_data(data_for_1_nurse, working_days, shifts)
 
     # Assert
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveDaysOff"
         ]
         == expected["numberOfConsecutiveDaysOff"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveWorkingDays"
         ]
         == expected["numberOfConsecutiveWorkingDays"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveAssignments"
         ]
         == expected["numberOfConsecutiveAssignments"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["lastAssignedShiftType"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["lastAssignedShiftType"]
         == expected["lastAssignedShiftType"]
     )
 
@@ -317,7 +317,7 @@ def test_update_border_data(
     ],
 )
 def test_update_history_for_next_week(
-    input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
+    input_data, expected, data_for_1_nurse, empty_results_1nurse_1week
 ):
     """This is a mock test"""
     # Arrange
@@ -327,43 +327,43 @@ def test_update_history_for_next_week(
     simulator = HistorySimulator()
 
     # Execute
-    simulator.update_history_for_next_week(results, constants_for_1_nurse)
+    simulator.update_history_for_next_week(results, data_for_1_nurse)
 
     # Assert
-    assert constants_for_1_nurse["h0_data"]["week"] == 1
+    assert data_for_1_nurse["h0_data"]["week"] == 1
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfAssignments"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfAssignments"]
         == expected["numberOfAssignments"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfWorkingWeekends"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["numberOfWorkingWeekends"]
         == expected["numberOfWorkingWeekends"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfIncompleteWeekends"
         ]
         == expected["numberOfIncompleteWeekends"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveDaysOff"
         ]
         == expected["numberOfConsecutiveDaysOff"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveWorkingDays"
         ]
         == expected["numberOfConsecutiveWorkingDays"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0][
+        data_for_1_nurse["h0_data"]["nurseHistory"][0][
             "numberOfConsecutiveAssignments"
         ]
         == expected["numberOfConsecutiveAssignments"]
     )
     assert (
-        constants_for_1_nurse["h0_data"]["nurseHistory"][0]["lastAssignedShiftType"]
+        data_for_1_nurse["h0_data"]["nurseHistory"][0]["lastAssignedShiftType"]
         == expected["lastAssignedShiftType"]
     )

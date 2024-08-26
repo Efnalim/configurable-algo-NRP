@@ -129,7 +129,7 @@ from src.nsp_solver.validator.conf_validator import ConfigValidator, CONF_EVAL
         ),
     ],
 )
-def test_method_of_class(input_data, expected, constants_for_1_nurse):
+def test_method_of_class(input_data, expected, data_for_1_nurse):
     with patch.object(
         ConfigValidator, "_get_user_choice", return_value=input_data["mocked_choice"]
     ) as mock_method:
@@ -137,13 +137,13 @@ def test_method_of_class(input_data, expected, constants_for_1_nurse):
         validator = ConfigValidator()
         if "changes_to_conf" in input_data:
             for constraint, value in input_data["changes_to_conf"]:
-                constants_for_1_nurse["configuration"][constraint] = value
+                data_for_1_nurse["configuration"][constraint] = value
         if "changes_to_sc_data" in input_data:
             for var, value in input_data["changes_to_sc_data"]:
-                constants_for_1_nurse["sc_data"]["contracts"][-1][var] = value
+                data_for_1_nurse["sc_data"]["contracts"][-1][var] = value
 
         # Execute
-        result = validator.evaluate_configuration(constants_for_1_nurse)
+        result = validator.evaluate_configuration(data_for_1_nurse)
 
         # Assert
         assert result == expected["retval"]

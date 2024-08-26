@@ -4,19 +4,19 @@ from nsp_solver.utils import utils
 
 
 class ScheduleValidator:
-    def _init_variables(self, schedule, constants):
+    def _init_variables(self, schedule, data):
         self.schedule = schedule
-        self.constants = constants
-        self.config = constants["configuration"]
-        self.all_days = range(constants["num_days"] * constants["num_weeks"])
+        self.data = data
+        self.config = data["configuration"]
+        self.all_days = range(data["num_days"] * data["num_weeks"])
         self.help_vars = self._compute_helpful_values()
         self.hard_table = []
         self.soft_table = []
         self.hard_table.append(["constraint", "is satisfied"])
         self.soft_table.append(["constraint", "objective value"])
 
-    def evaluate_schedule(self, schedule, constants, output_file_path=None) -> int:
-        self._init_variables(schedule, constants)
+    def evaluate_schedule(self, schedule, data, output_file_path=None) -> int:
+        self._init_variables(schedule, data)
         if self._is_schedule_valid():
             retval = self._get_objective_value_of_schedule()
             if output_file_path is None:
@@ -116,13 +116,13 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_minimal_capacity_satisfied(self) -> bool:
-        all_weeks = self.constants["all_weeks"]
+        all_weeks = self.data["all_weeks"]
 
         for w in all_weeks:
-            requirements = self.constants["all_wd_data"][w]["requirements"]
+            requirements = self.data["all_wd_data"][w]["requirements"]
 
             for req in requirements:
-                all_nurses = self.constants["all_nurses"]
+                all_nurses = self.data["all_nurses"]
 
                 s = utils.shift_to_int[req["shiftType"]]
                 sk = utils.skill_to_int[req["skill"]]
@@ -148,9 +148,9 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_satisfied(self) -> bool:
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        all_skills = self.constants["all_skills"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        all_skills = self.data["all_skills"]
 
         for n in all_nurses:
             for d in self.all_days:
@@ -162,7 +162,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_with_exception_satisfied(self) -> bool:
-        all_nurses = self.constants["all_nurses"]
+        all_nurses = self.data["all_nurses"]
 
         for n in all_nurses:
             for d in self.all_days:
@@ -177,7 +177,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_planned_vacations_satisfied(self) -> bool:
-        all_weeks = self.constants["all_weeks"]
+        all_weeks = self.data["all_weeks"]
 
         for w in all_weeks:
             for n in self.help_vars["nurses_ids_on_vacation"][w]:
@@ -189,9 +189,9 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_maximum_shifts_of_specific_type_satisfied(self) -> bool:
-        all_nurses = self.constants["all_nurses"]
+        all_nurses = self.data["all_nurses"]
         for n in all_nurses:
-            for restriction in self.constants["sc_data"]["nurses"][n]["restrictions"]:
+            for restriction in self.data["sc_data"]["nurses"][n]["restrictions"]:
                 shift_id = utils.shift_to_int[restriction["type"]]
                 limit = restriction["limit"]
                 if (
@@ -205,9 +205,9 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_required_skill_satisfied(self) -> bool:
-        nurses_data = self.constants["sc_data"]["nurses"]
-        all_skills = self.constants["all_skills"]
-        all_shifts = self.constants["all_shifts"]
+        nurses_data = self.data["sc_data"]["nurses"]
+        all_skills = self.data["all_skills"]
+        all_shifts = self.data["all_shifts"]
 
         for n, nurse_data in enumerate(nurses_data):
             for sk in all_skills:
@@ -225,10 +225,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_shift_successsion_satisfied(self) -> bool:
-        restrictions = self.constants["sc_data"]["forbiddenShiftTypeSuccessions"]
-        all_nurses = self.constants["all_nurses"]
-        num_days = self.constants["num_days"] * self.constants["num_weeks"]
-        all_shifts = self.constants["all_shifts"]
+        restrictions = self.data["sc_data"]["forbiddenShiftTypeSuccessions"]
+        all_nurses = self.data["all_nurses"]
+        num_days = self.data["num_days"] * self.data["num_weeks"]
+        all_shifts = self.data["all_shifts"]
 
         shifts = self.help_vars["shifts"]
 
@@ -253,7 +253,7 @@ class ScheduleValidator:
                             # )
                             return False
             last_shift = utils.shift_to_int[
-                self.constants["h0_data_original"]["nurseHistory"][n][
+                self.data["h0_data_original"]["nurseHistory"][n][
                     "lastAssignedShiftType"
                 ]
             ]
@@ -301,9 +301,9 @@ class ScheduleValidator:
         return True
 
     def _is_max_total_assignments_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             max_total_assignments = sc_data["contracts"][
@@ -327,9 +327,9 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_total_incomplete_weekends_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_weeks = self.constants["all_weeks"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_weeks = self.data["all_weeks"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             max_total_incomplete_weekends = sc_data["contracts"][
@@ -351,10 +351,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_free_period_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_weeks = self.constants["all_weeks"]
-        all_days = self.constants["all_days"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_weeks = self.data["all_weeks"]
+        all_days = self.data["all_days"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             min_free_period = sc_data["contracts"][
@@ -378,9 +378,9 @@ class ScheduleValidator:
         return True
 
     def _is_min_total_assignments_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             if self._is_nurse_on_vacation_any_week(n):
@@ -406,11 +406,11 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_days_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            counter = self.constants["h0_data_original"]["nurseHistory"][n][
+            counter = self.data["h0_data_original"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
             max_consecutive_working_days = sc_data["contracts"][
@@ -427,11 +427,11 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_days_off_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            counter = self.constants["h0_data_original"]["nurseHistory"][n][
+            counter = self.data["h0_data_original"]["nurseHistory"][n][
                 "numberOfConsecutiveDaysOff"
             ]
             max_consecutive_days_off = sc_data["contracts"][
@@ -440,7 +440,7 @@ class ScheduleValidator:
 
             for d in self.all_days:
                 w = math.floor(d / 7)
-                if self.constants["configuration"]["h12"] and (
+                if self.data["configuration"]["h12"] and (
                     self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     counter = 0
@@ -454,11 +454,11 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_days_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            prev = self.constants["h0_data_original"]["nurseHistory"][n][
+            prev = self.data["h0_data_original"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
             counter = prev
@@ -468,7 +468,7 @@ class ScheduleValidator:
 
             for d in self.all_days:
                 w = math.floor(d / 7)
-                if self.constants["configuration"]["h12"] and (
+                if self.data["configuration"]["h12"] and (
                     self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     counter = 0
@@ -482,11 +482,11 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_days_off_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            prev = self.constants["h0_data_original"]["nurseHistory"][n][
+            prev = self.data["h0_data_original"]["nurseHistory"][n][
                 "numberOfConsecutiveDaysOff"
             ]
             counter = prev
@@ -504,17 +504,17 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_shifts_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             last_shift = utils.shift_to_int[
-                self.constants["h0_data_original"]["nurseHistory"][n][
+                self.data["h0_data_original"]["nurseHistory"][n][
                     "lastAssignedShiftType"
                 ]
             ]
-            consecutive_shifts_prev_week = self.constants["h0_data_original"][
+            consecutive_shifts_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveAssignments"]
             for s in all_shifts:
@@ -535,17 +535,17 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_shifts_satisfied(self):
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             last_shift = utils.shift_to_int[
-                self.constants["h0_data_original"]["nurseHistory"][n][
+                self.data["h0_data_original"]["nurseHistory"][n][
                     "lastAssignedShiftType"
                 ]
             ]
-            consecutive_shifts_prev_week = self.constants["h0_data_original"][
+            consecutive_shifts_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveAssignments"]
             for s in reversed(all_shifts):
@@ -557,7 +557,7 @@ class ScheduleValidator:
                     counter = consecutive_shifts_prev_week
                 for d in self.all_days:
                     w = math.floor(d / 7)
-                    if self.constants["configuration"]["h12"] and (
+                    if self.data["configuration"]["h12"] and (
                         n in self.help_vars["nurses_ids_on_vacation"][w]
                     ):
                         counter = 0
@@ -581,10 +581,10 @@ class ScheduleValidator:
         return True
 
     def _compute_helpful_values(self):
-        num_nurses = self.constants["num_nurses"]
-        num_skills = self.constants["num_skills"]
-        num_shifts = self.constants["num_shifts"]
-        all_weeks = self.constants["all_weeks"]
+        num_nurses = self.data["num_nurses"]
+        num_skills = self.data["num_skills"]
+        num_shifts = self.data["num_shifts"]
+        all_weeks = self.data["all_weeks"]
         working_days = [[0 for _ in self.all_days] for _ in range(num_nurses)]
         shifts = [
             [[0 for _ in range(num_shifts)] for _ in self.all_days]
@@ -615,7 +615,7 @@ class ScheduleValidator:
             list(
                 map(
                     lambda x: int(x.split("_")[1]),
-                    self.constants["all_wd_data"][w]["vacations"],
+                    self.data["all_wd_data"][w]["vacations"],
                 )
             )
             for w in all_weeks
@@ -632,13 +632,13 @@ class ScheduleValidator:
     @utils.soft_constr_value_print
     def _get_optimal_capacity_value(self) -> int:
         subtotal = 0
-        all_weeks = self.constants["all_weeks"]
+        all_weeks = self.data["all_weeks"]
 
         for w in all_weeks:
-            requirements = self.constants["all_wd_data"][w]["requirements"]
+            requirements = self.data["all_wd_data"][w]["requirements"]
 
             for req in requirements:
-                all_nurses = self.constants["all_nurses"]
+                all_nurses = self.data["all_nurses"]
 
                 s = utils.shift_to_int[req["shiftType"]]
                 sk = utils.skill_to_int[req["skill"]]
@@ -673,11 +673,11 @@ class ScheduleValidator:
 
     def _get_max_consecutive_work_days_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = self.constants["h0_data_original"][
+            consecutive_working_days_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveWorkingDays"]
             max_consecutive_working_days = sc_data["contracts"][
@@ -707,19 +707,19 @@ class ScheduleValidator:
         return subtotal * utils.CONS_WORK_DAY_WEIGHT
 
     def _get_max_consecutive_shifts_value(self) -> int:
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         subtotal = 0
 
         for n in all_nurses:
             last_shift = utils.shift_to_int[
-                self.constants["h0_data_original"]["nurseHistory"][n][
+                self.data["h0_data_original"]["nurseHistory"][n][
                     "lastAssignedShiftType"
                 ]
             ]
-            consecutive_shifts_prev_week = self.constants["h0_data_original"][
+            consecutive_shifts_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveAssignments"]
             for s in all_shifts:
@@ -758,13 +758,13 @@ class ScheduleValidator:
         return subtotal
 
     def _get_min_consecutive_work_days_value(self) -> int:
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         subtotal = 0
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = self.constants["h0_data_original"][
+            consecutive_working_days_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveWorkingDays"]
             min_consecutive_working_days = sc_data["contracts"][
@@ -772,7 +772,7 @@ class ScheduleValidator:
             ]["minimumNumberOfConsecutiveWorkingDays"]
             for d in self.all_days:
                 w = math.floor(d / 7)
-                if self.constants["configuration"]["h12"] and (
+                if self.data["configuration"]["h12"] and (
                     n in self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     continue
@@ -801,21 +801,21 @@ class ScheduleValidator:
     def _get_min_consecutive_shifts_value(self) -> int:
         subtotal = 0
 
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_working_shifts_prev_week = self.constants["h0_data_original"][
+            consecutive_working_shifts_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveAssignments"]
-            lastAssignedShiftType = self.constants["h0_data_original"]["nurseHistory"][
+            lastAssignedShiftType = self.data["h0_data_original"]["nurseHistory"][
                 n
             ]["lastAssignedShiftType"]
             lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in self.all_days:
                 w = math.floor(d / 7)
-                if self.constants["configuration"]["h12"] and (
+                if self.data["configuration"]["h12"] and (
                     n in self.help_vars["nurses_ids_on_vacation"][w]
                 ):
                     continue
@@ -868,11 +868,11 @@ class ScheduleValidator:
 
     def _get_max_consecutive_days_off_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = self.constants["h0_data_original"][
+            consecutive_days_off_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveDaysOff"]
             max_consecutive_days_off = sc_data["contracts"][
@@ -897,11 +897,11 @@ class ScheduleValidator:
 
     def _get_min_consecutive_days_off_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = self.constants["h0_data_original"][
+            consecutive_days_off_prev_week = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveDaysOff"]
             min_consecutive_days_off = sc_data["contracts"][
@@ -942,8 +942,8 @@ class ScheduleValidator:
     @utils.soft_constr_value_print
     def _get_assignment_preferences_value(self) -> int:
         subtotal = 0
-        for w in self.constants["all_weeks"]:
-            for preference in self.constants["all_wd_data"][w]["shiftOffRequests"]:
+        for w in self.data["all_weeks"]:
+            for preference in self.data["all_wd_data"][w]["shiftOffRequests"]:
                 nurse_id = int(preference["nurse"].split("_")[1])
                 day_id = utils.day_to_int[preference["day"]]
                 shift_id = utils.shift_to_int[preference["shiftType"]]
@@ -959,10 +959,10 @@ class ScheduleValidator:
     @utils.soft_constr_value_print
     def _get_incomplete_weekends_value(self) -> int:
         subtotal = 0
-        nurses_data = self.constants["sc_data"]["nurses"]
-        contracts_data = self.constants["sc_data"]["contracts"]
-        all_nurses = self.constants["all_nurses"]
-        all_weeks = self.constants["all_weeks"]
+        nurses_data = self.data["sc_data"]["nurses"]
+        contracts_data = self.data["sc_data"]["contracts"]
+        all_nurses = self.data["all_nurses"]
+        all_weeks = self.data["all_weeks"]
 
         for n in all_nurses:
             isCompleteWeekendRequested = contracts_data[
@@ -981,9 +981,9 @@ class ScheduleValidator:
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             max_total_assignments = sc_data["contracts"][
@@ -1009,9 +1009,9 @@ class ScheduleValidator:
 
     def _get_total_uses_of_ifneeded_skills_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        all_skills = self.constants["all_skills"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_skills = self.data["all_skills"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             ifneeded_skills = sc_data["nurses"][n]["skillsIfNeeded"]
@@ -1028,9 +1028,9 @@ class ScheduleValidator:
 
     def _get_unsatisfied_overtime_preferences_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        all_shifts = self.constants["all_shifts"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_shifts = self.data["all_shifts"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             if self._is_nurse_on_vacation_any_week(n):
@@ -1066,9 +1066,9 @@ class ScheduleValidator:
     @utils.soft_constr_value_print
     def _get_total_weekends_over_limit_value(self) -> int:
         subtotal = 0
-        all_nurses = self.constants["all_nurses"]
-        all_weeks = self.constants["all_weeks"]
-        sc_data = self.constants["sc_data"]
+        all_nurses = self.data["all_nurses"]
+        all_weeks = self.data["all_weeks"]
+        sc_data = self.data["sc_data"]
 
         for n in all_nurses:
             max_total_weekends = sc_data["contracts"][
@@ -1085,11 +1085,11 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
 
     def _is_nurse_on_vacation_any_week(self, nurse_id):
-        return self.constants["configuration"]["h12"] and (
+        return self.data["configuration"]["h12"] and (
             nurse_id
             in [
                 id
-                for w in self.constants["all_weeks"]
+                for w in self.data["all_weeks"]
                 for id in self.help_vars["nurses_ids_on_vacation"][w]
             ]
         )

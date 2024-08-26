@@ -15,17 +15,17 @@ max_consecutive_days_off = 7
 class DOCPLEX_Solver(NSP_solver):
     name = 'DOCPLEX'
 
-    def init_cp_vars(self, model, constants):
+    def init_cp_vars(self, model, data):
         """
         Initializes basic variables for primarly for hard contraints.
         Returns a dictionary 'basic_cp_vars' containing the names of those variables for further manipulation.
         """
 
-        all_skills = constants["all_skills"]
-        all_shifts = constants["all_shifts"]
-        all_days = constants["all_days"]
-        all_nurses = constants["all_nurses"]
-        wd_data = constants["wd_data"]
+        all_skills = data["all_skills"]
+        all_shifts = data["all_shifts"]
+        all_days = data["all_days"]
+        all_nurses = data["all_nurses"]
+        wd_data = data["wd_data"]
 
         minimal_capacities = [
             [[0 for _ in all_skills] for _ in all_shifts] for _ in all_days
@@ -116,7 +116,7 @@ class DOCPLEX_Solver(NSP_solver):
         return basic_cp_vars
 
     def add_shift_succession_reqs(
-        self, model, shifts, all_nurses, all_days, all_shifts, num_days, constants, basic_cp_vars
+        self, model, shifts, all_nurses, all_days, all_shifts, num_days, data, basic_cp_vars
     ):
         """
         Adds hard constraint that disables invalid pairs of succcessive shift types.
@@ -124,7 +124,7 @@ class DOCPLEX_Solver(NSP_solver):
 
         for n in all_nurses:
             last_shift = utils.shift_to_int[
-                constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
+                data["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
             ]
             if last_shift == 2:
                 model.add(
@@ -193,18 +193,18 @@ class DOCPLEX_Solver(NSP_solver):
                         for s in all_shifts:
                             model.add(shifts_with_skills[n][d][s][sk] == 0)
 
-    def add_hard_constrains(self, model, basic_cp_vars, constants):
+    def add_hard_constrains(self, model, basic_cp_vars, data):
         """
         Adds all hard constraints to the model.
         """
 
-        all_nurses = constants["all_nurses"]
-        all_shifts = constants["all_shifts"]
-        all_days = constants["all_days"]
-        all_skills = constants["all_skills"]
-        num_days = constants["num_days"]
-        sc_data = constants["sc_data"]
-        wd_data = constants["wd_data"]
+        all_nurses = data["all_nurses"]
+        all_shifts = data["all_shifts"]
+        all_days = data["all_days"]
+        all_skills = data["all_skills"]
+        num_days = data["num_days"]
+        sc_data = data["sc_data"]
+        wd_data = data["wd_data"]
         shifts = basic_cp_vars["shifts"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
 
@@ -229,7 +229,7 @@ class DOCPLEX_Solver(NSP_solver):
             all_days,
             all_shifts,
             num_days,
-            constants,
+            data,
             basic_cp_vars,
         )
         self.add_missing_skill_req(
@@ -241,14 +241,14 @@ class DOCPLEX_Solver(NSP_solver):
             all_skills,
         )
         for req in wd_data["requirements"]:
-            self.add_shift_skill_req_minimal(model, req, basic_cp_vars, constants)
+            self.add_shift_skill_req_minimal(model, req, basic_cp_vars, data)
 
-    def add_shift_skill_req_minimal(self, model, req, basic_cp_vars, constants):
+    def add_shift_skill_req_minimal(self, model, req, basic_cp_vars, data):
         """
         Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
         """
 
-        all_nurses = constants["all_nurses"]
+        all_nurses = data["all_nurses"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
 
         s = utils.shift_to_int[req["shiftType"]]
@@ -269,15 +269,15 @@ class DOCPLEX_Solver(NSP_solver):
                 >= min_capacity
             )
 
-    def init_cp_vars_for_soft_constraints(self, model, basic_cp_vars, constants):
-        all_nurses = constants["all_nurses"]
-        all_shifts = constants["all_shifts"]
-        all_skills = constants["all_skills"]
-        all_days = constants["all_days"]
-        num_days = constants["num_days"]
+    def init_cp_vars_for_soft_constraints(self, model, basic_cp_vars, data):
+        all_nurses = data["all_nurses"]
+        all_shifts = data["all_shifts"]
+        all_skills = data["all_skills"]
+        all_days = data["all_days"]
+        num_days = data["num_days"]
         shifts = basic_cp_vars["shifts"]
         working_days = basic_cp_vars["working_days"]
-        sc_data = constants["sc_data"]
+        sc_data = data["sc_data"]
 
         # Creates insufficient staffing variables.
         # shifts[(d,s,sk)]: number of nurses under optimal number for day d shift s and skill sk
@@ -469,8 +469,8 @@ class DOCPLEX_Solver(NSP_solver):
 
         return soft_cp_vars
 
-    def add_shift_skill_req_optimal(self, model, req, basic_cp_vars, soft_cp_vars, constants):
-        all_nurses = constants["all_nurses"]
+    def add_shift_skill_req_optimal(self, model, req, basic_cp_vars, soft_cp_vars, data):
+        all_nurses = data["all_nurses"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
         insufficient_staffing = soft_cp_vars["insufficient_staffing"]
 
@@ -496,7 +496,7 @@ class DOCPLEX_Solver(NSP_solver):
             )
 
     def add_insatisfied_preferences_reqs(
-        self, model, wd_data, basic_cp_vars, soft_cp_vars, constants
+        self, model, wd_data, basic_cp_vars, soft_cp_vars, data
     ):
         unsatisfied_preferences = soft_cp_vars["unsatisfied_preferences"]
         shifts = basic_cp_vars["shifts"]
@@ -525,17 +525,17 @@ class DOCPLEX_Solver(NSP_solver):
         #         model.add((unsatisfied_preferences[(nurse_id, day_id, shift_id)] + shifts[nurse_id][day_id][shift_id]) == 1)
 
     def add_total_working_weekends_soft_constraints(
-        self, model, basic_cp_vars, soft_cp_vars, constants, week_number
+        self, model, basic_cp_vars, soft_cp_vars, data, week_number
     ):
-        sc_data = constants["sc_data"]
-        h0_data = constants["h0_data"]
+        sc_data = data["sc_data"]
+        h0_data = data["h0_data"]
         total_working_weekends_over_limit = soft_cp_vars[
             "total_working_weekends_over_limit"
         ]
         working_weekends = soft_cp_vars["working_weekends"]
 
-        all_nurses = constants["all_nurses"]
-        num_weeks = constants["num_weeks"]
+        all_nurses = data["all_nurses"]
+        num_weeks = data["num_weeks"]
         working_days = basic_cp_vars["working_days"]
 
         for n in all_nurses:
@@ -554,13 +554,13 @@ class DOCPLEX_Solver(NSP_solver):
                 <= worked_weekends_limit_for_this_week - worked_weekends_in_previous_weeks
             )
 
-    def add_incomplete_weekends_constraint(self, model, basic_cp_vars, soft_cp_vars, constants):
-        nurses_data = constants["sc_data"]["nurses"]
-        contracts_data = constants["sc_data"]["contracts"]
+    def add_incomplete_weekends_constraint(self, model, basic_cp_vars, soft_cp_vars, data):
+        nurses_data = data["sc_data"]["nurses"]
+        contracts_data = data["sc_data"]["contracts"]
         incomplete_weekends = soft_cp_vars["incomplete_weekends"]
         working_weekends = soft_cp_vars["working_weekends"]
         working_days = basic_cp_vars["working_days"]
-        all_nurses = constants["all_nurses"]
+        all_nurses = data["all_nurses"]
 
         for n in all_nurses:
             isCompleteWeekendRequested = contracts_data[
@@ -576,16 +576,16 @@ class DOCPLEX_Solver(NSP_solver):
                 )
 
     def add_total_working_days_out_of_bounds_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants, week_number
+        self, model, basic_cp_vars, soft_cp_vars, data, week_number
     ):
-        nurses_data = constants["sc_data"]["nurses"]
-        contracts_data = constants["sc_data"]["contracts"]
+        nurses_data = data["sc_data"]["nurses"]
+        contracts_data = data["sc_data"]["contracts"]
         total_working_days = soft_cp_vars["total_working_days"]
         total_working_days_over_limit = soft_cp_vars["total_working_days_over_limit"]
         total_working_days_under_limit = soft_cp_vars["total_working_days_under_limit"]
-        all_nurses = constants["all_nurses"]
-        num_weeks = constants["num_weeks"]
-        h0_data = constants["h0_data"]
+        all_nurses = data["all_nurses"]
+        num_weeks = data["num_weeks"]
+        h0_data = data["h0_data"]
 
         for n in all_nurses:
             worked_days_in_previous_weeks = h0_data["nurseHistory"][n][
@@ -613,18 +613,18 @@ class DOCPLEX_Solver(NSP_solver):
             )
 
     def add_max_consecutive_work_days_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_max_consecutive_working_days = soft_cp_vars[
             "violations_of_max_consecutive_working_days"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        sc_data = data["sc_data"]
         working_days = basic_cp_vars["working_days"]
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
             max_consecutive_working_days = sc_data["contracts"][
@@ -653,7 +653,7 @@ class DOCPLEX_Solver(NSP_solver):
                         )
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
             max_consecutive_working_days = max_consecutive_work_days
@@ -674,19 +674,19 @@ class DOCPLEX_Solver(NSP_solver):
                         model.add(sum(working_days[n][0: d + 1]) <= d)
 
     def add_min_consecutive_work_days_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_min_consecutive_working_days = soft_cp_vars[
             "violations_of_min_consecutive_working_days"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        sc_data = data["sc_data"]
         working_days = basic_cp_vars["working_days"]
         not_working_days = soft_cp_vars["not_working_days"]
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
             min_consecutive_working_days = sc_data["contracts"][
@@ -716,23 +716,23 @@ class DOCPLEX_Solver(NSP_solver):
                             )
 
     def add_min_consecutive_shifts_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_min_consecutive_working_shifts = soft_cp_vars[
             "violations_of_min_consecutive_working_shifts"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        all_shifts = constants["all_shifts"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        all_shifts = data["all_shifts"]
+        sc_data = data["sc_data"]
         shifts = basic_cp_vars["shifts"]
         not_working_shifts = soft_cp_vars["not_working_shifts"]
 
         for n in all_nurses:
-            consecutive_working_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_working_shifts_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveWorkingDays"
             ]
-            lastAssignedShiftType = constants["h0_data"]["nurseHistory"][n][
+            lastAssignedShiftType = data["h0_data"]["nurseHistory"][n][
                 "lastAssignedShiftType"
             ]
             lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
@@ -774,19 +774,19 @@ class DOCPLEX_Solver(NSP_solver):
                                 )
 
     def add_min_consecutive_days_off_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_min_consecutive_days_off = soft_cp_vars[
             "violations_of_min_consecutive_days_off"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        sc_data = data["sc_data"]
         working_days = basic_cp_vars["working_days"]
         not_working_days = soft_cp_vars["not_working_days"]
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveDaysOff"
             ]
             min_consecutive_days_off = sc_data["contracts"][
@@ -820,22 +820,22 @@ class DOCPLEX_Solver(NSP_solver):
                             )
 
     def add_max_consecutive_work_shifts_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_max_consecutive_working_shifts = soft_cp_vars[
             "violations_of_max_consecutive_working_shifts"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        all_shifts = constants["all_shifts"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        all_shifts = data["all_shifts"]
+        sc_data = data["sc_data"]
         shifts = basic_cp_vars["shifts"]
 
         for n in all_nurses:
             last_shift = utils.shift_to_int[
-                constants["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
+                data["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
             ]
-            consecutive_shifts_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_shifts_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveAssignments"
             ]
             for s in all_shifts:
@@ -872,18 +872,18 @@ class DOCPLEX_Solver(NSP_solver):
                             )
 
     def add_max_consecutive_days_off_constraint(
-        self, model, basic_cp_vars, soft_cp_vars, constants
+        self, model, basic_cp_vars, soft_cp_vars, data
     ):
         violations_of_max_consecutive_days_off = soft_cp_vars[
             "violations_of_max_consecutive_days_off"
         ]
-        all_nurses = constants["all_nurses"]
-        all_days = constants["all_days"]
-        sc_data = constants["sc_data"]
+        all_nurses = data["all_nurses"]
+        all_days = data["all_days"]
+        sc_data = data["sc_data"]
         working_days = basic_cp_vars["working_days"]
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_days_off_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveDaysOff"
             ]
             max_consecutive_working_days = sc_data["contracts"][
@@ -909,7 +909,7 @@ class DOCPLEX_Solver(NSP_solver):
                         )
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = constants["h0_data"]["nurseHistory"][n][
+            consecutive_days_off_prev_week = data["h0_data"]["nurseHistory"][n][
                 "numberOfConsecutiveDaysOff"
             ]
             max_consecutive_working_days = max_consecutive_days_off
@@ -922,57 +922,57 @@ class DOCPLEX_Solver(NSP_solver):
                     if consecutive_days_off_prev_week >= max_consecutive_working_days - d:
                         model.add(sum(working_days[n][0: d + 1]) >= 1)
 
-    def add_soft_constraints(self, model, basic_cp_vars, soft_cp_vars, constants, week_number):
-        wd_data = constants["wd_data"]
+    def add_soft_constraints(self, model, basic_cp_vars, soft_cp_vars, data, week_number):
+        wd_data = data["wd_data"]
 
         for req in wd_data["requirements"]:
-            self.add_shift_skill_req_optimal(model, req, basic_cp_vars, soft_cp_vars, constants)
+            self.add_shift_skill_req_optimal(model, req, basic_cp_vars, soft_cp_vars, data)
 
         self.add_insatisfied_preferences_reqs(
-            model, wd_data, basic_cp_vars, soft_cp_vars, constants
+            model, wd_data, basic_cp_vars, soft_cp_vars, data
         )
 
         self.add_total_working_weekends_soft_constraints(
-            model, basic_cp_vars, soft_cp_vars, constants, week_number
+            model, basic_cp_vars, soft_cp_vars, data, week_number
         )
 
         self.add_total_working_days_out_of_bounds_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants, week_number
+            model, basic_cp_vars, soft_cp_vars, data, week_number
         )
 
-        self.add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, constants)
+        self.add_incomplete_weekends_constraint(model, basic_cp_vars, soft_cp_vars, data)
 
         self.add_max_consecutive_work_days_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants
+            model, basic_cp_vars, soft_cp_vars, data
         )
 
         self.add_max_consecutive_work_shifts_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants
+            model, basic_cp_vars, soft_cp_vars, data
         )
 
         self.add_max_consecutive_days_off_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants
+            model, basic_cp_vars, soft_cp_vars, data
         )
 
         self.add_min_consecutive_work_days_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants
+            model, basic_cp_vars, soft_cp_vars, data
         )
 
         self.add_min_consecutive_days_off_constraint(
-            model, basic_cp_vars, soft_cp_vars, constants
+            model, basic_cp_vars, soft_cp_vars, data
         )
 
-        self.add_min_consecutive_shifts_constraint(model, basic_cp_vars, soft_cp_vars, constants)
+        self.add_min_consecutive_shifts_constraint(model, basic_cp_vars, soft_cp_vars, data)
 
         return
 
     def save_tmp_results(
-        self, results, solver, constants, basic_cp_vars, soft_cp_vars, week_number, model
+        self, results, solver, data, basic_cp_vars, soft_cp_vars, week_number, model
     ):
-        num_days = constants["num_days"]
-        num_nurses = constants["num_nurses"]
-        num_skills = constants["num_skills"]
-        num_shifts = constants["num_shifts"]
+        num_days = data["num_days"]
+        num_nurses = data["num_nurses"]
+        num_skills = data["num_skills"]
+        num_shifts = data["num_shifts"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
 
         if solver:
@@ -993,12 +993,12 @@ class DOCPLEX_Solver(NSP_solver):
             results[(week_number, "status")] = False
             print("No solution found")
 
-    def set_objective_function(self, model, constants, basic_cp_vars, soft_cp_vars):
-        all_nurses = constants["all_nurses"]
-        all_shifts = constants["all_shifts"]
-        all_skills = constants["all_skills"]
-        all_days = constants["all_days"]
-        sc_data = constants["sc_data"]
+    def set_objective_function(self, model, data, basic_cp_vars, soft_cp_vars):
+        all_nurses = data["all_nurses"]
+        all_shifts = data["all_shifts"]
+        all_skills = data["all_skills"]
+        all_days = data["all_days"]
+        sc_data = data["sc_data"]
 
         insufficient_staffing = soft_cp_vars["insufficient_staffing"]
         unsatisfied_preferences = soft_cp_vars["unsatisfied_preferences"]
@@ -1163,23 +1163,23 @@ class DOCPLEX_Solver(NSP_solver):
             )
         )
 
-    def setup_problem(self, c, constants, week_number):
+    def setup_problem(self, c, data, week_number):
         # Create ILP variables.
-        basic_cp_vars = self.init_cp_vars(c, constants)
+        basic_cp_vars = self.init_cp_vars(c, data)
 
         # Add hard constrains to model
-        self.add_hard_constrains(c, basic_cp_vars, constants)
+        self.add_hard_constrains(c, basic_cp_vars, data)
 
         soft_cp_vars = {}
-        soft_cp_vars = self.init_cp_vars_for_soft_constraints(c, basic_cp_vars, constants)
+        soft_cp_vars = self.init_cp_vars_for_soft_constraints(c, basic_cp_vars, data)
 
-        self.add_soft_constraints(c, basic_cp_vars, soft_cp_vars, constants, week_number)
+        self.add_soft_constraints(c, basic_cp_vars, soft_cp_vars, data, week_number)
 
-        self.set_objective_function(c, constants, basic_cp_vars, soft_cp_vars)
+        self.set_objective_function(c, data, basic_cp_vars, soft_cp_vars)
 
         return basic_cp_vars, soft_cp_vars
 
-    def compute_one_week(self, time_limit_for_week, week_number, constants, results):
+    def compute_one_week(self, time_limit_for_week, week_number, data, results):
         mdl = CpoModel()
         # c.parameters.mip.display.set(0)
         # c.parameters.output.clonelog.set(0)
@@ -1189,13 +1189,13 @@ class DOCPLEX_Solver(NSP_solver):
         # c.parameters.emphasis.mip.set(
         #     c.parameters.emphasis.mip.values.optimality)
 
-        basic_cp_vars, soft_cp_vars = self.setup_problem(mdl, constants, week_number)
+        basic_cp_vars, soft_cp_vars = self.setup_problem(mdl, data, week_number)
 
         # msol = mdl.solve(TimeLimit=10)
         msol = mdl.solve(TimeLimit=time_limit_for_week)
         if msol:
             self.save_tmp_results(
-                results, msol, constants, basic_cp_vars, soft_cp_vars, week_number, mdl
+                results, msol, data, basic_cp_vars, soft_cp_vars, week_number, mdl
             )
         else:
             print("No solution")

@@ -8,7 +8,7 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 
 # @pytest.fixture(scope="session")
 @pytest.fixture
-def constants_for_1_nurse():
+def data_for_1_nurse():
     config_data = {
         "h1": True,
         "h2": True,
@@ -356,7 +356,7 @@ def constants_for_1_nurse():
             "vacations": [],
         }
 
-    # initialize constants
+    # initialize data
     num_nurses = 1
     num_shifts = len(sc_data["shiftTypes"])
     num_skills = len(sc_data["skills"])
@@ -367,33 +367,33 @@ def constants_for_1_nurse():
     all_skills = range(num_skills)
     all_weeks = range(1)
 
-    constants = {}
-    constants["configuration"] = config_data
-    constants["h0_data"] = h0_data
-    constants["h0_data_original"] = copy.deepcopy(h0_data)
-    constants["sc_data"] = sc_data
-    constants["wd_data"] = wd_data[0]
-    constants["all_wd_data"] = wd_data
-    constants["num_nurses"] = num_nurses
-    constants["num_shifts"] = num_shifts
-    constants["num_skills"] = num_skills
-    constants["num_days"] = num_days
-    constants["num_weeks"] = 1
-    constants["all_nurses"] = all_nurses
-    constants["all_shifts"] = all_shifts
-    constants["all_days"] = all_days
-    constants["all_skills"] = all_skills
-    constants["all_weeks"] = all_weeks
+    data = {}
+    data["configuration"] = config_data
+    data["h0_data"] = h0_data
+    data["h0_data_original"] = copy.deepcopy(h0_data)
+    data["sc_data"] = sc_data
+    data["wd_data"] = wd_data[0]
+    data["all_wd_data"] = wd_data
+    data["num_nurses"] = num_nurses
+    data["num_shifts"] = num_shifts
+    data["num_skills"] = num_skills
+    data["num_days"] = num_days
+    data["num_weeks"] = 1
+    data["all_nurses"] = all_nurses
+    data["all_shifts"] = all_shifts
+    data["all_days"] = all_days
+    data["all_skills"] = all_skills
+    data["all_weeks"] = all_weeks
 
-    return constants
+    return data
 
 
 @pytest.fixture
-def empty_results_1nurse_1week(constants_for_1_nurse):
-    num_days = constants_for_1_nurse["num_days"]
-    num_nurses = constants_for_1_nurse["num_nurses"]
-    num_skills = constants_for_1_nurse["num_skills"]
-    num_shifts = constants_for_1_nurse["num_shifts"]
+def empty_results_1nurse_1week(data_for_1_nurse):
+    num_days = data_for_1_nurse["num_days"]
+    num_nurses = data_for_1_nurse["num_nurses"]
+    num_skills = data_for_1_nurse["num_skills"]
+    num_shifts = data_for_1_nurse["num_shifts"]
     week_number = 0
 
     results = {}
@@ -408,8 +408,8 @@ def empty_results_1nurse_1week(constants_for_1_nurse):
 
 
 @pytest.fixture
-def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week):
-    num_days = constants_for_1_nurse["num_days"]
+def results_1nurse_1full_week(data_for_1_nurse, empty_results_1nurse_1week):
+    num_days = data_for_1_nurse["num_days"]
     results = empty_results_1nurse_1week
     for d in range(num_days):
         results[(0, d, 0, 0)] = 1
@@ -417,9 +417,9 @@ def results_1nurse_1full_week(constants_for_1_nurse, empty_results_1nurse_1week)
 
 
 @pytest.fixture
-def validator_for_1nurse_1week(constants_for_1_nurse, empty_results_1nurse_1week):
+def validator_for_1nurse_1week(data_for_1_nurse, empty_results_1nurse_1week):
     validator = ScheduleValidator()
-    validator._init_variables(empty_results_1nurse_1week, constants_for_1_nurse)
+    validator._init_variables(empty_results_1nurse_1week, data_for_1_nurse)
     return validator
 
 
@@ -493,36 +493,36 @@ def all_false_config_data():
     }
 
 
-class Constants_generator():
+class data_generator():
     @staticmethod
-    def get_constants(history_file_id, week_ids):
+    def get_data(history_file_id, week_ids):
 
-        constants = {}
+        data = {}
 
-        Constants_generator.add_configuration_data(constants)
-        Constants_generator.add_history_data(constants, history_file_id)
-        Constants_generator.add_scenario_data(constants, week_ids)
-        Constants_generator.add_weeks_data(constants, week_ids)
+        data_generator.add_configuration_data(data)
+        data_generator.add_history_data(data, history_file_id)
+        data_generator.add_scenario_data(data, week_ids)
+        data_generator.add_weeks_data(data, week_ids)
 
-        return constants
+        return data
 
     @staticmethod
-    def add_configuration_data(constants):
+    def add_configuration_data(data):
         with open("test_data\\C0.json", "r") as file:
             config_data = json.load(file)
-        constants["configuration"] = config_data
+        data["configuration"] = config_data
 
     @staticmethod
-    def add_history_data(constants, history_file_id):
+    def add_history_data(data, history_file_id):
 
         with open(f"test_data\\H0-n035w4-{history_file_id}.json", "r") as file:
             history_data = json.load(file)
 
-        constants["h0_data"] = history_data
-        constants["h0_data_original"] = copy.deepcopy(history_data)
+        data["h0_data"] = history_data
+        data["h0_data_original"] = copy.deepcopy(history_data)
 
     @staticmethod
-    def add_scenario_data(constants, week_ids):
+    def add_scenario_data(data, week_ids):
 
         with open("test_data\\Sc-n035w4.json", "r") as file:
             scenario_data = json.load(file)
@@ -536,30 +536,30 @@ class Constants_generator():
         all_days = range(num_days)
         all_skills = range(num_skills)
         all_weeks = range(len(week_ids))
-        constants["sc_data"] = scenario_data
-        constants["num_nurses"] = num_nurses
-        constants["num_shifts"] = num_shifts
-        constants["num_skills"] = num_skills
-        constants["num_days"] = num_days
-        constants["num_weeks"] = len(week_ids)
-        constants["all_nurses"] = all_nurses
-        constants["all_shifts"] = all_shifts
-        constants["all_days"] = all_days
-        constants["all_skills"] = all_skills
-        constants["all_weeks"] = all_weeks
+        data["sc_data"] = scenario_data
+        data["num_nurses"] = num_nurses
+        data["num_shifts"] = num_shifts
+        data["num_skills"] = num_skills
+        data["num_days"] = num_days
+        data["num_weeks"] = len(week_ids)
+        data["all_nurses"] = all_nurses
+        data["all_shifts"] = all_shifts
+        data["all_days"] = all_days
+        data["all_skills"] = all_skills
+        data["all_weeks"] = all_weeks
 
     @staticmethod
-    def add_weeks_data(constants, week_ids):
+    def add_weeks_data(data, week_ids):
 
         weeks_data = []
         for week_id in week_ids:
             with open(f"test_data\\WD-n035w4-{week_id}.json", "r") as file:
                 weeks_data.append(json.load(file))
 
-        constants["all_wd_data"] = weeks_data
-        constants["wd_data"] = weeks_data[0]
+        data["all_wd_data"] = weeks_data
+        data["wd_data"] = weeks_data[0]
 
 
 @pytest.fixture
-def integration_tests_constants_generator():
-    return Constants_generator
+def integration_tests_data_generator():
+    return data_generator

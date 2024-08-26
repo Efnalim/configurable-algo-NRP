@@ -118,7 +118,7 @@ from src.nsp_solver.validator.validator import ScheduleValidator
 def test_is_schedule_valid(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
     all_false_config_data,
 ):
@@ -127,21 +127,21 @@ def test_is_schedule_valid(
     for input in input_data["schedule"]:
         schedule[input] = 1
 
-    constants_for_1_nurse["configuration"] = all_false_config_data
+    data_for_1_nurse["configuration"] = all_false_config_data
     for constr in input_data["tested_constraints"]:
-        constants_for_1_nurse["configuration"][constr] = True
+        data_for_1_nurse["configuration"][constr] = True
 
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfIncompleteWeekendsHard"] = 0
 
-    constants_for_1_nurse["sc_data"]["nurses"][0]["restrictions"] = [
+    data_for_1_nurse["sc_data"]["nurses"][0]["restrictions"] = [
         {"type": "Night", "limit": 3}
     ]
-    constants_for_1_nurse["all_wd_data"][0]["vacations"] = ["HN_0"]
+    data_for_1_nurse["all_wd_data"][0]["vacations"] = ["HN_0"]
 
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._is_schedule_valid()
@@ -255,7 +255,7 @@ def test_is_schedule_valid(
 def test_get_objective_value_of_schedule(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
     all_false_config_data,
 ):
@@ -264,21 +264,21 @@ def test_get_objective_value_of_schedule(
     for input in input_data["schedule"]:
         schedule[input] = 1
 
-    constants_for_1_nurse["configuration"] = all_false_config_data
+    data_for_1_nurse["configuration"] = all_false_config_data
     for constr in input_data["tested_constraints"]:
-        constants_for_1_nurse["configuration"][constr] = True
+        data_for_1_nurse["configuration"][constr] = True
 
-    constants_for_1_nurse["sc_data"]["contracts"][
-        utils.contract_to_int[constants_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
+    data_for_1_nurse["sc_data"]["contracts"][
+        utils.contract_to_int[data_for_1_nurse["sc_data"]["nurses"][0]["contract"]]
     ]["maximumNumberOfWorkingWeekends"] = 0
 
-    # constants_for_1_nurse["sc_data"]["nurses"][0]["restrictions"] = [{"type": "Night", "limit": 3}]
-    constants_for_1_nurse["all_wd_data"][0]["shiftOffRequests"] = [
+    # data_for_1_nurse["sc_data"]["nurses"][0]["restrictions"] = [{"type": "Night", "limit": 3}]
+    data_for_1_nurse["all_wd_data"][0]["shiftOffRequests"] = [
         {"nurse": "HN_0", "shiftType": "Any", "day": "Monday"}
     ]
 
     validator = ScheduleValidator()
-    validator._init_variables(schedule, constants_for_1_nurse)
+    validator._init_variables(schedule, data_for_1_nurse)
 
     # Execute
     retval = validator._get_objective_value_of_schedule()
@@ -312,7 +312,7 @@ def test_get_objective_value_of_schedule(
 def test_evaluate_schedule(
     input_data,
     expected,
-    constants_for_1_nurse,
+    data_for_1_nurse,
     empty_results_1nurse_1week,
     all_false_config_data,
 ):
@@ -321,14 +321,14 @@ def test_evaluate_schedule(
     for input in input_data["schedule"]:
         schedule[input] = 1
 
-    constants_for_1_nurse["configuration"] = all_false_config_data
+    data_for_1_nurse["configuration"] = all_false_config_data
     for constr in input_data["tested_constraints"]:
-        constants_for_1_nurse["configuration"][constr] = True
+        data_for_1_nurse["configuration"][constr] = True
 
     validator = ScheduleValidator()
 
     # Execute
-    retval = validator.evaluate_schedule(schedule, constants_for_1_nurse)
+    retval = validator.evaluate_schedule(schedule, data_for_1_nurse)
 
     # Assert
     if expected > 0:

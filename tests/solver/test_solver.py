@@ -70,33 +70,33 @@ from contextlib import nullcontext as does_not_raise
 
     ],
 )
-def test_solver(input_data, integration_tests_constants_generator):
+def test_solver(input_data, integration_tests_data_generator):
     # Arrange
-    constants = integration_tests_constants_generator.get_constants(input_data["history_file_id"], input_data["weeks_files_ids"])
+    data = integration_tests_data_generator.get_data(input_data["history_file_id"], input_data["weeks_files_ids"])
     results = {}
-    for w in constants["all_weeks"]:
-        for n in constants["all_nurses"]:
-            for d in constants["all_days"]:
-                for s in constants["all_shifts"]:
-                    for sk in constants["all_skills"]:
+    for w in data["all_weeks"]:
+        for n in data["all_nurses"]:
+            for d in data["all_days"]:
+                for s in data["all_shifts"]:
+                    for sk in data["all_skills"]:
                         results[(n, d + 7 * w, s, sk)] = 0
     time_limit_for_week = 2
     fail = False
 
     # Execute
     with does_not_raise():
-        for week_number in constants["all_weeks"]:
-            constants["wd_data"] = constants["all_wd_data"][week_number]
-            compute_one_week(time_limit_for_week, constants, results)
+        for week_number in data["all_weeks"]:
+            data["wd_data"] = data["all_wd_data"][week_number]
+            compute_one_week(time_limit_for_week, data, results)
             if results[(week_number, "status")] == utils.STATUS_FAIL:
                 fail = True
                 break
             simulator = HistorySimulator()
-            simulator.update_history_for_next_week(results, constants, week_number)
+            simulator.update_history_for_next_week(results, data, week_number)
         if fail:
             total_value = 99999
         else:
-            validator = ScheduleValidator(results, constants)
+            validator = ScheduleValidator(results, data)
             total_value = validator.evaluate_schedule()
 
     # Assert
