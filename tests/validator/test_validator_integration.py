@@ -144,7 +144,7 @@ def test_is_schedule_valid(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_schedule_valid()
+    retval = validator._is_schedule_valid()
 
     # Assert
     assert retval == expected
@@ -281,7 +281,7 @@ def test_get_objective_value_of_schedule(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_objective_value_of_schedule()
+    retval = validator._get_objective_value_of_schedule()
 
     # Assert
     if expected > 0:

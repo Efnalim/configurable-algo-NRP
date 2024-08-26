@@ -32,7 +32,7 @@ class Simulator:
         self._load_data(input)
 
         if input.config_validator.evaluate_configuration(self.data) is CONF_EVAL.STOP:
-            return
+            return None
 
         time_limit_for_week = input.timelimit
         if time_limit_for_week == 0:

@@ -327,7 +327,7 @@ def test_update_history_for_next_week(
     simulator = HistorySimulator()
 
     # Execute
-    simulator.update_history_for_next_week(results, constants_for_1_nurse, 0)
+    simulator.update_history_for_next_week(results, constants_for_1_nurse)
 
     # Assert
     assert constants_for_1_nurse["h0_data"]["week"] == 1

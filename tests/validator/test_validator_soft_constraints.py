@@ -121,7 +121,7 @@ def test_get_optimal_capacity_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, constants_for_1_nurse)
     # Execute
-    retval = validator.get_optimal_capacity_value()
+    retval = validator._get_optimal_capacity_value()
 
     # Assert
     assert retval == expected
@@ -230,7 +230,7 @@ def test_get_max_consecutive_work_days_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_max_consecutive_work_days_value()
+    retval = validator._get_max_consecutive_work_days_value()
 
     # Assert
     assert retval == expected
@@ -321,7 +321,7 @@ def test_get_min_consecutive_work_days_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_min_consecutive_work_days_value()
+    retval = validator._get_min_consecutive_work_days_value()
 
     # Assert
     assert retval == expected
@@ -428,7 +428,7 @@ def test_get_max_consecutive_shifts_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_max_consecutive_shifts_value()
+    retval = validator._get_max_consecutive_shifts_value()
 
     # Assert
     assert retval == expected
@@ -542,7 +542,7 @@ def test_get_min_consecutive_shifts_value(
     )
 
     # Execute
-    retval = validator.get_min_consecutive_shifts_value()
+    retval = validator._get_min_consecutive_shifts_value()
 
     # Assert
     assert retval == expected
@@ -779,7 +779,7 @@ def test_get_max_consecutive_days_off_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_max_consecutive_days_off_value()
+    retval = validator._get_max_consecutive_days_off_value()
 
     # Assert
     assert retval == expected
@@ -917,7 +917,7 @@ def test_get_min_consecutive_days_off_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_min_consecutive_days_off_value()
+    retval = validator._get_min_consecutive_days_off_value()
 
     # Assert
     assert retval == expected
@@ -985,7 +985,7 @@ def test_get_consecutive_days_off_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_consecutive_days_off_value()
+    retval = validator._get_consecutive_days_off_value()
 
     # Assert
     assert retval == expected
@@ -1101,7 +1101,7 @@ def test_get_assignment_preferences_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_assignment_preferences_value()
+    retval = validator._get_assignment_preferences_value()
 
     # Assert
     assert retval == expected
@@ -1199,7 +1199,7 @@ def test_get_incomplete_weekends_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_incomplete_weekends_value()
+    retval = validator._get_incomplete_weekends_value()
 
     # Assert
     assert retval == expected
@@ -1284,7 +1284,7 @@ def test_get_total_assignments_out_of_limits_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_total_assignments_out_of_limits_value()
+    retval = validator._get_total_assignments_out_of_limits_value()
 
     # Assert
     assert retval == expected
@@ -1382,7 +1382,7 @@ def test_get_total_weekends_over_limit_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_total_weekends_over_limit_value()
+    retval = validator._get_total_weekends_over_limit_value()
 
     # Assert
     assert retval == expected
@@ -1454,7 +1454,7 @@ def test_get_total_uses_of_ifneeded_skills_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_total_uses_of_ifneeded_skills_value()
+    retval = validator._get_total_uses_of_ifneeded_skills_value()
 
     # Assert
     assert retval == expected
@@ -1572,7 +1572,7 @@ def test_get_unsatisfied_overtime_preferences_value(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.get_unsatisfied_overtime_preferences_value()
+    retval = validator._get_unsatisfied_overtime_preferences_value()
 
     # Assert
     assert retval == expected

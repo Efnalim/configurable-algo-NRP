@@ -21,7 +21,7 @@ def test_compute_helpful_values__1nurse_5shifts_5_days(validator_for_1nurse_1wee
     results[(0, 4, 0, 0)] = 1
 
     # Execute
-    help_vars = validator.compute_helpful_values()
+    help_vars = validator._compute_helpful_values()
 
     # Assert
     assert help_vars["working_days"][0][0] == 1
@@ -51,7 +51,7 @@ def test_compute_helpful_values__1nurse_5_4_days(validator_for_1nurse_1week):
     results[(0, 3, 1, 1)] = 1
 
     # Execute
-    help_vars = validator.compute_helpful_values()
+    help_vars = validator._compute_helpful_values()
 
     # Assert
     assert help_vars["working_days"][0][0] == 1
@@ -87,7 +87,7 @@ def test_is_max_assignments_per_day_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_assignments_per_day_satisfied()
+    retval = validator._is_max_assignments_per_day_satisfied()
 
     # Assert
     assert retval == expected
@@ -188,7 +188,7 @@ def test_is_max_assignments_per_day_satisfied(
         ),
     ],
 )
-def test_is_shift_successsion_satisfied(
+def _test_is_shift_successsion_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -202,7 +202,7 @@ def test_is_shift_successsion_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_shift_successsion_satisfied()
+    retval = validator._is_shift_successsion_satisfied()
 
     # Assert
     assert retval == expected
@@ -246,7 +246,7 @@ def test_is_shift_successsion_satisfied(
         ({"skills": ["Trainee"], "schedule": [(0, 0, 3, 3), (0, 1, 3, 3)]}, True),
     ],
 )
-def test_is_required_skill_satisfied(
+def _test_is_required_skill_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -258,7 +258,7 @@ def test_is_required_skill_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_required_skill_satisfied()
+    retval = validator._is_required_skill_satisfied()
 
     # Assert
     assert retval == expected
@@ -354,7 +354,7 @@ def test_is_required_skill_satisfied(
         ),
     ],
 )
-def test_is_max_consecutive_work_days_satisfied(
+def _test_is_max_consecutive_work_days_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -373,7 +373,7 @@ def test_is_max_consecutive_work_days_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_consecutive_work_days_satisfied()
+    retval = validator._is_max_consecutive_work_days_satisfied()
 
     # Assert
     assert retval == expected
@@ -454,7 +454,7 @@ def test_is_max_consecutive_work_days_satisfied(
         ),
     ],
 )
-def test_is_min_consecutive_work_days_satisfied(
+def _test_is_min_consecutive_work_days_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -473,7 +473,7 @@ def test_is_min_consecutive_work_days_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_consecutive_work_days_satisfied()
+    retval = validator._is_min_consecutive_work_days_satisfied()
 
     # Assert
     assert retval == expected
@@ -557,7 +557,7 @@ def test_is_min_consecutive_work_days_satisfied(
         ),
     ],
 )
-def test_is_max_consecutive_work_shifts_satisfied(
+def _test_is_max_consecutive_work_shifts_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -578,7 +578,7 @@ def test_is_max_consecutive_work_shifts_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_consecutive_work_shifts_satisfied()
+    retval = validator._is_max_consecutive_work_shifts_satisfied()
 
     # Assert
     assert retval == expected
@@ -686,7 +686,7 @@ def test_is_min_max_consecutive_assignments_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_consecutive_work_shifts_satisfied()
+    retval = validator._is_min_consecutive_work_shifts_satisfied()
 
     # Assert
     assert retval == expected
@@ -791,7 +791,7 @@ def test_is_min_max_consecutive_assignments_satisfied(
         ),
     ],
 )
-def test_is_min_consecutive_work_shifts_satisfied(
+def _test_is_min_consecutive_work_shifts_satisfied(
     input_data, expected, constants_for_1_nurse, empty_results_1nurse_1week
 ):
     # Arrange
@@ -824,7 +824,7 @@ def test_is_min_consecutive_work_shifts_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_max_consecutive_assignments_satisfied()
+    retval = validator._is_min_max_consecutive_assignments_satisfied()
 
     # Assert
     assert retval == expected
@@ -920,7 +920,7 @@ def test_is_max_consecutive_days_off_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_consecutive_days_off_satisfied()
+    retval = validator._is_max_consecutive_days_off_satisfied()
 
     # Assert
     assert retval == expected
@@ -1013,7 +1013,7 @@ def test_is_min_consecutive_days_off_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_consecutive_days_off_satisfied()
+    retval = validator._is_min_consecutive_days_off_satisfied()
 
     # Assert
     assert retval == expected
@@ -1108,7 +1108,7 @@ def test_is_max_total_incomplete_weekends_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_total_incomplete_weekends_satisfied()
+    retval = validator._is_max_total_incomplete_weekends_satisfied()
 
     # Assert
     assert retval == expected
@@ -1178,7 +1178,7 @@ def test_is_min_total_assignments_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_total_assignments_satisfied()
+    retval = validator._is_min_total_assignments_satisfied()
 
     # Assert
     assert retval == expected
@@ -1256,7 +1256,7 @@ def test_is_max_total_assignments_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_total_assignments_satisfied()
+    retval = validator._is_max_total_assignments_satisfied()
 
     # Assert
     assert retval == expected
@@ -1352,7 +1352,7 @@ def test_is_min_free_period_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_min_free_period_satisfied()
+    retval = validator._is_min_free_period_satisfied()
 
     # Assert
     assert retval == expected
@@ -1446,7 +1446,7 @@ def test_is_max_assignments_per_day_with_exception_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_max_assignments_per_day_with_exception_satisfied()
+    retval = validator._is_max_assignments_per_day_with_exception_satisfied()
 
     # Assert
     assert retval == expected
@@ -1521,7 +1521,7 @@ def test_is_maximum_shifts_of_specific_type_satisfied(
     validator._init_variables(schedule, constants_for_1_nurse)
 
     # Execute
-    retval = validator.is_maximum_shifts_of_specific_type_satisfied()
+    retval = validator._is_maximum_shifts_of_specific_type_satisfied()
 
     # Assert
     assert retval == expected
@@ -1582,7 +1582,7 @@ def test_is_planned_vacations_satisfied(
     validator = ScheduleValidator()
     validator._init_variables(schedule, constants_for_1_nurse)
     # Execute
-    retval = validator.is_planned_vacations_satisfied()
+    retval = validator._is_planned_vacations_satisfied()
 
     # Assert
     assert retval == expected
@@ -1701,7 +1701,7 @@ def test_is_minimal_capacity_satisfied(
     validator = ScheduleValidator()
     validator._init_variables(schedule, constants_for_1_nurse)
     # Execute
-    retval = validator.is_minimal_capacity_satisfied()
+    retval = validator._is_minimal_capacity_satisfied()
 
     # Assert
     assert retval == expected

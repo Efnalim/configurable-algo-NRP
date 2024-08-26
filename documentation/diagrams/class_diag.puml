@@ -5,7 +5,7 @@ skinparam maxWidth 400
 
 package "nsp_solver" <<Folder>> #DDEEFF {
     abstract class NSP_solver {
-        +compute_one_week(time_limit: int, constants: dict, results: dict)
+        +compute_one_week(time_limit: int, data: dict, results: dict)
     }
 
     NSP_solver <|-- NSP_cplex
@@ -16,11 +16,11 @@ package "nsp_solver" <<Folder>> #DDEEFF {
 
 package "validator" <<Folder>> #DDEEEE {
     class ScheduleValidator {
-        +evaluate_schedule(schedule: dict, constants: dict)
+        +evaluate_schedule(schedule: dict, data: dict, output_file_path: str)
     }
 
     class ConfigValidator {
-        +evaluate_configuration(constants: dict)
+        +evaluate_configuration(data: dict)
     }
 }
 
@@ -44,7 +44,7 @@ package "simulator" <<Folder>> #EEEEDD {
     }
 
     class HistorySimulator{
-        +update_history_for_next_week(results: dict, data: dict, week_number: int)
+        +update_history_for_next_week(results: dict, data: dict)
     }
 }
 
