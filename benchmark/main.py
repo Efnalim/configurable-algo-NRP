@@ -84,6 +84,8 @@ def main(
     print("----------------------------------------------------------------")
     # print(f"configuration: n{number_nurses}_h{history_data_file_id}_w{number_weeks}_{"".join(map(str, week_data_files_ids))}")
     with open("outputs/results.txt", "a") as file:
+        file.write(solver.name.ljust(7))
+        file.write(" | ")
         file.write(
             f'n0{number_nurses}_w{number_weeks}_h{history_data_file_id}_{"-".join(map(str, week_data_files_ids))}'
         )

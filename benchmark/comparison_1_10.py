@@ -9,7 +9,7 @@ from nsp_solver.utils import utils
 original_stdout = sys.stdout
 
 try:
-    output_file = 'outputs\\logs\\output_test_n035_w4_cplex_modified.txt'
+    output_file = 'outputs\\logs\\output_comparison_1_10.txt'
 
     if not os.path.exists("outputs"): 
         os.makedirs("outputs") 
@@ -20,9 +20,7 @@ try:
 
     number_of_iteration = 1
     number_of_nurses = 35
-    time_limit = 0
-    solver_id = 0
-    config_file_id = 1
+    config_file_id = 0
 
     week_combinations = []
     with open('input\\week_combinations.txt') as f:
@@ -31,17 +29,19 @@ try:
 
     with open('outputs/results.txt', 'w') as file:
         ajustment = 7 + len(week_combinations[0])
-        file.write("configuration".ljust(ajustment) + " | " + "value" + " | " + "time\n")
+        file.write("solver  | " + "configuration".ljust(ajustment) + " | value | time\n")
         file.write("-----------------------------------------------------------\n")
 
     # list of input for benchmark
     with utils.redirect_stdout_to_file(output_file):
-        arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} {config_file_id} ' + combination for combination in week_combinations]
         # print(arguments_list)
         # run the main script in iterations
-        for arg in arguments_list:
-            for _ in range(number_of_iteration):
-                subprocess.run(['python', 'main.py'] + arg.split(' '), stdout=sys.stdout)
+        for time_limit in [0]:
+            for solver_id in range(3):
+                arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} {config_file_id} ' + combination for combination in week_combinations]
+                for arg in arguments_list:
+                    for _ in range(number_of_iteration):
+                        subprocess.run(['python', 'main.py'] + arg.split(' '), stdout=sys.stdout)
 
 except Exception as e:
     sys.stdout = original_stdout

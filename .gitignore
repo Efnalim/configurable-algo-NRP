@@ -10,3 +10,4 @@ input
 *.pytest_cache
 *.coverage
 *.vscode
+misc
