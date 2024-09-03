@@ -13,6 +13,8 @@ max_consecutive_days_off = 7
 
 
 class DOCPLEX_Solver(NSP_solver):
+    """Child Class from NSP_solver that uses CP solver from docplex API to compute a schedule per week.
+    """
     name = 'DOCPLEX'
 
     def init_cp_vars(self, model, data):
@@ -270,6 +272,16 @@ class DOCPLEX_Solver(NSP_solver):
             )
 
     def init_cp_vars_for_soft_constraints(self, model, basic_cp_vars, data):
+        """Adds variables used by the soft constraints.
+
+        Args:
+            model: object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            dict: the variables added to the mathematical model
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_skills = data["all_skills"]
@@ -470,6 +482,15 @@ class DOCPLEX_Solver(NSP_solver):
         return soft_cp_vars
 
     def add_shift_skill_req_optimal(self, model, req, basic_cp_vars, soft_cp_vars, data):
+        """Add
+
+        Args:
+            model : object that represents the mathematical model
+            req (dict): requirements for the coverage
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
         insufficient_staffing = soft_cp_vars["insufficient_staffing"]
@@ -498,6 +519,15 @@ class DOCPLEX_Solver(NSP_solver):
     def add_insatisfied_preferences_reqs(
         self, model, wd_data, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that introduces the preferences of nurses for specific assignments/non-assignments.
+
+        Args:
+            model : object that represents the mathematical model
+            wd_data (dict): dictionary that contains data from input files
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         unsatisfied_preferences = soft_cp_vars["unsatisfied_preferences"]
         shifts = basic_cp_vars["shifts"]
 
@@ -515,18 +545,18 @@ class DOCPLEX_Solver(NSP_solver):
                     == 0
                 )
 
-        # TODO
-        # for preference in wd_data["shiftOnRequests"]:
-        #     nurse_id = int(preference["nurse"].split("_")[1])
-        #     day_id = day_to_int[preference["day"]]
-        #     shift_id = utils.shift_to_int[preference["shiftType"]]
-
-        #     if shift_id != utils.shift_to_int["Any"]:
-        #         model.add((unsatisfied_preferences[(nurse_id, day_id, shift_id)] + shifts[nurse_id][day_id][shift_id]) == 1)
-
     def add_total_working_weekends_soft_constraints(
         self, model, basic_cp_vars, soft_cp_vars, data, week_number
     ):
+        """Adds the soft constraint that penilizes more working weekends than the specified maximum.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+            week_number (int): number of the computed week
+        """
         sc_data = data["sc_data"]
         h0_data = data["h0_data"]
         total_working_weekends_over_limit = soft_cp_vars[
@@ -555,6 +585,14 @@ class DOCPLEX_Solver(NSP_solver):
             )
 
     def add_incomplete_weekends_constraint(self, model, basic_cp_vars, soft_cp_vars, data):
+        """Adds the soft constraint that penilizes incomplete weekends.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         nurses_data = data["sc_data"]["nurses"]
         contracts_data = data["sc_data"]["contracts"]
         incomplete_weekends = soft_cp_vars["incomplete_weekends"]
@@ -578,6 +616,15 @@ class DOCPLEX_Solver(NSP_solver):
     def add_total_working_days_out_of_bounds_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data, week_number
     ):
+        """Adds the soft constraint that penilizes total assignments out of bounds specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+            week_number (int): number of the computed week
+        """
         nurses_data = data["sc_data"]["nurses"]
         contracts_data = data["sc_data"]["contracts"]
         total_working_days = soft_cp_vars["total_working_days"]
@@ -615,6 +662,14 @@ class DOCPLEX_Solver(NSP_solver):
     def add_max_consecutive_work_days_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of a number of consecutive working days over the maximum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_working_days = soft_cp_vars[
             "violations_of_max_consecutive_working_days"
         ]
@@ -676,6 +731,15 @@ class DOCPLEX_Solver(NSP_solver):
     def add_min_consecutive_work_days_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """
+        Adds the soft constraint that penilizes assignment of a number of consecutive working days under the minimum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_working_days = soft_cp_vars[
             "violations_of_min_consecutive_working_days"
         ]
@@ -718,6 +782,14 @@ class DOCPLEX_Solver(NSP_solver):
     def add_min_consecutive_shifts_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of a number of consecutive shifts of one type under the minimum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_working_shifts = soft_cp_vars[
             "violations_of_min_consecutive_working_shifts"
         ]
@@ -776,6 +848,14 @@ class DOCPLEX_Solver(NSP_solver):
     def add_min_consecutive_days_off_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that penilizes a number of consecutive days off under the minimum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_days_off = soft_cp_vars[
             "violations_of_min_consecutive_days_off"
         ]
@@ -822,6 +902,14 @@ class DOCPLEX_Solver(NSP_solver):
     def add_max_consecutive_work_shifts_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of any number of consecutive shifts of one type over the maximum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_working_shifts = soft_cp_vars[
             "violations_of_max_consecutive_working_shifts"
         ]
@@ -874,6 +962,14 @@ class DOCPLEX_Solver(NSP_solver):
     def add_max_consecutive_days_off_constraint(
         self, model, basic_cp_vars, soft_cp_vars, data
     ):
+        """Adds the soft constraint that bans assignment of any number of consecutive days off over the maximum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_days_off = soft_cp_vars[
             "violations_of_max_consecutive_days_off"
         ]
@@ -923,6 +1019,15 @@ class DOCPLEX_Solver(NSP_solver):
                         model.add(sum(working_days[n][0: d + 1]) >= 1)
 
     def add_soft_constraints(self, model, basic_cp_vars, soft_cp_vars, data, week_number):
+        """Adds the soft constraints to the model.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+            week_number (int): number of the computed week
+        """
         wd_data = data["wd_data"]
 
         for req in wd_data["requirements"]:
@@ -964,36 +1069,57 @@ class DOCPLEX_Solver(NSP_solver):
 
         self.add_min_consecutive_shifts_constraint(model, basic_cp_vars, soft_cp_vars, data)
 
+        # self.add_total_working_days_out_of_bounds_constraint_hard(model, basic_cp_vars, soft_cp_vars, data, week_number)
+
         return
 
     def save_tmp_results(
-        self, results, solver, data, basic_cp_vars, soft_cp_vars, week_number, model
+        self, results, sol, data, basic_cp_vars, soft_cp_vars, week_number, model
     ):
+        """Stores the solution into the results dictionary.
+
+        Args:
+            results (dict): dictionary used to store partially computed schedule
+            sol : object that contains the computed solution
+            data (dict): dictionary that contains data from input files
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            week_number (int): number of the computed week
+            model : object that represents the mathematical model
+        """
         num_days = data["num_days"]
         num_nurses = data["num_nurses"]
         num_skills = data["num_skills"]
         num_shifts = data["num_shifts"]
         shifts_with_skills = basic_cp_vars["shifts_with_skills"]
 
-        if solver:
-            results[(week_number, "status")] = solver.get_solve_status()
-            results[(week_number, "value")] = solver.get_objective_value()
+        if sol:
+            results[(week_number, "status")] = sol.get_solve_status()
+            results[(week_number, "value")] = sol.get_objective_value()
             results[(week_number, "allweeksoft")] = 0
             results[("allweeksoft")] = 0
+            results[(week_number, "status")] = utils.STATUS_OK
 
             for n in range(num_nurses):
                 for d in range(num_days):
                     for s in range(num_shifts):
                         for sk in range(num_skills):
                             results[(n, d + 7 * week_number, s, sk)] = 0
-                            results[(n, d + 7 * week_number, s, sk)] = solver[
+                            results[(n, d + 7 * week_number, s, sk)] = sol[
                                 shifts_with_skills[n][d][s][sk]
                             ]
         else:
-            results[(week_number, "status")] = False
             print("No solution found")
 
     def set_objective_function(self, model, data, basic_cp_vars, soft_cp_vars):
+        """Sets the objective function contatining all penalties from all enabled constraints.
+
+        Args:
+            model : object that represents the mathematical model
+            data (dict): dictionary that contains data from input files
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_skills = data["all_skills"]
@@ -1164,6 +1290,16 @@ class DOCPLEX_Solver(NSP_solver):
         )
 
     def setup_problem(self, c, data, week_number):
+        """Sets up the mathematical model to be solved.
+
+        Args:
+            model: object that represents the mathematical model
+            data (dict): dictionary that contains data from input files
+            week_number (int): number of the computed week
+
+        Returns:
+            (dict, dict): 2 dictionaries that contains names of variables of the mathematical model
+        """
         # Create ILP variables.
         basic_cp_vars = self.init_cp_vars(c, data)
 
@@ -1179,8 +1315,17 @@ class DOCPLEX_Solver(NSP_solver):
 
         return basic_cp_vars, soft_cp_vars
 
-    def compute_one_week(self, time_limit_for_week, week_number, data, results):
+    def compute_one_week(self, time_limit_for_week, data, results):
+        """Computes a schedule for a week given a time limit and data.
+
+        Args:
+            time_limit_for_week (int): time limit for finding a schedule as optimal as possible
+            data (dict): dictionary that contains data from input files
+            results (dict): dictionary used to store partially computed schedule
+        """
+        week_number = data["h0_data"]["week"]
         mdl = CpoModel()
+
         # c.parameters.mip.display.set(0)
         # c.parameters.output.clonelog.set(0)
         # c.parameters.simplex.display.set(0)
@@ -1192,11 +1337,12 @@ class DOCPLEX_Solver(NSP_solver):
         basic_cp_vars, soft_cp_vars = self.setup_problem(mdl, data, week_number)
 
         # msol = mdl.solve(TimeLimit=10)
-        msol = mdl.solve(TimeLimit=time_limit_for_week)
+        msol = mdl.solve(TimeLimit=time_limit_for_week, Workers=1, LogVerbosity='Quiet')
         if msol:
             self.save_tmp_results(
                 results, msol, data, basic_cp_vars, soft_cp_vars, week_number, mdl
             )
         else:
+            results[(week_number, "status")] = utils.STATUS_FAIL
             print("No solution")
             # sol = c.solution

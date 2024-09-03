@@ -31,12 +31,25 @@ STATUS_FAIL = 'solution not found'
 
 
 def isPositiveNumber(number):
+    """_summary_
+
+    Args:
+        number (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     if number > 0:
         return 1
     return 0
 
 
 def soft_constr_value_print(func):
+    """_summary_
+
+    Args:
+        func (_type_): _description_
+    """
     def wrapper(self, *args, **kwargs):
         result = func(self, *args, **kwargs)
         self.soft_table.append([func.__name__, result])
@@ -46,6 +59,11 @@ def soft_constr_value_print(func):
 
 
 def hard_constr_value_print(func):
+    """_summary_
+
+    Args:
+        func (_type_): _description_
+    """
     def wrapper(self, *args, **kwargs):
         result = func(self, *args, **kwargs)
         self.hard_table.append([func.__name__, result])
@@ -55,6 +73,12 @@ def hard_constr_value_print(func):
 
 
 def print_table(name, table):
+    """_summary_
+
+    Args:
+        name (_type_): _description_
+        table (_type_): _description_
+    """
     print(name)
 
     col_widths = [max(len(str(item)) for item in column) for column in zip(*table)]
@@ -67,6 +91,11 @@ def print_table(name, table):
 
 
 class Shift_placement(Enum):
+    """_summary_
+
+    Args:
+        Enum (_type_): _description_
+    """
     START = 0
     MID = 1
     END = 2
@@ -74,6 +103,11 @@ class Shift_placement(Enum):
 
 @contextmanager
 def redirect_stdout_to_file(file_path):
+    """_summary_
+
+    Args:
+        file_path (_type_): _description_
+    """
     original_stdout = sys.stdout
     with open(file_path, 'w') as file:
         sys.stdout = file

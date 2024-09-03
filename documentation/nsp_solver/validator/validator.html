@@ -1,0 +1,2753 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>nsp_solver.validator.validator API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>nsp_solver.validator.validator</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import logging
+import math
+from nsp_solver.utils import utils
+
+
+class ScheduleValidator:
+    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;
+    def _init_variables(self, schedule, data):
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            schedule (_type_): _description_
+            data (dict): dictionary that contains data from input files
+        &#34;&#34;&#34;
+        self.schedule = schedule
+        self.data = data
+        self.config = data[&#34;configuration&#34;]
+        self.all_days = range(data[&#34;num_days&#34;] * data[&#34;num_weeks&#34;])
+        self.help_vars = self._compute_helpful_values()
+        self.hard_table = []
+        self.soft_table = []
+        self.hard_table.append([&#34;constraint&#34;, &#34;is satisfied&#34;])
+        self.soft_table.append([&#34;constraint&#34;, &#34;objective value&#34;])
+
+    def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            schedule (_type_): _description_
+            data (dict): dictionary that contains data from input files
+            output_file_path (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        self._init_variables(schedule, data)
+        if self._is_schedule_valid():
+            retval = self._get_objective_value_of_schedule()
+            if output_file_path is None:
+                return retval
+            try:
+                with utils.redirect_stdout_to_file(output_file_path):
+                    utils.print_table(&#34;Hard constraints&#34;, self.hard_table)
+                    utils.print_table(&#34;Soft constraints&#34;, self.soft_table)
+                    print(f&#39;Total objective value: {retval}&#39;)
+            except FileNotFoundError:
+                logging.error(&#34;Output directory does not exist&#34;)
+            return retval
+        else:
+            return 99999
+
+    def _is_schedule_valid(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        if self.config[&#34;h1&#34;] and not self._is_max_assignments_per_day_satisfied():
+            print(&#34;is_max_assignments_per_day_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h2&#34;] and not self._is_minimal_capacity_satisfied():
+            print(&#34;is_minimal_capacity_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h3&#34;] and not self._is_shift_successsion_satisfied():
+            print(&#34;is_shift_successsion_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h4&#34;] and not self._is_required_skill_satisfied():
+            print(&#34;is_required_skill_satisfied returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h5&#34;]
+            and not self._is_min_max_consecutive_assignments_satisfied()
+        ):
+            print(&#34;is_min_max_consecutive_assignments_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h6&#34;] and not self._is_min_max_consecutive_days_off_satisfied():
+            print(&#34;is_min_max_consecutive_days_off_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h7&#34;] and not self._is_max_total_incomplete_weekends_satisfied():
+            print(&#34;is_max_total_incomplete_weekends_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h8&#34;] and not self._is_min_max_total_assignments_satisfied():
+            print(&#34;is_min_max_total_assignments_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h9&#34;] and not self._is_min_free_period_satisfied():
+            print(&#34;is_min_free_period_satisfied returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h10&#34;]
+            and not self._is_max_assignments_per_day_with_exception_satisfied()
+        ):
+            print(&#34;is_max_assignments_per_day_with_exception returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h11&#34;]
+            and not self._is_maximum_shifts_of_specific_type_satisfied()
+        ):
+            print(&#34;is_maximum_shifts_of_specific_type_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h12&#34;] and not self._is_planned_vacations_satisfied():
+            print(&#34;is_planned_vacations_satisfied returns False&#34;)
+            return False
+
+        return True
+
+    def _get_objective_value_of_schedule(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        total = 0
+        if self.config[&#34;s1&#34;]:
+            total += self._get_optimal_capacity_value()
+        if self.config[&#34;s2&#34;]:
+            total += self._get_consecutive_assignments_value()
+        if self.config[&#34;s3&#34;]:
+            total += self._get_consecutive_days_off_value()
+        if self.config[&#34;s4&#34;]:
+            total += self._get_assignment_preferences_value()
+        if self.config[&#34;s5&#34;]:
+            total += self._get_incomplete_weekends_value()
+        if self.config[&#34;s6&#34;]:
+            total += self._get_total_assignments_out_of_limits_value()
+        if self.config[&#34;s7&#34;]:
+            total += self._get_total_weekends_over_limit_value()
+        if self.config[&#34;s8&#34;]:
+            total += self._get_total_uses_of_ifneeded_skills_value()
+        if self.config[&#34;s9&#34;]:
+            total += self._get_unsatisfied_overtime_preferences_value()
+        return total
+
+    @utils.hard_constr_value_print
+    def _is_minimal_capacity_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            requirements = self.data[&#34;all_wd_data&#34;][w][&#34;requirements&#34;]
+
+            for req in requirements:
+                all_nurses = self.data[&#34;all_nurses&#34;]
+
+                s = utils.shift_to_int[req[&#34;shiftType&#34;]]
+                sk = utils.skill_to_int[req[&#34;skill&#34;]]
+                minimal_capacities_in_week = [
+                    req[&#34;requirementOnMonday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnTuesday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnWednesday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnThursday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnFriday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnSaturday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnSunday&#34;][&#34;minimum&#34;],
+                ]
+
+                for d, min_capacity in enumerate(minimal_capacities_in_week):
+                    skills_worked = [
+                        self.help_vars[&#34;shifts_and_skills&#34;][n][d + 7 * w][s][sk]
+                        for n in all_nurses
+                    ]
+                    if min_capacity &gt; sum(skills_worked):
+                        return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_assignments_per_day_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+
+        for n in all_nurses:
+            for d in self.all_days:
+                if sum(self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][sk] for s in all_shifts for sk in all_skills) &gt; 1:
+                    # print(f&#34;{n} {d}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_assignments_per_day_with_exception_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+
+        for n in all_nurses:
+            for d in self.all_days:
+                if (
+                    sum(self.help_vars[&#34;shifts&#34;][n][d][1:]) &gt; 1
+                    or sum(self.help_vars[&#34;shifts&#34;][n][d][:-1]) &gt; 1
+                ):
+                    # print(f&#34;{n} {d}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_planned_vacations_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            for n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7: (w + 1) * 7]) &gt; 0:
+                    # print(f&#34;{n} {w}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_maximum_shifts_of_specific_type_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        for n in all_nurses:
+            for restriction in self.data[&#34;sc_data&#34;][&#34;nurses&#34;][n][&#34;restrictions&#34;]:
+                shift_id = utils.shift_to_int[restriction[&#34;type&#34;]]
+                limit = restriction[&#34;limit&#34;]
+                if (
+                    sum(self.help_vars[&#34;shifts&#34;][n][d][shift_id] for d in self.all_days)
+                    &gt; limit
+                ):
+                    # print(f&#34;n{n} res_s{shift_id}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_required_skill_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+
+        for n, nurse_data in enumerate(nurses_data):
+            for sk in all_skills:
+                has_skill = False
+                for skill in nurse_data[&#34;skills&#34;]:
+                    if sk == utils.skill_to_int[skill]:
+                        has_skill = True
+                        break
+                if has_skill is False:
+                    for d in self.all_days:
+                        for s in all_shifts:
+                            if self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][sk] &gt; 0:
+                                return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_shift_successsion_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        restrictions = self.data[&#34;sc_data&#34;][&#34;forbiddenShiftTypeSuccessions&#34;]
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        num_days = self.data[&#34;num_days&#34;] * self.data[&#34;num_weeks&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+
+        shifts = self.help_vars[&#34;shifts&#34;]
+
+        for n in all_nurses:
+            for d in range(num_days - 1):
+                for s in all_shifts:
+                    if restrictions[s][&#34;succeedingShiftTypes&#34;] == []:
+                        continue
+                    if shifts[n][d][s] == 0:
+                        continue
+                    for forbidden_shift_succession in restrictions[s][
+                        &#34;succeedingShiftTypes&#34;
+                    ]:
+                        if (
+                            shifts[n][d + 1][
+                                utils.shift_to_int[forbidden_shift_succession]
+                            ]
+                            == 1
+                        ):
+                            # print(
+                            #     f&#34;{n} {d} {s} {shifts[n][d][s]} {shifts[n][d + 1][utils.shift_to_int[forbidden_shift_succession]]}&#34;
+                            # )
+                            return False
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            if last_shift == utils.shift_to_int[&#34;None&#34;]:
+                break
+            if restrictions[last_shift][&#34;succeedingShiftTypes&#34;] == []:
+                break
+            for forbidden_shift_succession in restrictions[last_shift][
+                &#34;succeedingShiftTypes&#34;
+            ]:
+                if shifts[n][0][utils.shift_to_int[forbidden_shift_succession]] == 1:
+                    # print(
+                    #     f&#34;{n} {s} {last_shift} {utils.shift_to_int[forbidden_shift_succession]}&#34;
+                    # )
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_consecutive_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_consecutive_work_days_satisfied():
+            return False
+        if not self._is_min_consecutive_work_days_satisfied():
+            return False
+        if not self._is_max_consecutive_work_shifts_satisfied():
+            return False
+        if not self._is_min_consecutive_work_shifts_satisfied():
+            return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_consecutive_days_off_satisfied():
+            return False
+        if not self._is_min_consecutive_days_off_satisfied():
+            return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_total_assignments_satisfied():
+            return False
+        if not self._is_min_total_assignments_satisfied():
+            return False
+        return True
+
+    def _is_max_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignmentsHard&#34;]
+
+            if (
+                sum(
+                    [
+                        self.help_vars[&#34;shifts&#34;][n][d][s]
+                        for d in self.all_days
+                        for s in all_shifts
+                    ]
+                )
+                &gt; max_total_assignments
+            ):
+                # print(f&#34;n_{n}_max{max_total_assignments}&#34;)
+                return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_total_incomplete_weekends_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_incomplete_weekends = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfIncompleteWeekendsHard&#34;]
+
+            total_incomplete_weekends = 0
+            for w in all_weeks:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7 + 5: w * 7 + 7]) == 1:
+                    total_incomplete_weekends += 1
+
+            if total_incomplete_weekends &gt; max_total_incomplete_weekends:
+                # print(
+                #     f&#34;n_{n}_max{max_total_incomplete_weekends}_actual{total_incomplete_weekends}&#34;
+                # )
+                return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_free_period_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        all_days = self.data[&#34;all_days&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            min_free_period = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimalFreePeriod&#34;]
+
+            for w in all_weeks:
+                counter = 0
+                max_found_period = 0
+                for d in all_days:
+                    if self.help_vars[&#34;working_days&#34;][n][w * 7 + d] == 0:
+                        counter += 1
+                        if counter &gt;= max_found_period:
+                            max_found_period = counter
+                    else:
+                        counter = 0
+                if max_found_period &lt; min_free_period:
+                    # print(f&#34;n_{n}&#34;)
+                    return False
+
+        return True
+
+    def _is_min_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            if self._is_nurse_on_vacation_any_week(n):
+                continue
+
+            min_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfAssignmentsHard&#34;]
+
+            if (
+                sum(
+                    [
+                        self.help_vars[&#34;shifts&#34;][n][d][s]
+                        for d in self.all_days
+                        for s in all_shifts
+                    ]
+                )
+                &lt; min_total_assignments
+            ):
+                # print(f&#34;n_{n}_min{min_total_assignments}&#34;)
+                return False
+
+        return True
+
+    def _is_max_consecutive_work_days_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            counter = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveWorkingDays&#34;
+            ]
+            max_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveWorkingDaysHard&#34;]
+
+            for d in self.all_days:
+                if self.help_vars[&#34;working_days&#34;][n][d] == 0:
+                    counter = 0
+                counter += self.help_vars[&#34;working_days&#34;][n][d]
+                if counter &gt; max_consecutive_working_days:
+                    # print(f&#34;n_{n}_{d}_max{max_consecutive_working_days}&#34;)
+                    return False
+        return True
+
+    def _is_max_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            counter = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveDaysOff&#34;
+            ]
+            max_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveDaysOffHard&#34;]
+
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    counter = 0
+                    continue
+                if self.help_vars[&#34;working_days&#34;][n][d] == 1:
+                    counter = 0
+                counter += 1 - self.help_vars[&#34;working_days&#34;][n][d]
+                if counter &gt; max_consecutive_days_off:
+                    # print(f&#34;n_{n}_{d}_max{max_consecutive_days_off}&#34;)
+                    return False
+        return True
+
+    def _is_min_consecutive_work_days_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            prev = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveWorkingDays&#34;
+            ]
+            counter = prev
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveWorkingDaysHard&#34;]
+
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    counter = 0
+                    continue
+                if self.help_vars[&#34;working_days&#34;][n][d] == 0:
+                    if counter &gt; 0 and counter &lt; min_consecutive_working_days:
+                        # print(f&#34;n_{n}_{d}_min{min_consecutive_working_days}_prev{prev}&#34;)
+                        return False
+                    counter = 0
+                counter += self.help_vars[&#34;working_days&#34;][n][d]
+        return True
+
+    def _is_min_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            prev = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveDaysOff&#34;
+            ]
+            counter = prev
+            min_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveDaysOffHard&#34;]
+
+            for d in self.all_days:
+                if self.help_vars[&#34;working_days&#34;][n][d] == 1:
+                    if counter &gt; 0 and counter &lt; min_consecutive_days_off:
+                        # print(f&#34;n_{n}_{d}_min{min_consecutive_days_off}_prev{prev}&#34;)
+                        return False
+                    counter = 0
+                counter += 1 - self.help_vars[&#34;working_days&#34;][n][d]
+        return True
+
+    def _is_max_consecutive_work_shifts_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in all_shifts:
+                max_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;maximumNumberOfConsecutiveAssignmentsHard&#34;
+                ]
+                counter = 0
+                if last_shift == s:
+                    counter = consecutive_shifts_prev_week
+                for d in self.all_days:
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 0:
+                        counter = 0
+                    counter += self.help_vars[&#34;shifts&#34;][n][d][s]
+                    if counter &gt; max_consecutive_working_shifts:
+                        # print(f&#34;n_{n}_d_{d}_s_{s}_max{max_consecutive_working_shifts}&#34;)
+                        return False
+
+        return True
+
+    def _is_min_consecutive_work_shifts_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in reversed(all_shifts):
+                min_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;minimumNumberOfConsecutiveAssignmentsHard&#34;
+                ]
+                counter = 0
+                if last_shift == s:
+                    counter = consecutive_shifts_prev_week
+                for d in self.all_days:
+                    w = math.floor(d / 7)
+                    if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                        n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                    ):
+                        counter = 0
+                        continue
+
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 0:
+                        if counter &gt; 0 and counter &lt; min_consecutive_working_shifts:
+                            if (
+                                self.help_vars[&#34;shifts&#34;][n][d - 1][0] == 1
+                                and self.help_vars[&#34;shifts&#34;][n][d - 1][3] == 1
+                            ):
+                                counter = 0
+                                continue
+                            # print(
+                            #     f&#34;n_{n}_d_{d}_s_{s}_min{min_consecutive_working_shifts}_prevshift{consecutive_shifts_prev_week}&#34;
+                            # )
+                            return False
+                        counter = 0
+                    counter += self.help_vars[&#34;shifts&#34;][n][d][s]
+
+        return True
+
+    def _compute_helpful_values(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        num_nurses = self.data[&#34;num_nurses&#34;]
+        num_skills = self.data[&#34;num_skills&#34;]
+        num_shifts = self.data[&#34;num_shifts&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        working_days = [[0 for _ in self.all_days] for _ in range(num_nurses)]
+        shifts = [
+            [[0 for _ in range(num_shifts)] for _ in self.all_days]
+            for _ in range(num_nurses)
+        ]
+        shifts_and_skills = [
+            [
+                [[0 for _ in range(num_skills)] for _ in range(num_shifts)]
+                for _ in self.all_days
+            ]
+            for _ in range(num_nurses)
+        ]
+
+        for n in range(num_nurses):
+            for d in self.all_days:
+                for s in range(num_shifts):
+                    for sk in range(num_skills):
+                        self.schedule[(n, d, s, sk)] = round(
+                            self.schedule[(n, d, s, sk)]
+                        )
+                        shifts_and_skills[n][d][s][sk] = self.schedule[(n, d, s, sk)]
+                    shifts[n][d][s] = sum(
+                        [self.schedule[(n, d, s, sk)] for sk in range(num_skills)]
+                    )
+                working_days[n][d] = utils.isPositiveNumber(sum(shifts[n][d][:]))
+
+        nurses_ids_on_vacation = [
+            list(
+                map(
+                    lambda x: int(x.split(&#34;_&#34;)[1]),
+                    self.data[&#34;all_wd_data&#34;][w][&#34;vacations&#34;],
+                )
+            )
+            for w in all_weeks
+        ]
+
+        ret_val = {}
+        ret_val[&#34;working_days&#34;] = working_days
+        ret_val[&#34;shifts&#34;] = shifts
+        ret_val[&#34;shifts_and_skills&#34;] = shifts_and_skills
+        ret_val[&#34;nurses_ids_on_vacation&#34;] = nurses_ids_on_vacation
+
+        return ret_val
+
+    @utils.soft_constr_value_print
+    def _get_optimal_capacity_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            requirements = self.data[&#34;all_wd_data&#34;][w][&#34;requirements&#34;]
+
+            for req in requirements:
+                all_nurses = self.data[&#34;all_nurses&#34;]
+
+                s = utils.shift_to_int[req[&#34;shiftType&#34;]]
+                sk = utils.skill_to_int[req[&#34;skill&#34;]]
+                optimal_capacities_in_week = [
+                    req[&#34;requirementOnMonday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnTuesday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnWednesday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnThursday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnFriday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnSaturday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnSunday&#34;][&#34;optimal&#34;],
+                ]
+
+                for d, opt_capacity in enumerate(optimal_capacities_in_week):
+                    skills_worked = [
+                        self.help_vars[&#34;shifts_and_skills&#34;][n][d + 7 * w][s][sk]
+                        for n in all_nurses
+                    ]
+                    diff = opt_capacity &gt; sum(skills_worked)
+                    if diff &gt; 0:
+                        subtotal += diff
+        return subtotal * utils.OPT_CAPACITY_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_consecutive_assignments_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        subtotal += self._get_max_consecutive_work_days_value()
+        subtotal += self._get_max_consecutive_shifts_value()
+        subtotal += self._get_min_consecutive_work_days_value()
+        subtotal += self._get_min_consecutive_shifts_value()
+        return subtotal
+
+    def _get_max_consecutive_work_days_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_working_days_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveWorkingDays&#34;]
+            max_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveWorkingDays&#34;]
+            for d in self.all_days:
+                if d &gt; max_consecutive_working_days:
+                    diff = (
+                        sum(
+                            self.help_vars[&#34;working_days&#34;][n][
+                                d - max_consecutive_working_days: d + 1
+                            ]
+                        )
+                        - max_consecutive_working_days
+                    )
+                    if diff &gt; 0:
+                        subtotal += diff
+                else:
+                    if (
+                        consecutive_working_days_prev_week
+                        &gt;= max_consecutive_working_days - d
+                    ):
+                        diff = sum(self.help_vars[&#34;working_days&#34;][n][0: d + 1]) - d
+                        if diff &gt; 0:
+                            subtotal += diff
+
+        return subtotal * utils.CONS_WORK_DAY_WEIGHT
+
+    def _get_max_consecutive_shifts_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        subtotal = 0
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in all_shifts:
+                max_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;maximumNumberOfConsecutiveAssignments&#34;
+                ]
+                for d in self.all_days:
+                    if d &gt;= max_consecutive_working_shifts:
+                        diff = (
+                            sum(
+                                [
+                                    self.help_vars[&#34;shifts&#34;][n][d - dd][s]
+                                    for dd in range(1 + max_consecutive_working_shifts)
+                                ]
+                            )
+                            - max_consecutive_working_shifts
+                        )
+                        if diff &gt; 0:
+                            subtotal += diff * utils.CONS_SHIFT_WEIGHT
+                    else:
+                        if (last_shift == s) and (
+                            consecutive_shifts_prev_week
+                            &gt;= max_consecutive_working_shifts - d
+                        ):
+                            diff = (
+                                sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][dd][s]
+                                        for dd in range(d + 1)
+                                    ]
+                                )
+                                - d
+                            )
+                            if diff &gt; 0:
+                                subtotal += diff * utils.CONS_SHIFT_WEIGHT
+        return subtotal
+
+    def _get_min_consecutive_work_days_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        subtotal = 0
+
+        for n in all_nurses:
+            consecutive_working_days_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveWorkingDays&#34;]
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveWorkingDays&#34;]
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    continue
+                for dd in range(1, min_consecutive_working_days):
+                    if (d - dd) &gt; 0:
+                        diff = (
+                            (1 - self.help_vars[&#34;working_days&#34;][n][d])
+                            + sum(self.help_vars[&#34;working_days&#34;][n][d - dd: d])
+                            + (1 - self.help_vars[&#34;working_days&#34;][n][d - dd - 1])
+                            - (dd + 1)
+                        )
+                        if diff &gt; 0:
+                            subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
+
+                    else:
+                        if consecutive_working_days_prev_week == dd - d:
+                            diff = (
+                                (1 - self.help_vars[&#34;working_days&#34;][n][d])
+                                + sum(self.help_vars[&#34;working_days&#34;][n][0:d])
+                                - d
+                            )
+                            if diff &gt; 0:
+                                subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
+        return subtotal
+
+    def _get_min_consecutive_shifts_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_working_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            lastAssignedShiftType = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][
+                n
+            ][&#34;lastAssignedShiftType&#34;]
+            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    continue
+                for s in all_shifts:
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 1:
+                        continue
+                    min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                        &#34;minimumNumberOfConsecutiveAssignments&#34;
+                    ]
+                    for dd in range(1, min_consecutive_shifts):
+                        if (d - dd) &gt; 0:
+                            diff = (
+                                (1 - self.help_vars[&#34;shifts&#34;][n][d][s])
+                                + sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][ddd][s]
+                                        for ddd in range(d - dd, d)
+                                    ]
+                                )
+                                + (1 - self.help_vars[&#34;shifts&#34;][n][d - dd - 1][s])
+                                - (dd + 1)
+                            )
+                            if diff &gt; 0:
+                                subtotal += utils.CONS_SHIFT_WEIGHT
+                        else:
+                            if (consecutive_working_shifts_prev_week == dd - d) and (
+                                lastShittTypeAsInt == s
+                            ):
+                                working_shifts = sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][ddd][s]
+                                        for ddd in range(d + 1)
+                                    ]
+                                )
+                                if working_shifts &lt; d + 1:
+                                    # print(
+                                    #     f&#39;diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars[&#34;shifts&#34;]}_prev{consecutive_working_shifts_prev_week}&#39;
+                                    # )
+                                    subtotal += utils.CONS_SHIFT_WEIGHT
+                            # if lastShittTypeAsInt != s:
+
+        return subtotal
+
+    @utils.soft_constr_value_print
+    def _get_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        subtotal += self._get_max_consecutive_days_off_value()
+        subtotal += self._get_min_consecutive_days_off_value()
+        return subtotal
+
+    def _get_max_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_days_off_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveDaysOff&#34;]
+            max_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveDaysOff&#34;]
+            for d in self.all_days:
+                if d &gt; max_consecutive_days_off:
+                    if (
+                        sum(
+                            self.help_vars[&#34;working_days&#34;][n][
+                                d - max_consecutive_days_off: d + 1
+                            ]
+                        )
+                        == 0
+                    ):
+                        subtotal += 1
+                else:
+                    if consecutive_days_off_prev_week &gt;= max_consecutive_days_off - d:
+                        if sum(self.help_vars[&#34;working_days&#34;][n][0: d + 1]) == 0:
+                            subtotal += 1
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
+
+    def _get_min_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_days_off_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveDaysOff&#34;]
+            min_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveDaysOff&#34;]
+            for d in self.all_days:
+                for dd in range(1, min_consecutive_days_off):
+                    if (d - dd) &gt; 0:
+                        diff = (
+                            self.help_vars[&#34;working_days&#34;][n][d]
+                            + sum(
+                                [
+                                    (1 - self.help_vars[&#34;working_days&#34;][n][ddd])
+                                    for ddd in range(d - dd, d)
+                                ]
+                            )
+                            + self.help_vars[&#34;working_days&#34;][n][d - dd - 1]
+                            - (dd + 1)
+                        )
+                        if diff &gt; 0:
+                            subtotal += 1
+                    else:
+                        if consecutive_days_off_prev_week &gt;= min_consecutive_days_off:
+                            continue
+                        if consecutive_days_off_prev_week == 0:
+                            continue
+                        if consecutive_days_off_prev_week == dd - d:
+                            working_days = sum(
+                                [
+                                    self.help_vars[&#34;working_days&#34;][n][ddd]
+                                    for ddd in range(0, d + 1)
+                                ]
+                            )
+                            if working_days &gt; 0:
+                                subtotal += 1
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_assignment_preferences_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        for w in self.data[&#34;all_weeks&#34;]:
+            for preference in self.data[&#34;all_wd_data&#34;][w][&#34;shiftOffRequests&#34;]:
+                nurse_id = int(preference[&#34;nurse&#34;].split(&#34;_&#34;)[1])
+                day_id = utils.day_to_int[preference[&#34;day&#34;]]
+                shift_id = utils.shift_to_int[preference[&#34;shiftType&#34;]]
+
+                if shift_id != utils.shift_to_int[&#34;Any&#34;]:
+                    if self.help_vars[&#34;shifts&#34;][nurse_id][day_id][shift_id] == 1:
+                        subtotal += 1
+                else:
+                    if self.help_vars[&#34;working_days&#34;][nurse_id][day_id] == 1:
+                        subtotal += 1
+        return subtotal * utils.UNSATISFIED_PREFERENCE_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_incomplete_weekends_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
+        contracts_data = self.data[&#34;sc_data&#34;][&#34;contracts&#34;]
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for n in all_nurses:
+            isCompleteWeekendRequested = contracts_data[
+                utils.contract_to_int[nurses_data[n][&#34;contract&#34;]]
+            ][&#34;completeWeekends&#34;]
+            if isCompleteWeekendRequested == 1:
+                for w in all_weeks:
+                    if (
+                        self.help_vars[&#34;working_days&#34;][n][w * 7 + 5]
+                        + self.help_vars[&#34;working_days&#34;][n][w * 7 + 6]
+                        == 1
+                    ):
+                        subtotal += 1
+        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_total_assignments_out_of_limits_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignments&#34;]
+            min_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfAssignments&#34;]
+
+            total_assignments = sum(
+                [
+                    self.help_vars[&#34;shifts&#34;][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments &gt; max_total_assignments:
+                subtotal += total_assignments - max_total_assignments
+            if total_assignments &lt; min_total_assignments:
+                if not self._is_nurse_on_vacation_any_week(n):
+                    subtotal += min_total_assignments - total_assignments
+        return subtotal * utils.TOTAL_ASSIGNMENTS_WEIGHT
+
+    def _get_total_uses_of_ifneeded_skills_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            ifneeded_skills = sc_data[&#34;nurses&#34;][n][&#34;skillsIfNeeded&#34;]
+            total_assignments_to_ifneeded_skill = sum(
+                [
+                    self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][utils.skill_to_int[sk]]
+                    for d in self.all_days
+                    for s in all_skills
+                    for sk in ifneeded_skills
+                ]
+            )
+            subtotal += total_assignments_to_ifneeded_skill
+        return subtotal * utils.TOTAL_IFNEEDED_SKILL_WEIGHT
+
+    def _get_unsatisfied_overtime_preferences_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            if self._is_nurse_on_vacation_any_week(n):
+                continue
+            wanted_overtime = sc_data[&#34;nurses&#34;][n][&#34;wantedOvertime&#34;]
+            if wanted_overtime == 0:
+                continue
+            print(sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ])
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignments&#34;]
+            ideal_total_assignments = max_total_assignments + wanted_overtime
+
+            total_assignments = sum(
+                [
+                    self.help_vars[&#34;shifts&#34;][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments &lt; ideal_total_assignments:
+                subtotal += (
+                    ideal_total_assignments - total_assignments
+                ) * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT
+            else:
+                subtotal += (
+                    total_assignments - ideal_total_assignments
+                ) * utils.TOTAL_ASSIGNMENTS_WEIGHT
+        return subtotal
+
+    @utils.soft_constr_value_print
+    def _get_total_weekends_over_limit_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_weekends = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfWorkingWeekends&#34;]
+
+            total_working_weekends = 0
+            for w in all_weeks:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7 + 5: (w + 1) * 7]) &gt; 0:
+                    total_working_weekends += 1
+
+            if total_working_weekends &gt; max_total_weekends:
+                subtotal += total_working_weekends - max_total_weekends
+        return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
+
+    def _is_nurse_on_vacation_any_week(self, nurse_id: int) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            nurse_id (int): _description_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        return self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+            nurse_id
+            in [
+                id
+                for w in self.data[&#34;all_weeks&#34;]
+                for id in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+            ]
+        )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="nsp_solver.validator.validator.ScheduleValidator"><code class="flex name class">
+<span>class <span class="ident">ScheduleValidator</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p><em>summary</em></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ScheduleValidator:
+    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;
+    def _init_variables(self, schedule, data):
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            schedule (_type_): _description_
+            data (dict): dictionary that contains data from input files
+        &#34;&#34;&#34;
+        self.schedule = schedule
+        self.data = data
+        self.config = data[&#34;configuration&#34;]
+        self.all_days = range(data[&#34;num_days&#34;] * data[&#34;num_weeks&#34;])
+        self.help_vars = self._compute_helpful_values()
+        self.hard_table = []
+        self.soft_table = []
+        self.hard_table.append([&#34;constraint&#34;, &#34;is satisfied&#34;])
+        self.soft_table.append([&#34;constraint&#34;, &#34;objective value&#34;])
+
+    def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            schedule (_type_): _description_
+            data (dict): dictionary that contains data from input files
+            output_file_path (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        self._init_variables(schedule, data)
+        if self._is_schedule_valid():
+            retval = self._get_objective_value_of_schedule()
+            if output_file_path is None:
+                return retval
+            try:
+                with utils.redirect_stdout_to_file(output_file_path):
+                    utils.print_table(&#34;Hard constraints&#34;, self.hard_table)
+                    utils.print_table(&#34;Soft constraints&#34;, self.soft_table)
+                    print(f&#39;Total objective value: {retval}&#39;)
+            except FileNotFoundError:
+                logging.error(&#34;Output directory does not exist&#34;)
+            return retval
+        else:
+            return 99999
+
+    def _is_schedule_valid(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        if self.config[&#34;h1&#34;] and not self._is_max_assignments_per_day_satisfied():
+            print(&#34;is_max_assignments_per_day_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h2&#34;] and not self._is_minimal_capacity_satisfied():
+            print(&#34;is_minimal_capacity_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h3&#34;] and not self._is_shift_successsion_satisfied():
+            print(&#34;is_shift_successsion_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h4&#34;] and not self._is_required_skill_satisfied():
+            print(&#34;is_required_skill_satisfied returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h5&#34;]
+            and not self._is_min_max_consecutive_assignments_satisfied()
+        ):
+            print(&#34;is_min_max_consecutive_assignments_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h6&#34;] and not self._is_min_max_consecutive_days_off_satisfied():
+            print(&#34;is_min_max_consecutive_days_off_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h7&#34;] and not self._is_max_total_incomplete_weekends_satisfied():
+            print(&#34;is_max_total_incomplete_weekends_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h8&#34;] and not self._is_min_max_total_assignments_satisfied():
+            print(&#34;is_min_max_total_assignments_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h9&#34;] and not self._is_min_free_period_satisfied():
+            print(&#34;is_min_free_period_satisfied returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h10&#34;]
+            and not self._is_max_assignments_per_day_with_exception_satisfied()
+        ):
+            print(&#34;is_max_assignments_per_day_with_exception returns False&#34;)
+            return False
+
+        if (
+            self.config[&#34;h11&#34;]
+            and not self._is_maximum_shifts_of_specific_type_satisfied()
+        ):
+            print(&#34;is_maximum_shifts_of_specific_type_satisfied returns False&#34;)
+            return False
+
+        if self.config[&#34;h12&#34;] and not self._is_planned_vacations_satisfied():
+            print(&#34;is_planned_vacations_satisfied returns False&#34;)
+            return False
+
+        return True
+
+    def _get_objective_value_of_schedule(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        total = 0
+        if self.config[&#34;s1&#34;]:
+            total += self._get_optimal_capacity_value()
+        if self.config[&#34;s2&#34;]:
+            total += self._get_consecutive_assignments_value()
+        if self.config[&#34;s3&#34;]:
+            total += self._get_consecutive_days_off_value()
+        if self.config[&#34;s4&#34;]:
+            total += self._get_assignment_preferences_value()
+        if self.config[&#34;s5&#34;]:
+            total += self._get_incomplete_weekends_value()
+        if self.config[&#34;s6&#34;]:
+            total += self._get_total_assignments_out_of_limits_value()
+        if self.config[&#34;s7&#34;]:
+            total += self._get_total_weekends_over_limit_value()
+        if self.config[&#34;s8&#34;]:
+            total += self._get_total_uses_of_ifneeded_skills_value()
+        if self.config[&#34;s9&#34;]:
+            total += self._get_unsatisfied_overtime_preferences_value()
+        return total
+
+    @utils.hard_constr_value_print
+    def _is_minimal_capacity_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            requirements = self.data[&#34;all_wd_data&#34;][w][&#34;requirements&#34;]
+
+            for req in requirements:
+                all_nurses = self.data[&#34;all_nurses&#34;]
+
+                s = utils.shift_to_int[req[&#34;shiftType&#34;]]
+                sk = utils.skill_to_int[req[&#34;skill&#34;]]
+                minimal_capacities_in_week = [
+                    req[&#34;requirementOnMonday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnTuesday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnWednesday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnThursday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnFriday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnSaturday&#34;][&#34;minimum&#34;],
+                    req[&#34;requirementOnSunday&#34;][&#34;minimum&#34;],
+                ]
+
+                for d, min_capacity in enumerate(minimal_capacities_in_week):
+                    skills_worked = [
+                        self.help_vars[&#34;shifts_and_skills&#34;][n][d + 7 * w][s][sk]
+                        for n in all_nurses
+                    ]
+                    if min_capacity &gt; sum(skills_worked):
+                        return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_assignments_per_day_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+
+        for n in all_nurses:
+            for d in self.all_days:
+                if sum(self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][sk] for s in all_shifts for sk in all_skills) &gt; 1:
+                    # print(f&#34;{n} {d}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_assignments_per_day_with_exception_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+
+        for n in all_nurses:
+            for d in self.all_days:
+                if (
+                    sum(self.help_vars[&#34;shifts&#34;][n][d][1:]) &gt; 1
+                    or sum(self.help_vars[&#34;shifts&#34;][n][d][:-1]) &gt; 1
+                ):
+                    # print(f&#34;{n} {d}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_planned_vacations_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            for n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7: (w + 1) * 7]) &gt; 0:
+                    # print(f&#34;{n} {w}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_maximum_shifts_of_specific_type_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        for n in all_nurses:
+            for restriction in self.data[&#34;sc_data&#34;][&#34;nurses&#34;][n][&#34;restrictions&#34;]:
+                shift_id = utils.shift_to_int[restriction[&#34;type&#34;]]
+                limit = restriction[&#34;limit&#34;]
+                if (
+                    sum(self.help_vars[&#34;shifts&#34;][n][d][shift_id] for d in self.all_days)
+                    &gt; limit
+                ):
+                    # print(f&#34;n{n} res_s{shift_id}&#34;)
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_required_skill_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+
+        for n, nurse_data in enumerate(nurses_data):
+            for sk in all_skills:
+                has_skill = False
+                for skill in nurse_data[&#34;skills&#34;]:
+                    if sk == utils.skill_to_int[skill]:
+                        has_skill = True
+                        break
+                if has_skill is False:
+                    for d in self.all_days:
+                        for s in all_shifts:
+                            if self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][sk] &gt; 0:
+                                return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_shift_successsion_satisfied(self) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        restrictions = self.data[&#34;sc_data&#34;][&#34;forbiddenShiftTypeSuccessions&#34;]
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        num_days = self.data[&#34;num_days&#34;] * self.data[&#34;num_weeks&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+
+        shifts = self.help_vars[&#34;shifts&#34;]
+
+        for n in all_nurses:
+            for d in range(num_days - 1):
+                for s in all_shifts:
+                    if restrictions[s][&#34;succeedingShiftTypes&#34;] == []:
+                        continue
+                    if shifts[n][d][s] == 0:
+                        continue
+                    for forbidden_shift_succession in restrictions[s][
+                        &#34;succeedingShiftTypes&#34;
+                    ]:
+                        if (
+                            shifts[n][d + 1][
+                                utils.shift_to_int[forbidden_shift_succession]
+                            ]
+                            == 1
+                        ):
+                            # print(
+                            #     f&#34;{n} {d} {s} {shifts[n][d][s]} {shifts[n][d + 1][utils.shift_to_int[forbidden_shift_succession]]}&#34;
+                            # )
+                            return False
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            if last_shift == utils.shift_to_int[&#34;None&#34;]:
+                break
+            if restrictions[last_shift][&#34;succeedingShiftTypes&#34;] == []:
+                break
+            for forbidden_shift_succession in restrictions[last_shift][
+                &#34;succeedingShiftTypes&#34;
+            ]:
+                if shifts[n][0][utils.shift_to_int[forbidden_shift_succession]] == 1:
+                    # print(
+                    #     f&#34;{n} {s} {last_shift} {utils.shift_to_int[forbidden_shift_succession]}&#34;
+                    # )
+                    return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_consecutive_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_consecutive_work_days_satisfied():
+            return False
+        if not self._is_min_consecutive_work_days_satisfied():
+            return False
+        if not self._is_max_consecutive_work_shifts_satisfied():
+            return False
+        if not self._is_min_consecutive_work_shifts_satisfied():
+            return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_consecutive_days_off_satisfied():
+            return False
+        if not self._is_min_consecutive_days_off_satisfied():
+            return False
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_max_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        if not self._is_max_total_assignments_satisfied():
+            return False
+        if not self._is_min_total_assignments_satisfied():
+            return False
+        return True
+
+    def _is_max_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignmentsHard&#34;]
+
+            if (
+                sum(
+                    [
+                        self.help_vars[&#34;shifts&#34;][n][d][s]
+                        for d in self.all_days
+                        for s in all_shifts
+                    ]
+                )
+                &gt; max_total_assignments
+            ):
+                # print(f&#34;n_{n}_max{max_total_assignments}&#34;)
+                return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_max_total_incomplete_weekends_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_incomplete_weekends = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfIncompleteWeekendsHard&#34;]
+
+            total_incomplete_weekends = 0
+            for w in all_weeks:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7 + 5: w * 7 + 7]) == 1:
+                    total_incomplete_weekends += 1
+
+            if total_incomplete_weekends &gt; max_total_incomplete_weekends:
+                # print(
+                #     f&#34;n_{n}_max{max_total_incomplete_weekends}_actual{total_incomplete_weekends}&#34;
+                # )
+                return False
+
+        return True
+
+    @utils.hard_constr_value_print
+    def _is_min_free_period_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        all_days = self.data[&#34;all_days&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            min_free_period = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimalFreePeriod&#34;]
+
+            for w in all_weeks:
+                counter = 0
+                max_found_period = 0
+                for d in all_days:
+                    if self.help_vars[&#34;working_days&#34;][n][w * 7 + d] == 0:
+                        counter += 1
+                        if counter &gt;= max_found_period:
+                            max_found_period = counter
+                    else:
+                        counter = 0
+                if max_found_period &lt; min_free_period:
+                    # print(f&#34;n_{n}&#34;)
+                    return False
+
+        return True
+
+    def _is_min_total_assignments_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            if self._is_nurse_on_vacation_any_week(n):
+                continue
+
+            min_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfAssignmentsHard&#34;]
+
+            if (
+                sum(
+                    [
+                        self.help_vars[&#34;shifts&#34;][n][d][s]
+                        for d in self.all_days
+                        for s in all_shifts
+                    ]
+                )
+                &lt; min_total_assignments
+            ):
+                # print(f&#34;n_{n}_min{min_total_assignments}&#34;)
+                return False
+
+        return True
+
+    def _is_max_consecutive_work_days_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            counter = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveWorkingDays&#34;
+            ]
+            max_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveWorkingDaysHard&#34;]
+
+            for d in self.all_days:
+                if self.help_vars[&#34;working_days&#34;][n][d] == 0:
+                    counter = 0
+                counter += self.help_vars[&#34;working_days&#34;][n][d]
+                if counter &gt; max_consecutive_working_days:
+                    # print(f&#34;n_{n}_{d}_max{max_consecutive_working_days}&#34;)
+                    return False
+        return True
+
+    def _is_max_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            counter = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveDaysOff&#34;
+            ]
+            max_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveDaysOffHard&#34;]
+
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    counter = 0
+                    continue
+                if self.help_vars[&#34;working_days&#34;][n][d] == 1:
+                    counter = 0
+                counter += 1 - self.help_vars[&#34;working_days&#34;][n][d]
+                if counter &gt; max_consecutive_days_off:
+                    # print(f&#34;n_{n}_{d}_max{max_consecutive_days_off}&#34;)
+                    return False
+        return True
+
+    def _is_min_consecutive_work_days_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            prev = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveWorkingDays&#34;
+            ]
+            counter = prev
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveWorkingDaysHard&#34;]
+
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    counter = 0
+                    continue
+                if self.help_vars[&#34;working_days&#34;][n][d] == 0:
+                    if counter &gt; 0 and counter &lt; min_consecutive_working_days:
+                        # print(f&#34;n_{n}_{d}_min{min_consecutive_working_days}_prev{prev}&#34;)
+                        return False
+                    counter = 0
+                counter += self.help_vars[&#34;working_days&#34;][n][d]
+        return True
+
+    def _is_min_consecutive_days_off_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            prev = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                &#34;numberOfConsecutiveDaysOff&#34;
+            ]
+            counter = prev
+            min_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveDaysOffHard&#34;]
+
+            for d in self.all_days:
+                if self.help_vars[&#34;working_days&#34;][n][d] == 1:
+                    if counter &gt; 0 and counter &lt; min_consecutive_days_off:
+                        # print(f&#34;n_{n}_{d}_min{min_consecutive_days_off}_prev{prev}&#34;)
+                        return False
+                    counter = 0
+                counter += 1 - self.help_vars[&#34;working_days&#34;][n][d]
+        return True
+
+    def _is_max_consecutive_work_shifts_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in all_shifts:
+                max_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;maximumNumberOfConsecutiveAssignmentsHard&#34;
+                ]
+                counter = 0
+                if last_shift == s:
+                    counter = consecutive_shifts_prev_week
+                for d in self.all_days:
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 0:
+                        counter = 0
+                    counter += self.help_vars[&#34;shifts&#34;][n][d][s]
+                    if counter &gt; max_consecutive_working_shifts:
+                        # print(f&#34;n_{n}_d_{d}_s_{s}_max{max_consecutive_working_shifts}&#34;)
+                        return False
+
+        return True
+
+    def _is_min_consecutive_work_shifts_satisfied(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in reversed(all_shifts):
+                min_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;minimumNumberOfConsecutiveAssignmentsHard&#34;
+                ]
+                counter = 0
+                if last_shift == s:
+                    counter = consecutive_shifts_prev_week
+                for d in self.all_days:
+                    w = math.floor(d / 7)
+                    if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                        n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                    ):
+                        counter = 0
+                        continue
+
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 0:
+                        if counter &gt; 0 and counter &lt; min_consecutive_working_shifts:
+                            if (
+                                self.help_vars[&#34;shifts&#34;][n][d - 1][0] == 1
+                                and self.help_vars[&#34;shifts&#34;][n][d - 1][3] == 1
+                            ):
+                                counter = 0
+                                continue
+                            # print(
+                            #     f&#34;n_{n}_d_{d}_s_{s}_min{min_consecutive_working_shifts}_prevshift{consecutive_shifts_prev_week}&#34;
+                            # )
+                            return False
+                        counter = 0
+                    counter += self.help_vars[&#34;shifts&#34;][n][d][s]
+
+        return True
+
+    def _compute_helpful_values(self):
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            _type_: _description_
+        &#34;&#34;&#34;
+        num_nurses = self.data[&#34;num_nurses&#34;]
+        num_skills = self.data[&#34;num_skills&#34;]
+        num_shifts = self.data[&#34;num_shifts&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        working_days = [[0 for _ in self.all_days] for _ in range(num_nurses)]
+        shifts = [
+            [[0 for _ in range(num_shifts)] for _ in self.all_days]
+            for _ in range(num_nurses)
+        ]
+        shifts_and_skills = [
+            [
+                [[0 for _ in range(num_skills)] for _ in range(num_shifts)]
+                for _ in self.all_days
+            ]
+            for _ in range(num_nurses)
+        ]
+
+        for n in range(num_nurses):
+            for d in self.all_days:
+                for s in range(num_shifts):
+                    for sk in range(num_skills):
+                        self.schedule[(n, d, s, sk)] = round(
+                            self.schedule[(n, d, s, sk)]
+                        )
+                        shifts_and_skills[n][d][s][sk] = self.schedule[(n, d, s, sk)]
+                    shifts[n][d][s] = sum(
+                        [self.schedule[(n, d, s, sk)] for sk in range(num_skills)]
+                    )
+                working_days[n][d] = utils.isPositiveNumber(sum(shifts[n][d][:]))
+
+        nurses_ids_on_vacation = [
+            list(
+                map(
+                    lambda x: int(x.split(&#34;_&#34;)[1]),
+                    self.data[&#34;all_wd_data&#34;][w][&#34;vacations&#34;],
+                )
+            )
+            for w in all_weeks
+        ]
+
+        ret_val = {}
+        ret_val[&#34;working_days&#34;] = working_days
+        ret_val[&#34;shifts&#34;] = shifts
+        ret_val[&#34;shifts_and_skills&#34;] = shifts_and_skills
+        ret_val[&#34;nurses_ids_on_vacation&#34;] = nurses_ids_on_vacation
+
+        return ret_val
+
+    @utils.soft_constr_value_print
+    def _get_optimal_capacity_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for w in all_weeks:
+            requirements = self.data[&#34;all_wd_data&#34;][w][&#34;requirements&#34;]
+
+            for req in requirements:
+                all_nurses = self.data[&#34;all_nurses&#34;]
+
+                s = utils.shift_to_int[req[&#34;shiftType&#34;]]
+                sk = utils.skill_to_int[req[&#34;skill&#34;]]
+                optimal_capacities_in_week = [
+                    req[&#34;requirementOnMonday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnTuesday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnWednesday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnThursday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnFriday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnSaturday&#34;][&#34;optimal&#34;],
+                    req[&#34;requirementOnSunday&#34;][&#34;optimal&#34;],
+                ]
+
+                for d, opt_capacity in enumerate(optimal_capacities_in_week):
+                    skills_worked = [
+                        self.help_vars[&#34;shifts_and_skills&#34;][n][d + 7 * w][s][sk]
+                        for n in all_nurses
+                    ]
+                    diff = opt_capacity &gt; sum(skills_worked)
+                    if diff &gt; 0:
+                        subtotal += diff
+        return subtotal * utils.OPT_CAPACITY_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_consecutive_assignments_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        subtotal += self._get_max_consecutive_work_days_value()
+        subtotal += self._get_max_consecutive_shifts_value()
+        subtotal += self._get_min_consecutive_work_days_value()
+        subtotal += self._get_min_consecutive_shifts_value()
+        return subtotal
+
+    def _get_max_consecutive_work_days_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_working_days_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveWorkingDays&#34;]
+            max_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveWorkingDays&#34;]
+            for d in self.all_days:
+                if d &gt; max_consecutive_working_days:
+                    diff = (
+                        sum(
+                            self.help_vars[&#34;working_days&#34;][n][
+                                d - max_consecutive_working_days: d + 1
+                            ]
+                        )
+                        - max_consecutive_working_days
+                    )
+                    if diff &gt; 0:
+                        subtotal += diff
+                else:
+                    if (
+                        consecutive_working_days_prev_week
+                        &gt;= max_consecutive_working_days - d
+                    ):
+                        diff = sum(self.help_vars[&#34;working_days&#34;][n][0: d + 1]) - d
+                        if diff &gt; 0:
+                            subtotal += diff
+
+        return subtotal * utils.CONS_WORK_DAY_WEIGHT
+
+    def _get_max_consecutive_shifts_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        subtotal = 0
+
+        for n in all_nurses:
+            last_shift = utils.shift_to_int[
+                self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][n][
+                    &#34;lastAssignedShiftType&#34;
+                ]
+            ]
+            consecutive_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            for s in all_shifts:
+                max_consecutive_working_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                    &#34;maximumNumberOfConsecutiveAssignments&#34;
+                ]
+                for d in self.all_days:
+                    if d &gt;= max_consecutive_working_shifts:
+                        diff = (
+                            sum(
+                                [
+                                    self.help_vars[&#34;shifts&#34;][n][d - dd][s]
+                                    for dd in range(1 + max_consecutive_working_shifts)
+                                ]
+                            )
+                            - max_consecutive_working_shifts
+                        )
+                        if diff &gt; 0:
+                            subtotal += diff * utils.CONS_SHIFT_WEIGHT
+                    else:
+                        if (last_shift == s) and (
+                            consecutive_shifts_prev_week
+                            &gt;= max_consecutive_working_shifts - d
+                        ):
+                            diff = (
+                                sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][dd][s]
+                                        for dd in range(d + 1)
+                                    ]
+                                )
+                                - d
+                            )
+                            if diff &gt; 0:
+                                subtotal += diff * utils.CONS_SHIFT_WEIGHT
+        return subtotal
+
+    def _get_min_consecutive_work_days_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        subtotal = 0
+
+        for n in all_nurses:
+            consecutive_working_days_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveWorkingDays&#34;]
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveWorkingDays&#34;]
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    continue
+                for dd in range(1, min_consecutive_working_days):
+                    if (d - dd) &gt; 0:
+                        diff = (
+                            (1 - self.help_vars[&#34;working_days&#34;][n][d])
+                            + sum(self.help_vars[&#34;working_days&#34;][n][d - dd: d])
+                            + (1 - self.help_vars[&#34;working_days&#34;][n][d - dd - 1])
+                            - (dd + 1)
+                        )
+                        if diff &gt; 0:
+                            subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
+
+                    else:
+                        if consecutive_working_days_prev_week == dd - d:
+                            diff = (
+                                (1 - self.help_vars[&#34;working_days&#34;][n][d])
+                                + sum(self.help_vars[&#34;working_days&#34;][n][0:d])
+                                - d
+                            )
+                            if diff &gt; 0:
+                                subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
+        return subtotal
+
+    def _get_min_consecutive_shifts_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_working_shifts_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveAssignments&#34;]
+            lastAssignedShiftType = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][
+                n
+            ][&#34;lastAssignedShiftType&#34;]
+            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            for d in self.all_days:
+                w = math.floor(d / 7)
+                if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+                    n in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+                ):
+                    continue
+                for s in all_shifts:
+                    if self.help_vars[&#34;shifts&#34;][n][d][s] == 1:
+                        continue
+                    min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
+                        &#34;minimumNumberOfConsecutiveAssignments&#34;
+                    ]
+                    for dd in range(1, min_consecutive_shifts):
+                        if (d - dd) &gt; 0:
+                            diff = (
+                                (1 - self.help_vars[&#34;shifts&#34;][n][d][s])
+                                + sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][ddd][s]
+                                        for ddd in range(d - dd, d)
+                                    ]
+                                )
+                                + (1 - self.help_vars[&#34;shifts&#34;][n][d - dd - 1][s])
+                                - (dd + 1)
+                            )
+                            if diff &gt; 0:
+                                subtotal += utils.CONS_SHIFT_WEIGHT
+                        else:
+                            if (consecutive_working_shifts_prev_week == dd - d) and (
+                                lastShittTypeAsInt == s
+                            ):
+                                working_shifts = sum(
+                                    [
+                                        self.help_vars[&#34;shifts&#34;][n][ddd][s]
+                                        for ddd in range(d + 1)
+                                    ]
+                                )
+                                if working_shifts &lt; d + 1:
+                                    # print(
+                                    #     f&#39;diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars[&#34;shifts&#34;]}_prev{consecutive_working_shifts_prev_week}&#39;
+                                    # )
+                                    subtotal += utils.CONS_SHIFT_WEIGHT
+                            # if lastShittTypeAsInt != s:
+
+        return subtotal
+
+    @utils.soft_constr_value_print
+    def _get_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        subtotal += self._get_max_consecutive_days_off_value()
+        subtotal += self._get_min_consecutive_days_off_value()
+        return subtotal
+
+    def _get_max_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_days_off_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveDaysOff&#34;]
+            max_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfConsecutiveDaysOff&#34;]
+            for d in self.all_days:
+                if d &gt; max_consecutive_days_off:
+                    if (
+                        sum(
+                            self.help_vars[&#34;working_days&#34;][n][
+                                d - max_consecutive_days_off: d + 1
+                            ]
+                        )
+                        == 0
+                    ):
+                        subtotal += 1
+                else:
+                    if consecutive_days_off_prev_week &gt;= max_consecutive_days_off - d:
+                        if sum(self.help_vars[&#34;working_days&#34;][n][0: d + 1]) == 0:
+                            subtotal += 1
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
+
+    def _get_min_consecutive_days_off_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            consecutive_days_off_prev_week = self.data[&#34;h0_data_original&#34;][
+                &#34;nurseHistory&#34;
+            ][n][&#34;numberOfConsecutiveDaysOff&#34;]
+            min_consecutive_days_off = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfConsecutiveDaysOff&#34;]
+            for d in self.all_days:
+                for dd in range(1, min_consecutive_days_off):
+                    if (d - dd) &gt; 0:
+                        diff = (
+                            self.help_vars[&#34;working_days&#34;][n][d]
+                            + sum(
+                                [
+                                    (1 - self.help_vars[&#34;working_days&#34;][n][ddd])
+                                    for ddd in range(d - dd, d)
+                                ]
+                            )
+                            + self.help_vars[&#34;working_days&#34;][n][d - dd - 1]
+                            - (dd + 1)
+                        )
+                        if diff &gt; 0:
+                            subtotal += 1
+                    else:
+                        if consecutive_days_off_prev_week &gt;= min_consecutive_days_off:
+                            continue
+                        if consecutive_days_off_prev_week == 0:
+                            continue
+                        if consecutive_days_off_prev_week == dd - d:
+                            working_days = sum(
+                                [
+                                    self.help_vars[&#34;working_days&#34;][n][ddd]
+                                    for ddd in range(0, d + 1)
+                                ]
+                            )
+                            if working_days &gt; 0:
+                                subtotal += 1
+        return subtotal * utils.CONS_DAY_OFF_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_assignment_preferences_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        for w in self.data[&#34;all_weeks&#34;]:
+            for preference in self.data[&#34;all_wd_data&#34;][w][&#34;shiftOffRequests&#34;]:
+                nurse_id = int(preference[&#34;nurse&#34;].split(&#34;_&#34;)[1])
+                day_id = utils.day_to_int[preference[&#34;day&#34;]]
+                shift_id = utils.shift_to_int[preference[&#34;shiftType&#34;]]
+
+                if shift_id != utils.shift_to_int[&#34;Any&#34;]:
+                    if self.help_vars[&#34;shifts&#34;][nurse_id][day_id][shift_id] == 1:
+                        subtotal += 1
+                else:
+                    if self.help_vars[&#34;working_days&#34;][nurse_id][day_id] == 1:
+                        subtotal += 1
+        return subtotal * utils.UNSATISFIED_PREFERENCE_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_incomplete_weekends_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
+        contracts_data = self.data[&#34;sc_data&#34;][&#34;contracts&#34;]
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+
+        for n in all_nurses:
+            isCompleteWeekendRequested = contracts_data[
+                utils.contract_to_int[nurses_data[n][&#34;contract&#34;]]
+            ][&#34;completeWeekends&#34;]
+            if isCompleteWeekendRequested == 1:
+                for w in all_weeks:
+                    if (
+                        self.help_vars[&#34;working_days&#34;][n][w * 7 + 5]
+                        + self.help_vars[&#34;working_days&#34;][n][w * 7 + 6]
+                        == 1
+                    ):
+                        subtotal += 1
+        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+
+    @utils.soft_constr_value_print
+    def _get_total_assignments_out_of_limits_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignments&#34;]
+            min_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;minimumNumberOfAssignments&#34;]
+
+            total_assignments = sum(
+                [
+                    self.help_vars[&#34;shifts&#34;][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments &gt; max_total_assignments:
+                subtotal += total_assignments - max_total_assignments
+            if total_assignments &lt; min_total_assignments:
+                if not self._is_nurse_on_vacation_any_week(n):
+                    subtotal += min_total_assignments - total_assignments
+        return subtotal * utils.TOTAL_ASSIGNMENTS_WEIGHT
+
+    def _get_total_uses_of_ifneeded_skills_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_skills = self.data[&#34;all_skills&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            ifneeded_skills = sc_data[&#34;nurses&#34;][n][&#34;skillsIfNeeded&#34;]
+            total_assignments_to_ifneeded_skill = sum(
+                [
+                    self.help_vars[&#34;shifts_and_skills&#34;][n][d][s][utils.skill_to_int[sk]]
+                    for d in self.all_days
+                    for s in all_skills
+                    for sk in ifneeded_skills
+                ]
+            )
+            subtotal += total_assignments_to_ifneeded_skill
+        return subtotal * utils.TOTAL_IFNEEDED_SKILL_WEIGHT
+
+    def _get_unsatisfied_overtime_preferences_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_shifts = self.data[&#34;all_shifts&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            if self._is_nurse_on_vacation_any_week(n):
+                continue
+            wanted_overtime = sc_data[&#34;nurses&#34;][n][&#34;wantedOvertime&#34;]
+            if wanted_overtime == 0:
+                continue
+            print(sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ])
+            max_total_assignments = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfAssignments&#34;]
+            ideal_total_assignments = max_total_assignments + wanted_overtime
+
+            total_assignments = sum(
+                [
+                    self.help_vars[&#34;shifts&#34;][n][d][s]
+                    for d in self.all_days
+                    for s in all_shifts
+                ]
+            )
+            if total_assignments &lt; ideal_total_assignments:
+                subtotal += (
+                    ideal_total_assignments - total_assignments
+                ) * utils.UNSATISFIED_OVERTIME_PREFERENCE_WEIGHT
+            else:
+                subtotal += (
+                    total_assignments - ideal_total_assignments
+                ) * utils.TOTAL_ASSIGNMENTS_WEIGHT
+        return subtotal
+
+    @utils.soft_constr_value_print
+    def _get_total_weekends_over_limit_value(self) -&gt; int:
+        &#34;&#34;&#34;_summary_
+
+        Returns:
+            int: _description_
+        &#34;&#34;&#34;
+        subtotal = 0
+        all_nurses = self.data[&#34;all_nurses&#34;]
+        all_weeks = self.data[&#34;all_weeks&#34;]
+        sc_data = self.data[&#34;sc_data&#34;]
+
+        for n in all_nurses:
+            max_total_weekends = sc_data[&#34;contracts&#34;][
+                utils.contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
+            ][&#34;maximumNumberOfWorkingWeekends&#34;]
+
+            total_working_weekends = 0
+            for w in all_weeks:
+                if sum(self.help_vars[&#34;working_days&#34;][n][w * 7 + 5: (w + 1) * 7]) &gt; 0:
+                    total_working_weekends += 1
+
+            if total_working_weekends &gt; max_total_weekends:
+                subtotal += total_working_weekends - max_total_weekends
+        return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
+
+    def _is_nurse_on_vacation_any_week(self, nurse_id: int) -&gt; bool:
+        &#34;&#34;&#34;_summary_
+
+        Args:
+            nurse_id (int): _description_
+
+        Returns:
+            bool: _description_
+        &#34;&#34;&#34;
+        return self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
+            nurse_id
+            in [
+                id
+                for w in self.data[&#34;all_weeks&#34;]
+                for id in self.help_vars[&#34;nurses_ids_on_vacation&#34;][w]
+            ]
+        )</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="nsp_solver.validator.validator.ScheduleValidator.evaluate_schedule"><code class="name flex">
+<span>def <span class="ident">evaluate_schedule</span></span>(<span>self, schedule, data, output_file_path=None) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p><em>summary</em></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>schedule</code></strong> :&ensp;<code>_type_</code></dt>
+<dd><em>description</em></dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>dictionary that contains data from input files</dd>
+<dt><strong><code>output_file_path</code></strong> :&ensp;<code>_type_</code>, optional</dt>
+<dd><em>description</em>. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd><em>description</em></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
+    &#34;&#34;&#34;_summary_
+
+    Args:
+        schedule (_type_): _description_
+        data (dict): dictionary that contains data from input files
+        output_file_path (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        int: _description_
+    &#34;&#34;&#34;
+    self._init_variables(schedule, data)
+    if self._is_schedule_valid():
+        retval = self._get_objective_value_of_schedule()
+        if output_file_path is None:
+            return retval
+        try:
+            with utils.redirect_stdout_to_file(output_file_path):
+                utils.print_table(&#34;Hard constraints&#34;, self.hard_table)
+                utils.print_table(&#34;Soft constraints&#34;, self.soft_table)
+                print(f&#39;Total objective value: {retval}&#39;)
+        except FileNotFoundError:
+            logging.error(&#34;Output directory does not exist&#34;)
+        return retval
+    else:
+        return 99999</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="nsp_solver.validator" href="index.html">nsp_solver.validator</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="nsp_solver.validator.validator.ScheduleValidator" href="#nsp_solver.validator.validator.ScheduleValidator">ScheduleValidator</a></code></h4>
+<ul class="">
+<li><code><a title="nsp_solver.validator.validator.ScheduleValidator.evaluate_schedule" href="#nsp_solver.validator.validator.ScheduleValidator.evaluate_schedule">evaluate_schedule</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

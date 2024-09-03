@@ -2,17 +2,30 @@ from nsp_solver.utils import utils
 
 
 class HistorySimulator:
+    """Class responsible for updating the history data for computation of the next week.
+    """
 
-    def update_history_for_next_week(self, results, data):
+    def update_history_for_next_week(self, results: dict, data: dict):
+        """Updates the value of data["h0_data"] with new data derived from the newly computed week.
+
+        Args:
+            results (dict): partially computed schedule
+            data (dict): data from input files
+        """
+
         week_number = data["h0_data"]["week"]
         data["h0_data"]["week"] += 1
         working_days, shifts = self._compute_helpful_values(results, data, week_number)
 
         self._update_border_data(data, working_days, shifts)
         self._update_cumulative_data(data, working_days, shifts)
-        # print(history_data["nurseHistory"])
 
     def _update_border_data(self, data, working_days, shifts):
+        """Updates the border data, namely:
+        the number of consecutive days off at the end of the week,
+        the number of consecutive working days,
+        the number of consecutive assignment of the same shift type.
+        """
         for n in range(data["num_nurses"]):
             if working_days[n][6] == 0:
                 consecutive_free_days = 1
@@ -57,6 +70,11 @@ class HistorySimulator:
                 ] = consecutive_shifts
 
     def _update_cumulative_data(self, data, working_days, shifts):
+        """Updated the cumulative data containing info accumulated over all computed weeks, namely:
+        the number of assignments,
+        the number of working weekends,
+        the number of incomplete weekends.
+        """
         for n in range(data["num_nurses"]):
             for d in range(data["num_days"]):
                 for s in range(data["num_shifts"]):
@@ -68,6 +86,8 @@ class HistorySimulator:
                 data["h0_data"]["nurseHistory"][n]["numberOfIncompleteWeekends"] += weekend_working_days
 
     def _compute_helpful_values(self, results, data, week_number):
+        """Computes helpful values from the computed schedule and return them as 2 dictionaries.
+        """
         num_days = data["num_days"]
         num_nurses = data["num_nurses"]
         num_skills = data["num_skills"]
@@ -88,7 +108,15 @@ class HistorySimulator:
 
         return working_days, shifts
 
-    def __isPositiveNumber(self, number):
+    def __isPositiveNumber(self, number: int) -> int:
+        """Checks if the given number is a positive number.
+
+        Args:
+            number (int): integer number to be checked
+
+        Returns:
+            int: 1 if number is positive and 0 otherwise
+        """
         if number > 0:
             return 1
         return 0

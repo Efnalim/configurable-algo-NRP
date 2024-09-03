@@ -10,9 +10,17 @@ from nsp_solver.utils import utils
 
 
 class CplexSolver(NSP_solver):
+    """Child Class from NSP_solver that uses MILP cplex solver via API to compute a schedule per week.
+    """
     name = 'CPLEX'
 
     def prepare_help_data(self, data, results):
+        """Prepares helpful data for other methods.
+
+        Args:
+            data (dict): dictionary that contains data from input files
+            results (dict): dictionary used to store partially computed schedule
+        """
         week_number = data["h0_data"]["week"]
 
         data["wd_data"]["vacations_with_ids"] = list(
@@ -24,7 +32,13 @@ class CplexSolver(NSP_solver):
     def init_ilp_vars(self, model, data):
         """
         Initializes basic variables for primarly for hard contraints.
-        Returns a dictionary 'basic_ILP_vars' containing the names of those variables for further manipulation.
+
+        Args:
+            model: object that represents the mathematical model
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            dict: dictionary 'basic_ILP_vars' that contains the names variables of the mathematical model
         """
 
         all_nurses = data["all_nurses"]
@@ -240,6 +254,11 @@ class CplexSolver(NSP_solver):
     def add_shift_succession_reqs(self, model, basic_ILP_vars, data):
         """
         Adds hard constraint that disables invalid pairs of succcessive shift types.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
         """
 
         all_nurses = data["all_nurses"]
@@ -313,8 +332,12 @@ class CplexSolver(NSP_solver):
                         )
 
     def add_missing_skill_req(self, model, basic_ILP_vars, data):
-        """
-        Adds hard constraint that disables nurses working shift with a skill that they do not possess.
+        """Adds hard constraint that disables nurses working shift with a skill that they do not possess.
+
+        Args:
+            model (_type_): _description_
+            basic_ILP_vars (_type_): _description_
+            data (_type_): _description_
         """
 
         all_shifts = data["all_shifts"]
@@ -342,8 +365,12 @@ class CplexSolver(NSP_solver):
                             )
 
     def add_hard_constrains(self, model, basic_ILP_vars, data):
-        """
-        Adds all hard constraints to the model.
+        """Adds all hard constraints to the model.
+
+        Args:
+            model (_type_): _description_
+            basic_ILP_vars (_type_): _description_
+            data (_type_): _description_
         """
 
         if data["configuration"]["h1"]:
@@ -391,6 +418,13 @@ class CplexSolver(NSP_solver):
             self.add_vacations_reqs_constraint_hard(model, basic_ILP_vars, data)
 
     def add_max_incomplete_weekends_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the soft constraint that penilizes incomplete weekends.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         incomplete_weekends = basic_ILP_vars["incomplete_weekends"]
         nurses_data = data["sc_data"]["nurses"]
@@ -410,6 +444,13 @@ class CplexSolver(NSP_solver):
             )
 
     def add_max_one_shift_per_day_constraint(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans multiple assignments of a nurse on one day.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_days = data["all_days"]
@@ -473,6 +514,13 @@ class CplexSolver(NSP_solver):
                 )
 
     def add_max_shift_of_given_type_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that disallows more assignments to a specific shift type than it is allowed.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         num_days = data["num_days"]
@@ -498,6 +546,13 @@ class CplexSolver(NSP_solver):
     def add_max_one_shift_per_day_exception_constraint_hard(
         self, model, basic_ILP_vars, data
     ):
+        """Adds the hard constraint that bans multiple assignments of a nurse on one day with the exception of early and night shifts on the same day.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_days = data["all_days"]
@@ -581,6 +636,13 @@ class CplexSolver(NSP_solver):
                     )
 
     def add_vacations_reqs_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans assignments fot a nurse that is has planned a vacation.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         wd_data = data["wd_data"]
         working_days = basic_ILP_vars["working_days"]
 
@@ -596,8 +658,12 @@ class CplexSolver(NSP_solver):
             )
 
     def add_shift_skill_req_minimal(self, model, basic_ILP_vars, data):
-        """
-        Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
+        """Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
+
+        Args:
+            model (_type_): _description_
+            basic_ILP_vars (_type_): _description_
+            data (_type_): _description_
         """
 
         all_nurses = data["all_nurses"]
@@ -628,6 +694,13 @@ class CplexSolver(NSP_solver):
                 )
 
     def add_min_continuous_free_period_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that enforces that every nurse has a minimal continuous period of days off.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         num_days = data["num_days"]
         working_days = basic_ILP_vars["working_days"]
@@ -692,6 +765,13 @@ class CplexSolver(NSP_solver):
             )
 
     def add_max_min_total_assignments_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that enforces that total number of assignemnts a nurse are in the limits specified in the contract of the nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         nurses_data = data["sc_data"]["nurses"]
         contracts_data = data["sc_data"]["contracts"]
         num_weeks = data["num_weeks"]
@@ -738,6 +818,16 @@ class CplexSolver(NSP_solver):
                 )
 
     def init_ilp_vars_for_soft_constraints(self, model, basic_ILP_vars, data):
+        """Adds the variables used for soft constraints to the model.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            dic: dictionary that contains the names of introduced variables
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_skills = data["all_skills"]
@@ -978,6 +1068,14 @@ class CplexSolver(NSP_solver):
     def add_shift_skill_req_optimal_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that introduces the optimal number of assigned nurses for each combination of day, shift, skill.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
         insufficient_staffing = soft_ILP_vars["insufficient_staffing"]
@@ -1015,6 +1113,14 @@ class CplexSolver(NSP_solver):
     def add_insatisfied_preferences_reqs_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that introduces the preferences of nurses for specific assignments/non-assignments.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         unsatisfied_preferences = soft_ILP_vars["unsatisfied_preferences"]
         shifts = basic_ILP_vars["shifts"]
         working_days = basic_ILP_vars["working_days"]
@@ -1054,29 +1160,17 @@ class CplexSolver(NSP_solver):
                     rhs=[0],
                 )
 
-        # for preference in wd_data["shiftOnRequests"]:
-        #     nurse_id = int(preference["nurse"].split("_")[1])
-        #     day_id = day_to_int[preference["day"]]
-        #     shift_id = utils.shift_to_int[preference["shiftType"]]
-
-        #     if shift_id != utils.shift_to_int["Any"]:
-        #         model.linear_constraints.add(
-        #             lin_expr=[
-        #                 cplex.SparsePair(
-        #                     [
-        #                         unsatisfied_preferences[(nurse_id, day_id, shift_id)],
-        #                         shifts[nurse_id][day_id][shift_id],
-        #                     ],
-        #                     [1, 1],
-        #                 )
-        #             ],
-        #             senses=["E"],
-        #             rhs=[1],
-        #         )
-
     def add_total_working_weekends_constraints_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes more working weekends than the specified maximum.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         week_number = data["h0_data"]["week"]
         sc_data = data["sc_data"]
         h0_data = data["h0_data"]
@@ -1124,13 +1218,18 @@ class CplexSolver(NSP_solver):
                     worked_weekends_limit_for_this_week - worked_weekends_in_previous_weeks
                 ],
             )
-            # worked_weekends.append(working_weekends[(n)])
-            # model.Add(total_working_weekends_over_limit[(n)] >= sum(worked_weekends) - worked_weekends_limit + worked_weekends_in_previous_weeks)
-            # model.Add(total_working_weekends_over_limit[(n)] >= -(sum(worked_weekends) - worked_weekends_limit + worked_weekends_in_previous_weeks))
 
     def add_incomplete_weekends_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes incomplete weekends.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         nurses_data = data["sc_data"]["nurses"]
         contracts_data = data["sc_data"]["contracts"]
         incomplete_weekends = basic_ILP_vars["incomplete_weekends"]
@@ -1162,6 +1261,14 @@ class CplexSolver(NSP_solver):
     def add_total_assignments_out_of_bounds_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes total assignments out of bounds specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         nurses_data = data["sc_data"]["nurses"]
         contracts_data = data["sc_data"]["contracts"]
         total_assignments = basic_ILP_vars["total_assignments"]
@@ -1220,6 +1327,14 @@ class CplexSolver(NSP_solver):
     def add_max_consecutive_work_days_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of a number of consecutive working days over the maximum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_working_days = soft_ILP_vars[
             "violations_of_max_consecutive_working_days"
         ]
@@ -1268,6 +1383,15 @@ class CplexSolver(NSP_solver):
     def add_min_consecutive_work_days_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """
+        Adds the soft constraint that penilizes assignment of a number of consecutive working days under the minimum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_working_days = soft_ILP_vars[
             "violations_of_min_consecutive_working_days"
         ]
@@ -1320,6 +1444,14 @@ class CplexSolver(NSP_solver):
                             )
 
     def add_min_consecutive_work_days_constraint_hard(self, model, basic_ILP_vars, data):
+        """
+        Adds the soft constraint that penilizes assignment of a number of consecutive working days under the minimum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
@@ -1369,6 +1501,14 @@ class CplexSolver(NSP_solver):
     def add_min_consecutive_shifts_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of a number of consecutive shifts of one type under the minimum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_working_shifts = soft_ILP_vars[
             "violations_of_min_consecutive_working_shifts"
         ]
@@ -1435,6 +1575,13 @@ class CplexSolver(NSP_solver):
                                 )
 
     def add_min_consecutive_shifts_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans assignment of a number of consecutive shifts of one type under the minimum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
@@ -1510,6 +1657,14 @@ class CplexSolver(NSP_solver):
     def add_min_consecutive_days_off_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes a number of consecutive days off under the minimum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_min_consecutive_days_off = soft_ILP_vars[
             "violations_of_min_consecutive_days_off"
         ]
@@ -1564,6 +1719,13 @@ class CplexSolver(NSP_solver):
                             )
 
     def add_min_consecutive_days_off_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the soft constraint that bans any number of consecutive days off under the minimum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
@@ -1619,6 +1781,14 @@ class CplexSolver(NSP_solver):
     def add_max_consecutive_work_shifts_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes assignment of any number of consecutive shifts of one type over the maximum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_working_shifts = soft_ILP_vars[
             "violations_of_max_consecutive_working_shifts"
         ]
@@ -1683,6 +1853,14 @@ class CplexSolver(NSP_solver):
     def add_max_consecutive_days_off_constraint_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that bans assignment of any number of consecutive days off over the maximum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         violations_of_max_consecutive_days_off = soft_ILP_vars[
             "violations_of_max_consecutive_days_off"
         ]
@@ -1726,6 +1904,13 @@ class CplexSolver(NSP_solver):
                         )
 
     def add_max_consecutive_work_shifts_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans assignment of any number of consecutive shifts of one type over the maximum specified in the scenario.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
@@ -1775,6 +1960,13 @@ class CplexSolver(NSP_solver):
                             )
 
     def add_max_consecutive_work_days_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans assignment of any number of consecutive working days over the maximum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
@@ -1813,6 +2005,13 @@ class CplexSolver(NSP_solver):
                         )
 
     def add_max_consecutive_days_off_constraint_hard(self, model, basic_ILP_vars, data):
+        """Adds the hard constraint that bans assignment of any number of consecutive days off over the maximum specified in the contract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
@@ -1855,6 +2054,14 @@ class CplexSolver(NSP_solver):
     def add_total_assignments_with_if_needed_skill_constraints_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes any assigment of nurse using a skill that is labeled as "if needed".
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
@@ -1896,6 +2103,14 @@ class CplexSolver(NSP_solver):
     def add_total_unsatisfied_overtime_constraints_soft(
         self, model, basic_ILP_vars, soft_ILP_vars, data
     ):
+        """Adds the soft constraint that penilizes unsatisfied wanted overtime per assignment.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         nurses_data = data["sc_data"]["nurses"]
         total_assignments = basic_ILP_vars["total_assignments"]
         contracts_data = data["sc_data"]["contracts"]
@@ -1958,7 +2173,14 @@ class CplexSolver(NSP_solver):
             )
 
     def add_soft_constraints(self, model, basic_ILP_vars, soft_ILP_vars, data):
+        """Adds the soft constraints to the model.
 
+        Args:
+            model : object that represents the mathematical model
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
         if data["configuration"]["s1"]:
             self.add_shift_skill_req_optimal_constraint_soft(
                 model, basic_ILP_vars, soft_ILP_vars, data
@@ -2013,7 +2235,16 @@ class CplexSolver(NSP_solver):
 
         # add_incomplete_weekends_constraint_soft(self, model, basic_ILP_vars, soft_ILP_vars, data)
 
-    def save_tmp_results(self, results, solver, data, basic_ILP_vars, soft_ILP_vars):
+    def save_tmp_results(self, results, sol, data, basic_ILP_vars, soft_ILP_vars):
+        """Stores the solution into the results dictionary.
+
+        Args:
+            results (dict): dictionary used to store partially computed schedule
+            sol (_type_): _description_
+            data (dict): dictionary that contains data from input files
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+        """
         num_days = data["num_days"]
         num_nurses = data["num_nurses"]
         num_skills = data["num_skills"]
@@ -2022,20 +2253,29 @@ class CplexSolver(NSP_solver):
 
         shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
 
-        if not solver.is_primal_feasible():
+        if not sol.is_primal_feasible():
             return
 
         results[(week_number, "status")] = utils.STATUS_OK
+        print("obj. value: " + str(sol.get_objective_value()))
 
         for n in range(num_nurses):
             for d in range(num_days):
                 for s in range(num_shifts):
                     for sk in range(num_skills):
                         results[(n, d + 7 * week_number, s, sk)] = round(
-                            solver.get_values(shifts_with_skills[n][d][s][sk])
+                            sol.get_values(shifts_with_skills[n][d][s][sk])
                         )
 
-    def set_objective_function(self, c, data, basic_ILP_vars, soft_ILP_vars):
+    def set_objective_function(self, model, data, basic_ILP_vars, soft_ILP_vars):
+        """Sets the objective function contatining all penalties from all enabled constraints.
+
+        Args:
+            model : object that represents the mathematical model
+            data (dict): dictionary that contains data from input files
+            basic_ILP_vars (dict): contains the names variables of the mathematical model
+            soft_ILP_vars (dict): contains the names variables of the mathematical model
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_skills = data["all_skills"]
@@ -2078,7 +2318,7 @@ class CplexSolver(NSP_solver):
             "total_assignments_with_if_needed_skill"
         ]
 
-        c.objective.set_sense(c.objective.sense.minimize)
+        model.objective.set_sense(model.objective.sense.minimize)
 
         summed_violations_of_min_cons_working_days = []
         weights_of_violations_of_min_cons_working_days = []
@@ -2120,7 +2360,7 @@ class CplexSolver(NSP_solver):
                         )
                         weights_of_violations_of_min_cons_shift_type.append(15 * dd)
 
-        c.objective.set_linear(
+        model.objective.set_linear(
             list(
                 itertools.chain.from_iterable(
                     [
@@ -2209,40 +2449,57 @@ class CplexSolver(NSP_solver):
 
         return
 
-    def setup_problem(self, c, data, results):
+    def setup_problem(self, model, data, results):
+        """Sets up the mathematical model to be solved.
+
+        Args:
+            model : object that represents the mathematical model
+            data (dict): dictionary that contains data from input files
+            results (dict): dictionary used to store partially computed schedule
+
+        Returns:
+            (dict, dict): 2 dictionaries that contains names of variables of the mathematical model
+        """
         self.prepare_help_data(data, results)
 
         # Create ILP variables.
-        basic_ILP_vars = self.init_ilp_vars(c, data)
+        basic_ILP_vars = self.init_ilp_vars(model, data)
 
         # Add hard constrains to model
-        self.add_hard_constrains(c, basic_ILP_vars, data)
+        self.add_hard_constrains(model, basic_ILP_vars, data)
 
         # soft_ILP_vars = {}
-        soft_ILP_vars = self.init_ilp_vars_for_soft_constraints(c, basic_ILP_vars, data)
+        soft_ILP_vars = self.init_ilp_vars_for_soft_constraints(model, basic_ILP_vars, data)
 
-        self.add_soft_constraints(c, basic_ILP_vars, soft_ILP_vars, data)
+        self.add_soft_constraints(model, basic_ILP_vars, soft_ILP_vars, data)
 
-        self.set_objective_function(c, data, basic_ILP_vars, soft_ILP_vars)
+        self.set_objective_function(model, data, basic_ILP_vars, soft_ILP_vars)
 
         return basic_ILP_vars, soft_ILP_vars
 
     def compute_one_week(self, time_limit_for_week, data, results):
-        c = cplex.Cplex()
-        c.parameters.mip.display.set(0)
-        c.parameters.output.clonelog.set(0)
+        """Computes a schedule for a week given a time limit and data.
+
+        Args:
+            time_limit_for_week (int): time limit for finding a schedule as optimal as possible
+            data (dict): dictionary that contains data from input files
+            results (dict): dictionary used to store partially computed schedule
+        """
+        model = cplex.Cplex()
+        model.parameters.mip.display.set(0)
+        model.parameters.output.clonelog.set(0)
         # c.set_log_stream("log.txt")
-        c.parameters.simplex.display.set(0)
-        c.parameters.threads.set(1)
-        c.parameters.timelimit.set(time_limit_for_week)
-        c.parameters.mip.tolerances.absmipgap.set(0.0)
-        c.parameters.emphasis.mip.set(c.parameters.emphasis.mip.values.optimality)
+        model.parameters.simplex.display.set(0)
+        model.parameters.threads.set(1)
+        model.parameters.timelimit.set(time_limit_for_week)
+        model.parameters.mip.tolerances.absmipgap.set(0.0)
+        model.parameters.emphasis.mip.set(model.parameters.emphasis.mip.values.optimality)
 
-        basic_ILP_vars, soft_ILP_vars = self.setup_problem(c, data, results)
+        basic_ILP_vars, soft_ILP_vars = self.setup_problem(model, data, results)
 
-        c.solve()
-        sol = c.solution
+        model.solve()
+        sol = model.solution
         print(sol.get_method())
-        print(f"number of threads: {c.parameters.threads.get()}")
+        print(f"number of threads: {model.parameters.threads.get()}")
 
         self.save_tmp_results(results, sol, data, basic_ILP_vars, soft_ILP_vars)

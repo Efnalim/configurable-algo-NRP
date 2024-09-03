@@ -9,10 +9,18 @@ class CONF_EVAL(Enum):
 
 
 class ConfigValidator:
-    def __init__(self):
-        pass
+    """_summary_
+    """
 
     def evaluate_configuration(self, data) -> CONF_EVAL:
+        """_summary_
+
+        Args:
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            CONF_EVAL: _description_
+        """
         retval = CONF_EVAL.OK
 
         retval = self.__update_conf_eval_retval(
@@ -28,6 +36,14 @@ class ConfigValidator:
         return retval
 
     def _check_overriding(self, data) -> CONF_EVAL:
+        """_summary_
+
+        Args:
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            CONF_EVAL: _description_
+        """
         conf = data["configuration"]
         if conf["h1"] and conf["h10"]:
             return self._get_user_choice(
@@ -36,6 +52,14 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_contradicting(self, data) -> CONF_EVAL:
+        """_summary_
+
+        Args:
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            CONF_EVAL: _description_
+        """
         conf = data["configuration"]
         if not conf["h6"] or not conf["h9"]:
             return CONF_EVAL.OK
@@ -52,6 +76,14 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_affecting(self, data) -> CONF_EVAL:
+        """_summary_
+
+        Args:
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            CONF_EVAL: _description_
+        """
         conf = data["configuration"]
         if not conf["h5"] or not conf["s2"]:
             return CONF_EVAL.OK
@@ -70,9 +102,26 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def __update_conf_eval_retval(self, retval: CONF_EVAL, new_retval: CONF_EVAL):
+        """_summary_
+
+        Args:
+            retval (CONF_EVAL): _description_
+            new_retval (CONF_EVAL): _description_
+
+        Returns:
+            _type_: _description_
+        """
         return new_retval if new_retval.value > retval.value else retval
 
     def __get_dialog_popup(self, question) -> CONF_EVAL:
+        """_summary_
+
+        Args:
+            question (_type_): _description_
+
+        Returns:
+            CONF_EVAL: _description_
+        """
         def stop_option():
             selected_option.set(CONF_EVAL.STOP.value)
             win.quit()
@@ -100,6 +149,14 @@ class ConfigValidator:
         return win, label, button_stop, button_continue, selected_option
 
     def _get_user_choice(self, question):
+        """_summary_
+
+        Args:
+            question (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
         win, _, _, _, selected_option = (
             self.__get_dialog_popup(question)
         )

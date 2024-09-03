@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 from nsp_solver.solver.nsp_solver import NSP_solver
+from nsp_solver.utils import utils
 from ortools.sat.python import cp_model
 
-import numpy as np
 import math
 
 shift_to_int = {"Early": 0, "Day": 1, "Late": 2, "Night": 3, "Any": 4, "None": 5}
@@ -21,9 +21,15 @@ day_to_int = {
 
 
 class ORTOOLS_Solver(NSP_solver):
+    """Child Class from NSP_solver that uses CP SAT solver from OR-TOOLS to compute a schedule per week.
+    """
     name = 'ORTOOLS'
 
-    def init_ilp_vars(self, model, data):
+    def init_cp_vars(self, model, data):
+        """
+        Initializes basic variables for primarly for hard contraints.
+        Returns a dictionary 'basic_cp_vars' containing the names of those variables for further manipulation.
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_days = data["all_days"]
@@ -60,20 +66,30 @@ class ORTOOLS_Solver(NSP_solver):
                         0, 10, f"insufficient_staffing_d{d}_s{s}_sk{sk}"
                     )
 
-        basic_ILP_vars = {}
-        basic_ILP_vars["working_days"] = working_days
-        basic_ILP_vars["shifts"] = shifts
-        basic_ILP_vars["shifts_with_skills"] = shifts_with_skills
-        basic_ILP_vars["insufficient_staffing"] = insufficient_staffing
-        return basic_ILP_vars
+        basic_CP_vars = {}
+        basic_CP_vars["working_days"] = working_days
+        basic_CP_vars["shifts"] = shifts
+        basic_CP_vars["shifts_with_skills"] = shifts_with_skills
+        basic_CP_vars["insufficient_staffing"] = insufficient_staffing
+        return basic_CP_vars
 
-    def init_ilp_vars_for_soft_constraints(self, model, basic_ILP_vars, data):
+    def init_cp_vars_for_soft_constraints(self, model, basic_CP_vars, data):
+        """Adds variables used by the soft constraints.
+
+        Args:
+            model: object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+
+        Returns:
+            dict: the variables added to the mathematical model
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_days = data["all_days"]
         num_days = data["num_days"]
-        shifts = basic_ILP_vars["shifts"]
-        working_days = basic_ILP_vars["working_days"]
+        shifts = basic_CP_vars["shifts"]
+        working_days = basic_CP_vars["working_days"]
         sc_data = data["sc_data"]
         history_data = data["h0_data"]
 
@@ -331,49 +347,52 @@ class ORTOOLS_Solver(NSP_solver):
                     )
                     model.Add(not_working_shifts[(n, d, s)] + shifts[(n, d, s)] == 1)
 
-        soft_ILP_vars = {}
-        soft_ILP_vars["unsatisfied_preferences"] = unsatisfied_preferences
-        soft_ILP_vars["total_working_days"] = total_working_days
-        soft_ILP_vars["working_weekends"] = working_weekends
-        soft_ILP_vars["not_working_days"] = not_working_days
-        soft_ILP_vars["not_working_shifts"] = not_working_shifts
-        soft_ILP_vars["total_working_weekends_over_limit"] = (
+        soft_CP_vars = {}
+        soft_CP_vars["unsatisfied_preferences"] = unsatisfied_preferences
+        soft_CP_vars["total_working_days"] = total_working_days
+        soft_CP_vars["working_weekends"] = working_weekends
+        soft_CP_vars["not_working_days"] = not_working_days
+        soft_CP_vars["not_working_shifts"] = not_working_shifts
+        soft_CP_vars["total_working_weekends_over_limit"] = (
             total_working_weekends_over_limit
         )
-        soft_ILP_vars["total_working_days_over_limit"] = total_working_days_over_limit
-        soft_ILP_vars["total_working_days_under_limit"] = total_working_days_under_limit
-        soft_ILP_vars["total_incomplete_weekends"] = total_incomplete_weekends
-        soft_ILP_vars["violations_of_max_consecutive_working_days_for_nurse"] = (
+        soft_CP_vars["total_working_days_over_limit"] = total_working_days_over_limit
+        soft_CP_vars["total_working_days_under_limit"] = total_working_days_under_limit
+        soft_CP_vars["total_incomplete_weekends"] = total_incomplete_weekends
+        soft_CP_vars["violations_of_max_consecutive_working_days_for_nurse"] = (
             violations_of_max_consecutive_working_days_for_nurse
         )
-        soft_ILP_vars["violations_of_max_consecutive_days_off_for_nurse"] = (
+        soft_CP_vars["violations_of_max_consecutive_days_off_for_nurse"] = (
             violations_of_max_consecutive_days_off_for_nurse
         )
-        soft_ILP_vars[
+        soft_CP_vars[
             "violations_of_max_consecutive_working_shifts_for_nurse_for_shift_type"
         ] = violations_of_max_consecutive_working_shifts_for_nurse_for_shift_type
-        soft_ILP_vars["violations_of_min_consecutive_days_off"] = (
+        soft_CP_vars["violations_of_min_consecutive_days_off"] = (
             violations_of_min_consecutive_days_off
         )
-        soft_ILP_vars["violations_of_min_consecutive_working_days"] = (
+        soft_CP_vars["violations_of_min_consecutive_working_days"] = (
             violations_of_min_consecutive_working_days
         )
-        soft_ILP_vars["violations_of_min_consecutive_shifts"] = (
+        soft_CP_vars["violations_of_min_consecutive_shifts"] = (
             violations_of_min_consecutive_shifts
         )
 
-        return soft_ILP_vars
+        return soft_CP_vars
 
-    def add_hard_constrains(self, model, basic_ILP_vars, data):
+    def add_hard_constrains(self, model, basic_CP_vars, data):
+        """
+        Adds all hard constraints to the model.
+        """
         all_nurses = data["all_nurses"]
         all_shifts = data["all_shifts"]
         all_days = data["all_days"]
         all_skills = data["all_skills"]
         num_days = data["num_days"]
         sc_data = data["sc_data"]
-        shifts = basic_ILP_vars["shifts"]
-        working_days = basic_ILP_vars["working_days"]
-        shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
+        shifts = basic_CP_vars["shifts"]
+        working_days = basic_CP_vars["working_days"]
+        shifts_with_skills = basic_CP_vars["shifts_with_skills"]
         # Each nurse works at most one shift per day.
         for n in all_nurses:
             for d in all_days:
@@ -411,7 +430,16 @@ class ORTOOLS_Solver(NSP_solver):
         )
         return
 
-    def add_soft_constraints(self, model, basic_ILP_vars, soft_ILP_vars, data):
+    def add_soft_constraints(self, model, basic_CP_vars, soft_CP_vars, data):
+        """Adds the soft constraints to the model.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+            week_number (int): number of the computed week
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
@@ -419,18 +447,18 @@ class ORTOOLS_Solver(NSP_solver):
         sc_data = data["sc_data"]
         h0_data = data["h0_data"]
         wd_data = data["wd_data"]
-        shifts = basic_ILP_vars["shifts"]
-        working_days = basic_ILP_vars["working_days"]
-        unsatisfied_preferences = soft_ILP_vars["unsatisfied_preferences"]
-        total_working_days = soft_ILP_vars["total_working_days"]
-        total_working_days_over_limit = soft_ILP_vars["total_working_days_over_limit"]
-        total_incomplete_weekends = soft_ILP_vars["total_incomplete_weekends"]
-        working_weekends = soft_ILP_vars["working_weekends"]
-        total_working_weekends_over_limit = soft_ILP_vars[
+        shifts = basic_CP_vars["shifts"]
+        working_days = basic_CP_vars["working_days"]
+        unsatisfied_preferences = soft_CP_vars["unsatisfied_preferences"]
+        total_working_days = soft_CP_vars["total_working_days"]
+        total_working_days_over_limit = soft_CP_vars["total_working_days_over_limit"]
+        total_incomplete_weekends = soft_CP_vars["total_incomplete_weekends"]
+        working_weekends = soft_CP_vars["working_weekends"]
+        total_working_weekends_over_limit = soft_CP_vars[
             "total_working_weekends_over_limit"
         ]
-        total_working_days_under_limit = soft_ILP_vars["total_working_days_under_limit"]
-        total_incomplete_weekends = soft_ILP_vars["total_incomplete_weekends"]
+        total_working_days_under_limit = soft_CP_vars["total_working_days_under_limit"]
+        total_incomplete_weekends = soft_CP_vars["total_incomplete_weekends"]
 
         self.add_insatisfied_preferences_reqs(
             model,
@@ -478,30 +506,38 @@ class ORTOOLS_Solver(NSP_solver):
         )
 
         self.add_min_consecutive_days_off_constraint(
-            model, basic_ILP_vars, soft_ILP_vars, data
+            model, basic_CP_vars, soft_CP_vars, data
         )
 
         self.add_min_consecutive_working_days_constraint(
-            model, basic_ILP_vars, soft_ILP_vars, data
+            model, basic_CP_vars, soft_CP_vars, data
         )
 
         self.add_min_consecutive_shifts_constraint(
-            model, basic_ILP_vars, soft_ILP_vars, data
+            model, basic_CP_vars, soft_CP_vars, data
         )
 
         return
 
     def add_min_consecutive_days_off_constraint(
-        self, model, basic_ILP_vars, soft_ILP_vars, data
+        self, model, basic_CP_vars, soft_CP_vars, data
     ):
-        violations_of_min_consecutive_days_off = soft_ILP_vars[
+        """Adds the soft constraint that penilizes a number of consecutive days off under the minimum specified in the contract of each nurse.
+
+        Args:
+            model: object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
+        violations_of_min_consecutive_days_off = soft_CP_vars[
             "violations_of_min_consecutive_days_off"
         ]
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
-        working_days = basic_ILP_vars["working_days"]
-        not_working_days = soft_ILP_vars["not_working_days"]
+        working_days = basic_CP_vars["working_days"]
+        not_working_days = soft_CP_vars["not_working_days"]
 
         for n in all_nurses:
             consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
@@ -538,16 +574,25 @@ class ORTOOLS_Solver(NSP_solver):
                             )
 
     def add_min_consecutive_working_days_constraint(
-        self, model, basic_ILP_vars, soft_ILP_vars, data
+        self, model, basic_CP_vars, soft_CP_vars, data
     ):
-        violations_of_min_consecutive_working_days = soft_ILP_vars[
+        """
+        Adds the soft constraint that penilizes assignment of a number of consecutive working days under the minimum specified in the constract of each nurse.
+
+        Args:
+            model : object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
+        violations_of_min_consecutive_working_days = soft_CP_vars[
             "violations_of_min_consecutive_working_days"
         ]
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         sc_data = data["sc_data"]
-        working_days = basic_ILP_vars["working_days"]
-        not_working_days = soft_ILP_vars["not_working_days"]
+        working_days = basic_CP_vars["working_days"]
+        not_working_days = soft_CP_vars["not_working_days"]
 
         for n in all_nurses:
             consecutive_working_days_prev_week = data["h0_data"]["nurseHistory"][n][
@@ -584,17 +629,25 @@ class ORTOOLS_Solver(NSP_solver):
                             )
 
     def add_min_consecutive_shifts_constraint(
-        self, model, basic_ILP_vars, soft_ILP_vars, data
+        self, model, basic_CP_vars, soft_CP_vars, data
     ):
-        violations_of_min_consecutive_shifts = soft_ILP_vars[
+        """Adds the soft constraint that penilizes assignment of a number of consecutive shifts of one type under the minimum specified in the scenario.
+
+        Args:
+            model: object that represents the mathematical model
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            data (dict): dictionary that contains data from input files
+        """
+        violations_of_min_consecutive_shifts = soft_CP_vars[
             "violations_of_min_consecutive_shifts"
         ]
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
         sc_data = data["sc_data"]
-        working_days = basic_ILP_vars["working_days"]
-        not_working_shifts = soft_ILP_vars["not_working_shifts"]
+        working_days = basic_CP_vars["working_days"]
+        not_working_shifts = soft_CP_vars["not_working_shifts"]
 
         for n in all_nurses:
             consecutive_working_shifts_prev_week = data["h0_data"]["nurseHistory"][n][
@@ -654,6 +707,8 @@ class ORTOOLS_Solver(NSP_solver):
         all_days,
         all_shifts,
     ):
+        """Adds the soft constraint that penilizes incomplete weekends.
+        """
         incomplete_weekends = {}
         for n in all_nurses:
             isCompleteWeekendRequested = contracts_data[
@@ -689,6 +744,8 @@ class ORTOOLS_Solver(NSP_solver):
         total_working_days_under_limit,
         all_nurses,
     ):
+        """Adds the soft constraint that penilizes more working weekends than the specified maximum.
+        """
         for n in all_nurses:
             upper_limit = (
                 math.ceil(
@@ -716,10 +773,12 @@ class ORTOOLS_Solver(NSP_solver):
             )
         return
 
-    def add_shift_skill_req(self, model, req, basic_ILP_vars, soft_ILP_vars, data):
+    def add_shift_skill_req(self, model, req, basic_CP_vars, soft_CP_vars, data):
+        """Adds hard constraint that dictates minimal number of nurses in a shift working with specific skill.
+        """
         all_nurses = data["all_nurses"]
-        shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
-        insufficient_staffing = basic_ILP_vars["insufficient_staffing"]
+        shifts_with_skills = basic_CP_vars["shifts_with_skills"]
+        insufficient_staffing = basic_CP_vars["insufficient_staffing"]
 
         shift = shift_to_int[req["shiftType"]]
         skill = skill_to_int[req["skill"]]
@@ -761,6 +820,8 @@ class ORTOOLS_Solver(NSP_solver):
     def add_shift_succession_reqs(
         self, model, shifts, all_nurses, all_days, all_shifts, num_days, data
     ):
+        """Adds hard constraint that disables invalid pairs of succcessive shift types.
+        """
         for n in all_nurses:
             last_shift = shift_to_int[
                 data["h0_data"]["nurseHistory"][n]["lastAssignedShiftType"]
@@ -804,6 +865,8 @@ class ORTOOLS_Solver(NSP_solver):
     def add_missing_skill_req(
         self, model, nurses_data, shifts_with_skills, all_days, all_shifts, all_skills
     ):
+        """Adds hard constraint that disables nurses working shift with a skill that they do not possess.
+        """
         for index, nurse_data in enumerate(nurses_data):
             for sk in all_skills:
                 has_skill = False
@@ -830,6 +893,8 @@ class ORTOOLS_Solver(NSP_solver):
         all_shifts,
         all_skills,
     ):
+        """Adds the soft constraint that introduces the preferences of nurses for specific assignments/non-assignments.
+        """
         for preference in preferences:
             nurse_id = int(preference["nurse"].split("_")[1])
             day_id = day_to_int[preference["day"]]
@@ -858,6 +923,8 @@ class ORTOOLS_Solver(NSP_solver):
         working_weekends,
         all_nurses,
     ):
+        """Adds the soft constraint that penilizes more working weekends than the specified maximum.
+        """
         for n in all_nurses:
             worked_weekends = []
             worked_weekends_limit = contracts_data[
@@ -880,7 +947,9 @@ class ORTOOLS_Solver(NSP_solver):
             )
         return
 
-    def set_objective_function(self, model, basic_ILP_vars, soft_ILP_vars, data):
+    def set_objective_function(self, model, basic_CP_vars, soft_CP_vars, data):
+        """Sets the objective function contatining all penalties from all enabled constraints.
+        """
         all_nurses = data["all_nurses"]
         all_days = data["all_days"]
         all_shifts = data["all_shifts"]
@@ -888,34 +957,34 @@ class ORTOOLS_Solver(NSP_solver):
 
         sc_data = data["sc_data"]
 
-        insufficient_staffing = basic_ILP_vars["insufficient_staffing"]
+        insufficient_staffing = basic_CP_vars["insufficient_staffing"]
 
-        unsatisfied_preferences = soft_ILP_vars["unsatisfied_preferences"]
-        total_working_days_over_limit = soft_ILP_vars["total_working_days_over_limit"]
-        total_incomplete_weekends = soft_ILP_vars["total_incomplete_weekends"]
-        total_working_weekends_over_limit = soft_ILP_vars[
+        unsatisfied_preferences = soft_CP_vars["unsatisfied_preferences"]
+        total_working_days_over_limit = soft_CP_vars["total_working_days_over_limit"]
+        total_incomplete_weekends = soft_CP_vars["total_incomplete_weekends"]
+        total_working_weekends_over_limit = soft_CP_vars[
             "total_working_weekends_over_limit"
         ]
-        total_working_days_under_limit = soft_ILP_vars["total_working_days_under_limit"]
-        total_incomplete_weekends = soft_ILP_vars["total_incomplete_weekends"]
-        violations_of_max_consecutive_working_days_for_nurse = soft_ILP_vars[
+        total_working_days_under_limit = soft_CP_vars["total_working_days_under_limit"]
+        total_incomplete_weekends = soft_CP_vars["total_incomplete_weekends"]
+        violations_of_max_consecutive_working_days_for_nurse = soft_CP_vars[
             "violations_of_max_consecutive_working_days_for_nurse"
         ]
-        violations_of_max_consecutive_days_off_for_nurse = soft_ILP_vars[
+        violations_of_max_consecutive_days_off_for_nurse = soft_CP_vars[
             "violations_of_max_consecutive_days_off_for_nurse"
         ]
         violations_of_max_consecutive_working_shifts_for_nurse_for_shift_type = (
-            soft_ILP_vars[
+            soft_CP_vars[
                 "violations_of_max_consecutive_working_shifts_for_nurse_for_shift_type"
             ]
         )
-        violations_of_min_consecutive_days_off = soft_ILP_vars[
+        violations_of_min_consecutive_days_off = soft_CP_vars[
             "violations_of_min_consecutive_days_off"
         ]
-        violations_of_min_consecutive_working_days = soft_ILP_vars[
+        violations_of_min_consecutive_working_days = soft_CP_vars[
             "violations_of_min_consecutive_working_days"
         ]
-        violations_of_min_consecutive_shifts = soft_ILP_vars[
+        violations_of_min_consecutive_shifts = soft_CP_vars[
             "violations_of_min_consecutive_shifts"
         ]
 
@@ -1006,60 +1075,36 @@ class ORTOOLS_Solver(NSP_solver):
         )
         return
 
-    def print_results(self, solver, solution_printer, basic_ILP_vars, soft_ILP_vars, data):
-        num_days = data["num_days"]
-        num_nurses = data["num_nurses"]
-        num_skills = data["num_skills"]
-        num_shifts = data["num_shifts"]
-
-        shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
-
-        schedule_table = np.zeros([num_nurses, num_days * num_shifts])
-
-        for d in range(num_days):
-            for n in range(num_nurses):
-                for s in range(num_shifts):
-                    for sk in range(num_skills):
-                        if solver.Value(shifts_with_skills[(n, d, s, sk)]) == 1:
-                            schedule_table[n][d * num_shifts + s] = 1 - (0.2 * sk)
-
-    def handle_status(self, status):
-        switch = {
-            cp_model.FEASIBLE: "A feasible solution has been found, but it might not be optimal.",
-            cp_model.OPTIMAL: "An optimal solution has been found.",
-            cp_model.INFEASIBLE: "The problem is infeasible.",
-            cp_model.MODEL_INVALID: "The model is invalid.",
-            cp_model.UNKNOWN: "The solver could not determine the status.",
-        }
-
-        result = switch.get(status, "Unknown status code: {}".format(status))
-        return result
-
     def save_tmp_results(
-        self, results, solver, status, data, basic_ILP_vars, soft_ILP_vars, week_number
+        self, results, solver, status, data, basic_CP_vars, soft_CP_vars, week_number
     ):
+        """Stores the solution into the results dictionary.
+
+        Args:
+            results (dict): dictionary used to store partially computed schedule
+            solver : object that contains the computed solution
+            status : status of the solution
+            data (dict): dictionary that contains data from input files
+            basic_cp_vars (dict): contains the variables of the mathematical model
+            soft_cp_vars (dict): contains the variables of the mathematical model
+            week_number (int): number of the computed week
+        """
         num_days = data["num_days"]
         num_nurses = data["num_nurses"]
         num_skills = data["num_skills"]
         num_shifts = data["num_shifts"]
         history_data = data["h0_data"]
-        working_weekends = soft_ILP_vars["working_weekends"]
+        working_weekends = soft_CP_vars["working_weekends"]
 
-        shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
-        working_days = basic_ILP_vars["working_days"]
-        shifts = basic_ILP_vars["shifts"]
+        shifts_with_skills = basic_CP_vars["shifts_with_skills"]
+        working_days = basic_CP_vars["working_days"]
+        shifts = basic_CP_vars["shifts"]
 
         if status != cp_model.FEASIBLE and status != cp_model.OPTIMAL:
-            results[(week_number, "status")] = self.handle_status(status)
-            results[(week_number, "value")] = 99999
-            results[(week_number, "allweeksoft")] = 0
-            results[("allweeksoft")] = 0
+            results[(week_number, "status")] = utils.STATUS_FAIL
             return
 
-        results[(week_number, "status")] = self.handle_status(status)
-        results[(week_number, "value")] = solver.ObjectiveValue()
-        results[(week_number, "allweeksoft")] = 0
-        results[("allweeksoft")] = 0
+        results[(week_number, "status")] = utils.STATUS_OK
 
         for n in range(num_nurses):
             for d in range(num_days):
@@ -1121,40 +1166,50 @@ class ORTOOLS_Solver(NSP_solver):
 
         return
 
-    def compute_one_week(self, time_limit_for_week, week_number, data, results):
+    def compute_one_week(self, time_limit_for_week, data, results):
+        """Computes a schedule for a week given a time limit and data.
+
+        Args:
+            time_limit_for_week (int): time limit for finding a schedule as optimal as possible
+            data (dict): dictionary that contains data from input files
+            results (dict): dictionary used to store partially computed schedule
+        """
         # Creates the model.
         model = cp_model.CpModel()
-
+        week_number = data["h0_data"]["week"]
         # Create ILP variables.
-        # shifts, shifts_with_skills, insufficient_staffing = init_ilp_vars(model, all_nurses, all_days, all_shifts, all_skills)
-        basic_ILP_vars = self.init_ilp_vars(model, data)
+        # shifts, shifts_with_skills, insufficient_staffing = init_cp_vars(model, all_nurses, all_days, all_shifts, all_skills)
+        basic_CP_vars = self.init_cp_vars(model, data)
 
         # Add hard constrains to model
-        self.add_hard_constrains(model, basic_ILP_vars, data)
+        self.add_hard_constrains(model, basic_CP_vars, data)
 
-        soft_ILP_vars = self.init_ilp_vars_for_soft_constraints(model, basic_ILP_vars, data)
+        soft_CP_vars = self.init_cp_vars_for_soft_constraints(model, basic_CP_vars, data)
 
         for req in data["wd_data"]["requirements"]:
-            self.add_shift_skill_req(model, req, basic_ILP_vars, soft_ILP_vars, data)
+            self.add_shift_skill_req(model, req, basic_CP_vars, soft_CP_vars, data)
 
-        self.add_soft_constraints(model, basic_ILP_vars, soft_ILP_vars, data)
+        self.add_soft_constraints(model, basic_CP_vars, soft_CP_vars, data)
 
         # Sets objective function
-        self.set_objective_function(model, basic_ILP_vars, soft_ILP_vars, data)
+        self.set_objective_function(model, basic_CP_vars, soft_CP_vars, data)
 
         # Creates the solver and solve.
         solver = cp_model.CpSolver()
-        solver.parameters.linearization_level = 0
+        # solver.parameters.linearization_level = 0
+        solver.parameters.num_search_workers = 1
+        solver.parameters.log_search_progress = False  # Turn off search progress logging
+        solver.parameters.log_to_stdout = False        # Turn off all logging to stdout
         # Enumerate all solutions.
         solver.parameters.enumerate_all_solutions = True
 
         class NursesPartialSolutionPrinter(cp_model.CpSolverSolutionCallback):
             """Print intermediate solutions."""
 
-            def __init__(self, basic_ILP_vars, soft_ILP_vars, data, solution_limit):
+            def __init__(self, basic_CP_vars, soft_CP_vars, data, solution_limit):
                 cp_model.CpSolverSolutionCallback.__init__(self)
-                self._shifts = basic_ILP_vars["shifts"]
-                self._shifts_with_skills = basic_ILP_vars["shifts_with_skills"]
+                self._shifts = basic_CP_vars["shifts"]
+                self._shifts_with_skills = basic_CP_vars["shifts_with_skills"]
                 self._num_nurses = data["num_nurses"]
                 self._num_days = data["num_days"]
                 self._num_shifts = data["num_shifts"]
@@ -1175,14 +1230,13 @@ class ORTOOLS_Solver(NSP_solver):
         # Display the first five solutions.
         solution_limit = 100000
         solution_printer = NursesPartialSolutionPrinter(
-            basic_ILP_vars, soft_ILP_vars, data, solution_limit
+            basic_CP_vars, soft_CP_vars, data, solution_limit
         )
 
         solver.parameters.max_time_in_seconds = time_limit_for_week
         status = solver.Solve(model, solution_printer)
 
         self.save_tmp_results(
-            results, solver, status, data, basic_ILP_vars, soft_ILP_vars, week_number
+            results, solver, status, data, basic_CP_vars, soft_CP_vars, week_number
         )
-        # print_results(solver, solution_printer, basic_ILP_vars, soft_ILP_vars, data)
         return

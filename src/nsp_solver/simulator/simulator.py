@@ -1,6 +1,7 @@
 import copy
 from dataclasses import dataclass
 import json
+import time
 from matplotlib import pyplot as plt, ticker
 from nsp_solver.simulator.history_simulator import HistorySimulator
 from nsp_solver.solver.nsp_solver import NSP_solver
@@ -12,6 +13,14 @@ import numpy as np
 
 @dataclass
 class SimulatorInput():
+    """Data class serving as an input for the Simulator class.
+    It contains:
+    the paths to the input files,
+    the time limit for computation of 1 week,
+    the chosen NSP_solver that will be used for the computation,
+    the ScheduleValidator, ConfigValidator, HistorySimulator that will be used during the process of the schedule computation,
+    the paths to the output files.
+    """
     config_file_path: str
     history_file_path: str
     scenario_file_path: str
@@ -26,9 +35,24 @@ class SimulatorInput():
 
 
 class Simulator:
+    """Class responsible for the management of the whole process of computation of a schedule.
+    """
     data: dict = {}
 
     def simulate_computation(self, input: SimulatorInput):
+        """Simulate the whole process of computation of a schedule.
+        1. Loads the data from the input files.
+        2. Evaluates the configuration.
+        3. For each week it calls the solver for compuatation of the week and then calls the HistorySimulator to update the history.
+        4. Calls the ScheduleValidator to evaluate the computed schedule.
+
+        Args:
+            input (SimulatorInput): object containg all inputs
+
+        Returns:
+            None: if the process is stopped by the user after the configuration evaluation
+            (int, dict): the objective value of the computed schedule and the computed schedule as dictionary.
+        """
         self._load_data(input)
 
         if input.config_validator.evaluate_configuration(self.data) is CONF_EVAL.STOP:
@@ -42,14 +66,16 @@ class Simulator:
 
         fail = False
         # accumulate results over weeks
+        start = time.time()
         for week_number in range(self.data["number_weeks"]):
             self.data["wd_data"] = self.data["all_wd_data"][week_number]
             input.solver.compute_one_week(time_limit_for_week, self.data, results)
             if results[(week_number, "status")] == utils.STATUS_FAIL:
                 fail = True
                 break
-            input.historySimulator.update_history_for_next_week(results, self.data, week_number)
-
+            input.historySimulator.update_history_for_next_week(results, self.data)
+        end = time.time()
+        print(f"time: {end-start}s")
         if fail:
             total_value = 99999
         else:
@@ -63,6 +89,8 @@ class Simulator:
         return total_value, results
 
     def _load_data(self, input: SimulatorInput):
+        """Loads the data from the input files.
+        """
         with open(input.config_file_path) as config_file:
             config_data = json.load(config_file)
 
@@ -108,6 +136,11 @@ class Simulator:
         self.data["all_weeks"] = all_weeks
 
     def _get_empty_results(self) -> dict:
+        """Return a dictionary for storing the results of compuations of all weeks.
+
+        Returns:
+            dict: results with only zeroes.
+        """
         results = {}
         for w in self.data["all_weeks"]:
             for n in self.data["all_nurses"]:
@@ -119,7 +152,7 @@ class Simulator:
 
     def _display_schedule(self, results, filename):
         """
-        Displays computed schedule as table in a figure.
+        Saves computed schedule as table in a figure.
         """
 
         num_days = self.data["num_days"] * self.data["number_weeks"]

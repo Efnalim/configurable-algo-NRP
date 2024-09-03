@@ -4,7 +4,7 @@ skinparam maxWidth 400
 
 
 package "nsp_solver" <<Folder>> #DDEEFF {
-    abstract class NSP_solver {
+    interface NSP_solver {
         +compute_one_week(time_limit: int, data: dict, results: dict)
     }
 
