@@ -2,8 +2,8 @@
 Tests for solver
 """
 
+from nsp_solver.solver.nsp_cplex import CplexSolver
 from nsp_solver.utils import utils
-from nsp_solver.solver.nsp_cplex import compute_one_week
 from nsp_solver.simulator.history_simulator import HistorySimulator
 from nsp_solver.validator.validator import ScheduleValidator
 import pytest
@@ -82,22 +82,23 @@ def test_solver(input_data, integration_tests_data_generator):
                         results[(n, d + 7 * w, s, sk)] = 0
     time_limit_for_week = 2
     fail = False
+    solver = CplexSolver()
 
     # Execute
     with does_not_raise():
         for week_number in data["all_weeks"]:
             data["wd_data"] = data["all_wd_data"][week_number]
-            compute_one_week(time_limit_for_week, data, results)
+            solver.compute_one_week(time_limit_for_week, data, results)
             if results[(week_number, "status")] == utils.STATUS_FAIL:
                 fail = True
                 break
             simulator = HistorySimulator()
-            simulator.update_history_for_next_week(results, data, week_number)
+            simulator.update_history_for_next_week(results, data)
         if fail:
             total_value = 99999
         else:
-            validator = ScheduleValidator(results, data)
-            total_value = validator.evaluate_schedule()
+            validator = ScheduleValidator()
+            total_value = validator.evaluate_schedule(results, data)
 
     # Assert
     assert total_value < 99999
