@@ -23,15 +23,15 @@ Classes
     :
 
 `ConfigValidator()`
-:   _summary_
+:   Class responsible for validating the configuration of a nurse rostering problem.
 
     ### Methods
 
     `evaluate_configuration(self, data) ‑> nsp_solver.validator.conf_validator.CONF_EVAL`
-    :   _summary_
+    :   Evaluates the configuration and asks the user if there is a conflict between enabled constraints.
         
         Args:
             data (dict): dictionary that contains data from input files
         
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped

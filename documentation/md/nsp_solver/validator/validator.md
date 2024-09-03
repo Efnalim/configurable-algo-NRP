@@ -5,17 +5,17 @@ Classes
 -------
 
 `ScheduleValidator()`
-:   _summary_
+:   Class responsible for validating the computed schedule
 
     ### Methods
 
     `evaluate_schedule(self, schedule, data, output_file_path=None) ‑> int`
-    :   _summary_
+    :   Evaluates the computed schedule. 
         
         Args:
-            schedule (_type_): _description_
+            schedule (dict): computed schedule
             data (dict): dictionary that contains data from input files
-            output_file_path (_type_, optional): _description_. Defaults to None.
+            output_file_path (str, optional): Path for the written output of the evaluation. Defaults to None.
         
         Returns:
-            int: _description_
+            int: value of the evaluated schedule (99999 if invalid)

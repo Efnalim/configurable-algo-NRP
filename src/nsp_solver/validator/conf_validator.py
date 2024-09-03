@@ -9,17 +9,17 @@ class CONF_EVAL(Enum):
 
 
 class ConfigValidator:
-    """_summary_
+    """Class responsible for validating the configuration of a nurse rostering problem.
     """
 
     def evaluate_configuration(self, data) -> CONF_EVAL:
-        """_summary_
+        """Evaluates the configuration and asks the user if there is a conflict between enabled constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         """
         retval = CONF_EVAL.OK
 
@@ -36,13 +36,13 @@ class ConfigValidator:
         return retval
 
     def _check_overriding(self, data) -> CONF_EVAL:
-        """_summary_
+        """Checks configuration of possibly overriding constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         """
         conf = data["configuration"]
         if conf["h1"] and conf["h10"]:
@@ -52,13 +52,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_contradicting(self, data) -> CONF_EVAL:
-        """_summary_
+        """Checks configuration of possibly contradicting constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         """
         conf = data["configuration"]
         if not conf["h6"] or not conf["h9"]:
@@ -76,13 +76,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_affecting(self, data) -> CONF_EVAL:
-        """_summary_
+        """Checks configuration of constraints that possibly affect each other.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         """
         conf = data["configuration"]
         if not conf["h5"] or not conf["s2"]:
@@ -102,25 +102,22 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def __update_conf_eval_retval(self, retval: CONF_EVAL, new_retval: CONF_EVAL):
-        """_summary_
+        """Updated the value to the higher value of CONF_EVAL
 
         Args:
             retval (CONF_EVAL): _description_
             new_retval (CONF_EVAL): _description_
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: the higher level of CONF_EVAL
         """
         return new_retval if new_retval.value > retval.value else retval
 
     def __get_dialog_popup(self, question) -> CONF_EVAL:
-        """_summary_
+        """Returns the popup window and its elements for the given question
 
         Args:
-            question (_type_): _description_
-
-        Returns:
-            CONF_EVAL: _description_
+            question (str): question that is displayed in the popup window
         """
         def stop_option():
             selected_option.set(CONF_EVAL.STOP.value)
@@ -149,13 +146,13 @@ class ConfigValidator:
         return win, label, button_stop, button_continue, selected_option
 
     def _get_user_choice(self, question):
-        """_summary_
+        """Opens the popup window and wait for the user to make a choice.
 
         Args:
-            question (_type_): _description_
+            question (str): question that is displayed in the popup window
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: decidion of the user
         """
         win, _, _, _, selected_option = (
             self.__get_dialog_popup(question)

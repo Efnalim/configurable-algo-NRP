@@ -37,17 +37,17 @@ class CONF_EVAL(Enum):
 
 
 class ConfigValidator:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Class responsible for validating the configuration of a nurse rostering problem.
     &#34;&#34;&#34;
 
     def evaluate_configuration(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the configuration and asks the user if there is a conflict between enabled constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         retval = CONF_EVAL.OK
 
@@ -64,13 +64,13 @@ class ConfigValidator:
         return retval
 
     def _check_overriding(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of possibly overriding constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if conf[&#34;h1&#34;] and conf[&#34;h10&#34;]:
@@ -80,13 +80,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_contradicting(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of possibly contradicting constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if not conf[&#34;h6&#34;] or not conf[&#34;h9&#34;]:
@@ -104,13 +104,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_affecting(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of constraints that possibly affect each other.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if not conf[&#34;h5&#34;] or not conf[&#34;s2&#34;]:
@@ -130,25 +130,22 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def __update_conf_eval_retval(self, retval: CONF_EVAL, new_retval: CONF_EVAL):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Updated the value to the higher value of CONF_EVAL
 
         Args:
             retval (CONF_EVAL): _description_
             new_retval (CONF_EVAL): _description_
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: the higher level of CONF_EVAL
         &#34;&#34;&#34;
         return new_retval if new_retval.value &gt; retval.value else retval
 
     def __get_dialog_popup(self, question) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Returns the popup window and its elements for the given question
 
         Args:
-            question (_type_): _description_
-
-        Returns:
-            CONF_EVAL: _description_
+            question (str): question that is displayed in the popup window
         &#34;&#34;&#34;
         def stop_option():
             selected_option.set(CONF_EVAL.STOP.value)
@@ -177,13 +174,13 @@ class ConfigValidator:
         return win, label, button_stop, button_continue, selected_option
 
     def _get_user_choice(self, question):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Opens the popup window and wait for the user to make a choice.
 
         Args:
-            question (_type_): _description_
+            question (str): question that is displayed in the popup window
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: decidion of the user
         &#34;&#34;&#34;
         win, _, _, _, selected_option = (
             self.__get_dialog_popup(question)
@@ -241,23 +238,23 @@ class ConfigValidator:
 <span>class <span class="ident">ConfigValidator</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p><em>summary</em></p></div>
+<div class="desc"><p>Class responsible for validating the configuration of a nurse rostering problem.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ConfigValidator:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Class responsible for validating the configuration of a nurse rostering problem.
     &#34;&#34;&#34;
 
     def evaluate_configuration(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the configuration and asks the user if there is a conflict between enabled constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         retval = CONF_EVAL.OK
 
@@ -274,13 +271,13 @@ class ConfigValidator:
         return retval
 
     def _check_overriding(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of possibly overriding constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if conf[&#34;h1&#34;] and conf[&#34;h10&#34;]:
@@ -290,13 +287,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_contradicting(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of possibly contradicting constraints.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if not conf[&#34;h6&#34;] or not conf[&#34;h9&#34;]:
@@ -314,13 +311,13 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def _check_affecting(self, data) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks configuration of constraints that possibly affect each other.
 
         Args:
             data (dict): dictionary that contains data from input files
 
         Returns:
-            CONF_EVAL: _description_
+            CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
         &#34;&#34;&#34;
         conf = data[&#34;configuration&#34;]
         if not conf[&#34;h5&#34;] or not conf[&#34;s2&#34;]:
@@ -340,25 +337,22 @@ class ConfigValidator:
         return CONF_EVAL.OK
 
     def __update_conf_eval_retval(self, retval: CONF_EVAL, new_retval: CONF_EVAL):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Updated the value to the higher value of CONF_EVAL
 
         Args:
             retval (CONF_EVAL): _description_
             new_retval (CONF_EVAL): _description_
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: the higher level of CONF_EVAL
         &#34;&#34;&#34;
         return new_retval if new_retval.value &gt; retval.value else retval
 
     def __get_dialog_popup(self, question) -&gt; CONF_EVAL:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Returns the popup window and its elements for the given question
 
         Args:
-            question (_type_): _description_
-
-        Returns:
-            CONF_EVAL: _description_
+            question (str): question that is displayed in the popup window
         &#34;&#34;&#34;
         def stop_option():
             selected_option.set(CONF_EVAL.STOP.value)
@@ -387,13 +381,13 @@ class ConfigValidator:
         return win, label, button_stop, button_continue, selected_option
 
     def _get_user_choice(self, question):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Opens the popup window and wait for the user to make a choice.
 
         Args:
-            question (_type_): _description_
+            question (str): question that is displayed in the popup window
 
         Returns:
-            _type_: _description_
+            CONF_EVAL: decidion of the user
         &#34;&#34;&#34;
         win, _, _, _, selected_option = (
             self.__get_dialog_popup(question)
@@ -408,7 +402,7 @@ class ConfigValidator:
 <span>def <span class="ident">evaluate_configuration</span></span>(<span>self, data) ‑> <a title="nsp_solver.validator.conf_validator.CONF_EVAL" href="#nsp_solver.validator.conf_validator.CONF_EVAL">CONF_EVAL</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p><em>summary</em></p>
+<div class="desc"><p>Evaluates the configuration and asks the user if there is a conflict between enabled constraints.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>data</code></strong> :&ensp;<code>dict</code></dt>
@@ -417,20 +411,20 @@ class ConfigValidator:
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code><a title="nsp_solver.validator.conf_validator.CONF_EVAL" href="#nsp_solver.validator.conf_validator.CONF_EVAL">CONF_EVAL</a></code></dt>
-<dd><em>description</em></dd>
+<dd>evaluation result that decides whether the computation will be performed or stopped</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def evaluate_configuration(self, data) -&gt; CONF_EVAL:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Evaluates the configuration and asks the user if there is a conflict between enabled constraints.
 
     Args:
         data (dict): dictionary that contains data from input files
 
     Returns:
-        CONF_EVAL: _description_
+        CONF_EVAL: evaluation result that decides whether the computation will be performed or stopped
     &#34;&#34;&#34;
     retval = CONF_EVAL.OK
 

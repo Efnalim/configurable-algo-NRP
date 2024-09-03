@@ -32,13 +32,13 @@ from nsp_solver.utils import utils
 
 
 class ScheduleValidator:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Class responsible for validating the computed schedule
     &#34;&#34;&#34;
     def _init_variables(self, schedule, data):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Initialize the helpful variables for the evaluation. 
 
         Args:
-            schedule (_type_): _description_
+            schedule (dict): computed schedule
             data (dict): dictionary that contains data from input files
         &#34;&#34;&#34;
         self.schedule = schedule
@@ -52,15 +52,15 @@ class ScheduleValidator:
         self.soft_table.append([&#34;constraint&#34;, &#34;objective value&#34;])
 
     def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the computed schedule. 
 
         Args:
-            schedule (_type_): _description_
+            schedule (dict): computed schedule
             data (dict): dictionary that contains data from input files
-            output_file_path (_type_, optional): _description_. Defaults to None.
+            output_file_path (str, optional): Path for the written output of the evaluation. Defaults to None.
 
         Returns:
-            int: _description_
+            int: value of the evaluated schedule (99999 if invalid)
         &#34;&#34;&#34;
         self._init_variables(schedule, data)
         if self._is_schedule_valid():
@@ -79,10 +79,10 @@ class ScheduleValidator:
             return 99999
 
     def _is_schedule_valid(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates wheter all enabled hard constraints are satisfied.
 
         Returns:
-            bool: _description_
+            bool: True if all hard constraints are satisfied, False otherwise
         &#34;&#34;&#34;
         if self.config[&#34;h1&#34;] and not self._is_max_assignments_per_day_satisfied():
             print(&#34;is_max_assignments_per_day_satisfied returns False&#34;)
@@ -144,10 +144,10 @@ class ScheduleValidator:
         return True
 
     def _get_objective_value_of_schedule(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the quality of the schedule based on the satisfaction of the enabled soft constraints.
 
         Returns:
-            int: _description_
+            int: Sum of the penalties from the enabled soft constraints.
         &#34;&#34;&#34;
         total = 0
         if self.config[&#34;s1&#34;]:
@@ -172,10 +172,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_minimal_capacity_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks whether the minimal capacity is satisfied.
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_weeks = self.data[&#34;all_weeks&#34;]
 
@@ -209,10 +209,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
         all_shifts = self.data[&#34;all_shifts&#34;]
@@ -228,10 +228,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_with_exception_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
 
@@ -248,10 +248,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_planned_vacations_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_weeks = self.data[&#34;all_weeks&#34;]
 
@@ -265,10 +265,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_maximum_shifts_of_specific_type_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
         for n in all_nurses:
@@ -286,10 +286,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_required_skill_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
         all_skills = self.data[&#34;all_skills&#34;]
@@ -311,10 +311,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_shift_successsion_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         restrictions = self.data[&#34;sc_data&#34;][&#34;forbiddenShiftTypeSuccessions&#34;]
         all_nurses = self.data[&#34;all_nurses&#34;]
@@ -365,7 +365,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_consecutive_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -382,7 +382,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -395,7 +395,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -407,7 +407,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -438,7 +438,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_total_incomplete_weekends_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -467,7 +467,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_free_period_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -499,7 +499,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -532,7 +532,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_days_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -558,7 +558,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -590,7 +590,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_days_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -623,7 +623,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -650,7 +650,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_shifts_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -686,7 +686,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_shifts_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -737,7 +737,7 @@ class ScheduleValidator:
         return True
 
     def _compute_helpful_values(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -792,7 +792,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_optimal_capacity_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -830,7 +830,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_consecutive_assignments_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -843,7 +843,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_max_consecutive_work_days_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -883,7 +883,7 @@ class ScheduleValidator:
         return subtotal * utils.CONS_WORK_DAY_WEIGHT
 
     def _get_max_consecutive_shifts_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -939,7 +939,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_min_consecutive_work_days_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -985,7 +985,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_min_consecutive_shifts_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1052,7 +1052,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1063,7 +1063,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_max_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1097,7 +1097,7 @@ class ScheduleValidator:
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     def _get_min_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1147,7 +1147,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_assignment_preferences_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1169,7 +1169,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_incomplete_weekends_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1196,7 +1196,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1229,7 +1229,7 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_ASSIGNMENTS_WEIGHT
 
     def _get_total_uses_of_ifneeded_skills_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1253,7 +1253,7 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_IFNEEDED_SKILL_WEIGHT
 
     def _get_unsatisfied_overtime_preferences_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1296,7 +1296,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_total_weekends_over_limit_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -1321,13 +1321,13 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
 
     def _is_nurse_on_vacation_any_week(self, nurse_id: int) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Args:
             nurse_id (int): _description_
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         return self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
             nurse_id
@@ -1352,19 +1352,19 @@ class ScheduleValidator:
 <span>class <span class="ident">ScheduleValidator</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p><em>summary</em></p></div>
+<div class="desc"><p>Class responsible for validating the computed schedule</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ScheduleValidator:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Class responsible for validating the computed schedule
     &#34;&#34;&#34;
     def _init_variables(self, schedule, data):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Initialize the helpful variables for the evaluation. 
 
         Args:
-            schedule (_type_): _description_
+            schedule (dict): computed schedule
             data (dict): dictionary that contains data from input files
         &#34;&#34;&#34;
         self.schedule = schedule
@@ -1378,15 +1378,15 @@ class ScheduleValidator:
         self.soft_table.append([&#34;constraint&#34;, &#34;objective value&#34;])
 
     def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the computed schedule. 
 
         Args:
-            schedule (_type_): _description_
+            schedule (dict): computed schedule
             data (dict): dictionary that contains data from input files
-            output_file_path (_type_, optional): _description_. Defaults to None.
+            output_file_path (str, optional): Path for the written output of the evaluation. Defaults to None.
 
         Returns:
-            int: _description_
+            int: value of the evaluated schedule (99999 if invalid)
         &#34;&#34;&#34;
         self._init_variables(schedule, data)
         if self._is_schedule_valid():
@@ -1405,10 +1405,10 @@ class ScheduleValidator:
             return 99999
 
     def _is_schedule_valid(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates wheter all enabled hard constraints are satisfied.
 
         Returns:
-            bool: _description_
+            bool: True if all hard constraints are satisfied, False otherwise
         &#34;&#34;&#34;
         if self.config[&#34;h1&#34;] and not self._is_max_assignments_per_day_satisfied():
             print(&#34;is_max_assignments_per_day_satisfied returns False&#34;)
@@ -1470,10 +1470,10 @@ class ScheduleValidator:
         return True
 
     def _get_objective_value_of_schedule(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Evaluates the quality of the schedule based on the satisfaction of the enabled soft constraints.
 
         Returns:
-            int: _description_
+            int: Sum of the penalties from the enabled soft constraints.
         &#34;&#34;&#34;
         total = 0
         if self.config[&#34;s1&#34;]:
@@ -1498,10 +1498,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_minimal_capacity_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;Checks whether the minimal capacity is satisfied.
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_weeks = self.data[&#34;all_weeks&#34;]
 
@@ -1535,10 +1535,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
         all_shifts = self.data[&#34;all_shifts&#34;]
@@ -1554,10 +1554,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_assignments_per_day_with_exception_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
 
@@ -1574,10 +1574,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_planned_vacations_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_weeks = self.data[&#34;all_weeks&#34;]
 
@@ -1591,10 +1591,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_maximum_shifts_of_specific_type_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         all_nurses = self.data[&#34;all_nurses&#34;]
         for n in all_nurses:
@@ -1612,10 +1612,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_required_skill_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         nurses_data = self.data[&#34;sc_data&#34;][&#34;nurses&#34;]
         all_skills = self.data[&#34;all_skills&#34;]
@@ -1637,10 +1637,10 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_shift_successsion_satisfied(self) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         restrictions = self.data[&#34;sc_data&#34;][&#34;forbiddenShiftTypeSuccessions&#34;]
         all_nurses = self.data[&#34;all_nurses&#34;]
@@ -1691,7 +1691,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_consecutive_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1708,7 +1708,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1721,7 +1721,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_max_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1733,7 +1733,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1764,7 +1764,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_max_total_incomplete_weekends_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1793,7 +1793,7 @@ class ScheduleValidator:
 
     @utils.hard_constr_value_print
     def _is_min_free_period_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1825,7 +1825,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_total_assignments_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1858,7 +1858,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_days_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1884,7 +1884,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1916,7 +1916,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_days_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1949,7 +1949,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_days_off_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -1976,7 +1976,7 @@ class ScheduleValidator:
         return True
 
     def _is_max_consecutive_work_shifts_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -2012,7 +2012,7 @@ class ScheduleValidator:
         return True
 
     def _is_min_consecutive_work_shifts_satisfied(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -2063,7 +2063,7 @@ class ScheduleValidator:
         return True
 
     def _compute_helpful_values(self):
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             _type_: _description_
@@ -2118,7 +2118,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_optimal_capacity_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2156,7 +2156,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_consecutive_assignments_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2169,7 +2169,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_max_consecutive_work_days_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2209,7 +2209,7 @@ class ScheduleValidator:
         return subtotal * utils.CONS_WORK_DAY_WEIGHT
 
     def _get_max_consecutive_shifts_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2265,7 +2265,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_min_consecutive_work_days_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2311,7 +2311,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_min_consecutive_shifts_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2378,7 +2378,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2389,7 +2389,7 @@ class ScheduleValidator:
         return subtotal
 
     def _get_max_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2423,7 +2423,7 @@ class ScheduleValidator:
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     def _get_min_consecutive_days_off_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2473,7 +2473,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_assignment_preferences_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2495,7 +2495,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_incomplete_weekends_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2522,7 +2522,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2555,7 +2555,7 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_ASSIGNMENTS_WEIGHT
 
     def _get_total_uses_of_ifneeded_skills_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2579,7 +2579,7 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_IFNEEDED_SKILL_WEIGHT
 
     def _get_unsatisfied_overtime_preferences_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2622,7 +2622,7 @@ class ScheduleValidator:
 
     @utils.soft_constr_value_print
     def _get_total_weekends_over_limit_value(self) -&gt; int:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Returns:
             int: _description_
@@ -2647,13 +2647,13 @@ class ScheduleValidator:
         return subtotal * utils.TOTAL_WORKING_WEEKENDS_WEIGHT
 
     def _is_nurse_on_vacation_any_week(self, nurse_id: int) -&gt; bool:
-        &#34;&#34;&#34;_summary_
+        &#34;&#34;&#34;
 
         Args:
             nurse_id (int): _description_
 
         Returns:
-            bool: _description_
+            bool: True if the hard constraint is satisfied, False otherwise
         &#34;&#34;&#34;
         return self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
             nurse_id
@@ -2670,35 +2670,35 @@ class ScheduleValidator:
 <span>def <span class="ident">evaluate_schedule</span></span>(<span>self, schedule, data, output_file_path=None) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p><em>summary</em></p>
+<div class="desc"><p>Evaluates the computed schedule. </p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>schedule</code></strong> :&ensp;<code>_type_</code></dt>
-<dd><em>description</em></dd>
+<dt><strong><code>schedule</code></strong> :&ensp;<code>dict</code></dt>
+<dd>computed schedule</dd>
 <dt><strong><code>data</code></strong> :&ensp;<code>dict</code></dt>
 <dd>dictionary that contains data from input files</dd>
-<dt><strong><code>output_file_path</code></strong> :&ensp;<code>_type_</code>, optional</dt>
-<dd><em>description</em>. Defaults to None.</dd>
+<dt><strong><code>output_file_path</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Path for the written output of the evaluation. Defaults to None.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
-<dd><em>description</em></dd>
+<dd>value of the evaluated schedule (99999 if invalid)</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def evaluate_schedule(self, schedule, data, output_file_path=None) -&gt; int:
-    &#34;&#34;&#34;_summary_
+    &#34;&#34;&#34;Evaluates the computed schedule. 
 
     Args:
-        schedule (_type_): _description_
+        schedule (dict): computed schedule
         data (dict): dictionary that contains data from input files
-        output_file_path (_type_, optional): _description_. Defaults to None.
+        output_file_path (str, optional): Path for the written output of the evaluation. Defaults to None.
 
     Returns:
-        int: _description_
+        int: value of the evaluated schedule (99999 if invalid)
     &#34;&#34;&#34;
     self._init_variables(schedule, data)
     if self._is_schedule_valid():
