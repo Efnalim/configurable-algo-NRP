@@ -1554,7 +1554,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -1583,7 +1583,7 @@ class CplexSolver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 model.linear_constraints.add(
                                     lin_expr=[
@@ -1628,7 +1628,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -1652,7 +1652,7 @@ class CplexSolver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                                 or consecutive_working_shifts_prev_week == 0
                             ):
                                 model.linear_constraints.add(
@@ -1666,7 +1666,7 @@ class CplexSolver(NSP_solver):
                                     senses=[&#34;L&#34;],
                                     rhs=[d],
                                 )
-                        if (d - dd) == 0 and lastShittTypeAsInt != s:
+                        if (d - dd) == 0 and lastShiftTypeAsInt != s:
                             model.linear_constraints.add(
                                 lin_expr=[
                                     cplex.SparsePair(
@@ -4068,7 +4068,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -4097,7 +4097,7 @@ class CplexSolver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 model.linear_constraints.add(
                                     lin_expr=[
@@ -4142,7 +4142,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -4166,7 +4166,7 @@ class CplexSolver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                                 or consecutive_working_shifts_prev_week == 0
                             ):
                                 model.linear_constraints.add(
@@ -4180,7 +4180,7 @@ class CplexSolver(NSP_solver):
                                     senses=[&#34;L&#34;],
                                     rhs=[d],
                                 )
-                        if (d - dd) == 0 and lastShittTypeAsInt != s:
+                        if (d - dd) == 0 and lastShiftTypeAsInt != s:
                             model.linear_constraints.add(
                                 lin_expr=[
                                     cplex.SparsePair(
@@ -6270,7 +6270,7 @@ class CplexSolver(NSP_solver):
         lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
             &#34;lastAssignedShiftType&#34;
         ]
-        lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+        lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -6294,7 +6294,7 @@ class CplexSolver(NSP_solver):
                         )
                     else:
                         if (consecutive_working_shifts_prev_week == dd - d) and (
-                            lastShittTypeAsInt == s
+                            lastShiftTypeAsInt == s
                             or consecutive_working_shifts_prev_week == 0
                         ):
                             model.linear_constraints.add(
@@ -6308,7 +6308,7 @@ class CplexSolver(NSP_solver):
                                 senses=[&#34;L&#34;],
                                 rhs=[d],
                             )
-                    if (d - dd) == 0 and lastShittTypeAsInt != s:
+                    if (d - dd) == 0 and lastShiftTypeAsInt != s:
                         model.linear_constraints.add(
                             lin_expr=[
                                 cplex.SparsePair(
@@ -6372,7 +6372,7 @@ class CplexSolver(NSP_solver):
         lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
             &#34;lastAssignedShiftType&#34;
         ]
-        lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+        lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -6401,7 +6401,7 @@ class CplexSolver(NSP_solver):
                         )
                     else:
                         if (consecutive_working_shifts_prev_week == dd - d) and (
-                            lastShittTypeAsInt == s
+                            lastShiftTypeAsInt == s
                         ):
                             model.linear_constraints.add(
                                 lin_expr=[

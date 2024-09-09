@@ -17,6 +17,8 @@ class ScheduleValidator:
         self.data = data
         self.config = data["configuration"]
         self.all_days = range(data["num_days"] * data["num_weeks"])
+        # self.all_days = range(data["num_days"])
+        # self.data["all_weeks"] = range(1)
         self.help_vars = self._compute_helpful_values()
         self.hard_table = []
         self.soft_table = []
@@ -34,21 +36,20 @@ class ScheduleValidator:
         Returns:
             int: value of the evaluated schedule (99999 if invalid)
         """
+        retval = 99999
         self._init_variables(schedule, data)
         if self._is_schedule_valid():
             retval = self._get_objective_value_of_schedule()
-            if output_file_path is None:
-                return retval
-            try:
-                with utils.redirect_stdout_to_file(output_file_path):
-                    utils.print_table("Hard constraints", self.hard_table)
-                    utils.print_table("Soft constraints", self.soft_table)
-                    print(f'Total objective value: {retval}')
-            except FileNotFoundError:
-                logging.error("Output directory does not exist")
+        if output_file_path is None:
             return retval
-        else:
-            return 99999
+        try:
+            with utils.redirect_stdout_to_file(output_file_path):
+                utils.print_table("Hard constraints", self.hard_table)
+                utils.print_table("Soft constraints", self.soft_table)
+                print(f'Total objective value: {retval}')
+        except FileNotFoundError:
+            logging.error("Output directory does not exist")
+        return retval
 
     def _is_schedule_valid(self) -> bool:
         """Evaluates wheter all enabled hard constraints are satisfied.
@@ -193,7 +194,6 @@ class ScheduleValidator:
         for n in all_nurses:
             for d in self.all_days:
                 if sum(self.help_vars["shifts_and_skills"][n][d][s][sk] for s in all_shifts for sk in all_skills) > 1:
-                    # print(f"{n} {d}")
                     return False
 
         return True
@@ -213,7 +213,6 @@ class ScheduleValidator:
                     sum(self.help_vars["shifts"][n][d][1:]) > 1
                     or sum(self.help_vars["shifts"][n][d][:-1]) > 1
                 ):
-                    # print(f"{n} {d}")
                     return False
 
         return True
@@ -230,7 +229,6 @@ class ScheduleValidator:
         for w in all_weeks:
             for n in self.help_vars["nurses_ids_on_vacation"][w]:
                 if sum(self.help_vars["working_days"][n][w * 7: (w + 1) * 7]) > 0:
-                    # print(f"{n} {w}")
                     return False
 
         return True
@@ -251,7 +249,6 @@ class ScheduleValidator:
                     sum(self.help_vars["shifts"][n][d][shift_id] for d in self.all_days)
                     > limit
                 ):
-                    # print(f"n{n} res_s{shift_id}")
                     return False
 
         return True
@@ -291,6 +288,7 @@ class ScheduleValidator:
         restrictions = self.data["sc_data"]["forbiddenShiftTypeSuccessions"]
         all_nurses = self.data["all_nurses"]
         num_days = self.data["num_days"] * self.data["num_weeks"]
+        # num_days = self.data["num_days"]
         all_shifts = self.data["all_shifts"]
 
         shifts = self.help_vars["shifts"]
@@ -311,7 +309,6 @@ class ScheduleValidator:
                             ]
                             == 1
                         ):
-                            # print(
                             #     f"{n} {d} {s} {shifts[n][d][s]} {shifts[n][d + 1][utils.shift_to_int[forbidden_shift_succession]]}"
                             # )
                             return False
@@ -328,7 +325,6 @@ class ScheduleValidator:
                 "succeedingShiftTypes"
             ]:
                 if shifts[n][0][utils.shift_to_int[forbidden_shift_succession]] == 1:
-                    # print(
                     #     f"{n} {s} {last_shift} {utils.shift_to_int[forbidden_shift_succession]}"
                     # )
                     return False
@@ -403,7 +399,6 @@ class ScheduleValidator:
                 )
                 > max_total_assignments
             ):
-                # print(f"n_{n}_max{max_total_assignments}")
                 return False
 
         return True
@@ -430,7 +425,6 @@ class ScheduleValidator:
                     total_incomplete_weekends += 1
 
             if total_incomplete_weekends > max_total_incomplete_weekends:
-                # print(
                 #     f"n_{n}_max{max_total_incomplete_weekends}_actual{total_incomplete_weekends}"
                 # )
                 return False
@@ -465,7 +459,6 @@ class ScheduleValidator:
                     else:
                         counter = 0
                 if max_found_period < min_free_period:
-                    # print(f"n_{n}")
                     return False
 
         return True
@@ -498,7 +491,6 @@ class ScheduleValidator:
                 )
                 < min_total_assignments
             ):
-                # print(f"n_{n}_min{min_total_assignments}")
                 return False
 
         return True
@@ -525,7 +517,6 @@ class ScheduleValidator:
                     counter = 0
                 counter += self.help_vars["working_days"][n][d]
                 if counter > max_consecutive_working_days:
-                    # print(f"n_{n}_{d}_max{max_consecutive_working_days}")
                     return False
         return True
 
@@ -557,7 +548,6 @@ class ScheduleValidator:
                     counter = 0
                 counter += 1 - self.help_vars["working_days"][n][d]
                 if counter > max_consecutive_days_off:
-                    # print(f"n_{n}_{d}_max{max_consecutive_days_off}")
                     return False
         return True
 
@@ -588,7 +578,6 @@ class ScheduleValidator:
                     continue
                 if self.help_vars["working_days"][n][d] == 0:
                     if counter > 0 and counter < min_consecutive_working_days:
-                        # print(f"n_{n}_{d}_min{min_consecutive_working_days}_prev{prev}")
                         return False
                     counter = 0
                 counter += self.help_vars["working_days"][n][d]
@@ -615,7 +604,6 @@ class ScheduleValidator:
             for d in self.all_days:
                 if self.help_vars["working_days"][n][d] == 1:
                     if counter > 0 and counter < min_consecutive_days_off:
-                        # print(f"n_{n}_{d}_min{min_consecutive_days_off}_prev{prev}")
                         return False
                     counter = 0
                 counter += 1 - self.help_vars["working_days"][n][d]
@@ -652,7 +640,6 @@ class ScheduleValidator:
                         counter = 0
                     counter += self.help_vars["shifts"][n][d][s]
                     if counter > max_consecutive_working_shifts:
-                        # print(f"n_{n}_d_{d}_s_{s}_max{max_consecutive_working_shifts}")
                         return False
 
         return True
@@ -699,7 +686,6 @@ class ScheduleValidator:
                             ):
                                 counter = 0
                                 continue
-                            # print(
                             #     f"n_{n}_d_{d}_s_{s}_min{min_consecutive_working_shifts}_prevshift{consecutive_shifts_prev_week}"
                             # )
                             return False
@@ -743,22 +729,23 @@ class ScheduleValidator:
                         [self.schedule[(n, d, s, sk)] for sk in range(num_skills)]
                     )
                 working_days[n][d] = utils.isPositiveNumber(sum(shifts[n][d][:]))
-
-        nurses_ids_on_vacation = [
-            list(
-                map(
-                    lambda x: int(x.split("_")[1]),
-                    self.data["all_wd_data"][w]["vacations"],
+        if self.data["configuration"]["h12"]:
+            nurses_ids_on_vacation = [
+                list(
+                    map(
+                        lambda x: int(x.split("_")[1]),
+                        self.data["all_wd_data"][w]["vacations"],
+                    )
                 )
-            )
-            for w in all_weeks
-        ]
+                for w in all_weeks
+            ]
 
         ret_val = {}
         ret_val["working_days"] = working_days
         ret_val["shifts"] = shifts
         ret_val["shifts_and_skills"] = shifts_and_skills
-        ret_val["nurses_ids_on_vacation"] = nurses_ids_on_vacation
+        if self.data["configuration"]["h12"]:
+            ret_val["nurses_ids_on_vacation"] = nurses_ids_on_vacation
 
         return ret_val
 
@@ -910,6 +897,7 @@ class ScheduleValidator:
                                 subtotal += diff * utils.CONS_SHIFT_WEIGHT
         return subtotal
 
+    @utils.soft_constr_value_print
     def _get_min_consecutive_work_days_value(self) -> int:
         """
 
@@ -922,7 +910,7 @@ class ScheduleValidator:
         subtotal = 0
 
         for n in all_nurses:
-            consecutive_working_days_prev_week = self.data["h0_data_original"][
+            curr_count = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveWorkingDays"]
             min_consecutive_working_days = sc_data["contracts"][
@@ -933,28 +921,17 @@ class ScheduleValidator:
                 if self.data["configuration"]["h12"] and (
                     n in self.help_vars["nurses_ids_on_vacation"][w]
                 ):
+                    curr_count = 0
                     continue
-                for dd in range(1, min_consecutive_working_days):
-                    if (d - dd) > 0:
-                        diff = (
-                            (1 - self.help_vars["working_days"][n][d])
-                            + sum(self.help_vars["working_days"][n][d - dd: d])
-                            + (1 - self.help_vars["working_days"][n][d - dd - 1])
-                            - (dd + 1)
-                        )
+                if self.help_vars["working_days"][n][d] == 1:
+                    curr_count += 1
+                else:
+                    if curr_count > 0:
+                        diff = min_consecutive_working_days - curr_count
                         if diff > 0:
-                            subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
-
-                    else:
-                        if consecutive_working_days_prev_week == dd - d:
-                            diff = (
-                                (1 - self.help_vars["working_days"][n][d])
-                                + sum(self.help_vars["working_days"][n][0:d])
-                                - d
-                            )
-                            if diff > 0:
-                                subtotal += diff * utils.CONS_WORK_DAY_WEIGHT * dd
-        return subtotal
+                            subtotal += diff
+                    curr_count = 0
+        return subtotal * utils.CONS_WORK_DAY_WEIGHT
 
     def _get_min_consecutive_shifts_value(self) -> int:
         """
@@ -967,58 +944,43 @@ class ScheduleValidator:
         all_nurses = self.data["all_nurses"]
         all_shifts = self.data["all_shifts"]
         sc_data = self.data["sc_data"]
+        num_skills = self.data["num_skills"]
 
         for n in all_nurses:
-            consecutive_working_shifts_prev_week = self.data["h0_data_original"][
+            current_count = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveAssignments"]
             lastAssignedShiftType = self.data["h0_data_original"]["nurseHistory"][
                 n
             ]["lastAssignedShiftType"]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in self.all_days:
                 w = math.floor(d / 7)
                 if self.data["configuration"]["h12"] and (
                     n in self.help_vars["nurses_ids_on_vacation"][w]
                 ):
+                    lastShiftTypeAsInt = num_skills
+                    current_count = 0
+                    continue
+                if self.help_vars["working_days"][n][d] == 0:
+                    if lastShiftTypeAsInt < num_skills:
+                        diff = sc_data["shiftTypes"][lastShiftTypeAsInt]["minimumNumberOfConsecutiveAssignments"] - current_count
+                        if diff > 0:
+                            subtotal += utils.CONS_SHIFT_WEIGHT * diff
+                    lastShiftTypeAsInt = num_skills
+                    current_count = 0
                     continue
                 for s in all_shifts:
                     if self.help_vars["shifts"][n][d][s] == 1:
-                        continue
-                    min_consecutive_shifts = sc_data["shiftTypes"][s][
-                        "minimumNumberOfConsecutiveAssignments"
-                    ]
-                    for dd in range(1, min_consecutive_shifts):
-                        if (d - dd) > 0:
-                            diff = (
-                                (1 - self.help_vars["shifts"][n][d][s])
-                                + sum(
-                                    [
-                                        self.help_vars["shifts"][n][ddd][s]
-                                        for ddd in range(d - dd, d)
-                                    ]
-                                )
-                                + (1 - self.help_vars["shifts"][n][d - dd - 1][s])
-                                - (dd + 1)
-                            )
-                            if diff > 0:
-                                subtotal += utils.CONS_SHIFT_WEIGHT
+                        if lastShiftTypeAsInt == s:
+                            current_count += 1
                         else:
-                            if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
-                            ):
-                                working_shifts = sum(
-                                    [
-                                        self.help_vars["shifts"][n][ddd][s]
-                                        for ddd in range(d + 1)
-                                    ]
-                                )
-                                if working_shifts < d + 1:
-                                    # print(
-                                    #     f'diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars["shifts"]}_prev{consecutive_working_shifts_prev_week}'
-                                    # )
-                                    subtotal += utils.CONS_SHIFT_WEIGHT
-                            # if lastShittTypeAsInt != s:
+                            if lastShiftTypeAsInt < num_skills:
+                                diff = sc_data["shiftTypes"][lastShiftTypeAsInt]["minimumNumberOfConsecutiveAssignments"] - current_count
+                                if diff > 0:
+                                    subtotal += utils.CONS_SHIFT_WEIGHT * diff
+                            current_count = 1
+                            lastShiftTypeAsInt = s
 
         return subtotal
 
@@ -1045,27 +1007,20 @@ class ScheduleValidator:
         sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = self.data["h0_data_original"][
+            curr_count = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveDaysOff"]
             max_consecutive_days_off = sc_data["contracts"][
                 utils.contract_to_int[sc_data["nurses"][n]["contract"]]
             ]["maximumNumberOfConsecutiveDaysOff"]
             for d in self.all_days:
-                if d > max_consecutive_days_off:
-                    if (
-                        sum(
-                            self.help_vars["working_days"][n][
-                                d - max_consecutive_days_off: d + 1
-                            ]
-                        )
-                        == 0
-                    ):
+                if self.help_vars["working_days"][n][d] == 0:
+                    curr_count += 1
+                    if curr_count > max_consecutive_days_off:
                         subtotal += 1
                 else:
-                    if consecutive_days_off_prev_week >= max_consecutive_days_off - d:
-                        if sum(self.help_vars["working_days"][n][0: d + 1]) == 0:
-                            subtotal += 1
+                    curr_count = 0
+
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     def _get_min_consecutive_days_off_value(self) -> int:
@@ -1079,42 +1034,21 @@ class ScheduleValidator:
         sc_data = self.data["sc_data"]
 
         for n in all_nurses:
-            consecutive_days_off_prev_week = self.data["h0_data_original"][
+            curr_count = self.data["h0_data_original"][
                 "nurseHistory"
             ][n]["numberOfConsecutiveDaysOff"]
             min_consecutive_days_off = sc_data["contracts"][
                 utils.contract_to_int[sc_data["nurses"][n]["contract"]]
             ]["minimumNumberOfConsecutiveDaysOff"]
             for d in self.all_days:
-                for dd in range(1, min_consecutive_days_off):
-                    if (d - dd) > 0:
-                        diff = (
-                            self.help_vars["working_days"][n][d]
-                            + sum(
-                                [
-                                    (1 - self.help_vars["working_days"][n][ddd])
-                                    for ddd in range(d - dd, d)
-                                ]
-                            )
-                            + self.help_vars["working_days"][n][d - dd - 1]
-                            - (dd + 1)
-                        )
+                if self.help_vars["working_days"][n][d] == 0:
+                    curr_count += 1
+                else:
+                    if curr_count > 0:
+                        diff = min_consecutive_days_off - curr_count
                         if diff > 0:
-                            subtotal += 1
-                    else:
-                        if consecutive_days_off_prev_week >= min_consecutive_days_off:
-                            continue
-                        if consecutive_days_off_prev_week == 0:
-                            continue
-                        if consecutive_days_off_prev_week == dd - d:
-                            working_days = sum(
-                                [
-                                    self.help_vars["working_days"][n][ddd]
-                                    for ddd in range(0, d + 1)
-                                ]
-                            )
-                            if working_days > 0:
-                                subtotal += 1
+                            subtotal += diff
+                    curr_count = 0
         return subtotal * utils.CONS_DAY_OFF_WEIGHT
 
     @utils.soft_constr_value_print
@@ -1132,10 +1066,10 @@ class ScheduleValidator:
                 shift_id = utils.shift_to_int[preference["shiftType"]]
 
                 if shift_id != utils.shift_to_int["Any"]:
-                    if self.help_vars["shifts"][nurse_id][day_id][shift_id] == 1:
+                    if self.help_vars["shifts"][nurse_id][day_id + 7 * w][shift_id] == 1:
                         subtotal += 1
                 else:
-                    if self.help_vars["working_days"][nurse_id][day_id] == 1:
+                    if self.help_vars["working_days"][nurse_id][day_id + 7 * w] == 1:
                         subtotal += 1
         return subtotal * utils.UNSATISFIED_PREFERENCE_WEIGHT
 
@@ -1164,7 +1098,7 @@ class ScheduleValidator:
                         == 1
                     ):
                         subtotal += 1
-        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+        return subtotal * utils.INCOMPLETE_WEEKEND_WEIGHT
 
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -> int:

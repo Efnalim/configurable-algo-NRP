@@ -854,7 +854,7 @@ def add_min_consecutive_shifts_constraint(
         lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
             &#34;lastAssignedShiftType&#34;
         ]
-        lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+        lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -877,7 +877,7 @@ def add_min_consecutive_shifts_constraint(
                         )
                     else:
                         if (consecutive_working_shifts_prev_week == d - dd) and (
-                            lastShittTypeAsInt == s
+                            lastShiftTypeAsInt == s
                         ):
                             model.add(
                                 sum(
@@ -1768,7 +1768,7 @@ def compute_one_week(time_limit_for_week, week_number, data, results):
         lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
             &#34;lastAssignedShiftType&#34;
         ]
-        lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+        lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -1791,7 +1791,7 @@ def compute_one_week(time_limit_for_week, week_number, data, results):
                         )
                     else:
                         if (consecutive_working_shifts_prev_week == d - dd) and (
-                            lastShittTypeAsInt == s
+                            lastShiftTypeAsInt == s
                         ):
                             model.add(
                                 sum(

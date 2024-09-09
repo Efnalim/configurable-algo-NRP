@@ -37,7 +37,7 @@ try:
         # print(arguments_list)
         # run the main script in iterations
         for time_limit in [0]:
-            for solver_id in [0, 1, 2]:
+            for solver_id in [2]:
                 arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} {config_file_id} ' + combination for combination in week_combinations]
                 for arg in arguments_list:
                     for _ in range(number_of_iteration):

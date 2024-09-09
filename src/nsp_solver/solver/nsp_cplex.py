@@ -23,9 +23,10 @@ class CplexSolver(NSP_solver):
         """
         week_number = data["h0_data"]["week"]
 
-        data["wd_data"]["vacations_with_ids"] = list(
-            map(lambda x: int(x.split("_")[1]), data["wd_data"]["vacations"])
-        )
+        if data["configuration"]["h12"]:
+            data["wd_data"]["vacations_with_ids"] = list(
+                map(lambda x: int(x.split("_")[1]), data["wd_data"]["vacations"])
+            )
 
         results[(week_number, "status")] = utils.STATUS_FAIL
 
@@ -1526,7 +1527,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data["h0_data"]["nurseHistory"][n][
                 "lastAssignedShiftType"
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data["shiftTypes"][s][
@@ -1554,25 +1555,44 @@ class CplexSolver(NSP_solver):
                                 rhs=[dd + 1],
                             )
                         else:
-                            if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
-                            ):
-                                model.linear_constraints.add(
-                                    lin_expr=[
-                                        cplex.SparsePair(
-                                            [
-                                                violations_of_min_consecutive_working_shifts[
-                                                    (n, d, s, dd)
+                            if (dd - d != 0):
+                                if (consecutive_working_shifts_prev_week == dd - d) and (
+                                    lastShiftTypeAsInt == s
+                                ):
+                                    model.linear_constraints.add(
+                                        lin_expr=[
+                                            cplex.SparsePair(
+                                                [
+                                                    violations_of_min_consecutive_working_shifts[
+                                                        (n, d, s, dd)
+                                                    ]
                                                 ]
-                                            ]
-                                            + [not_working_shifts[(n, d, s)]]
-                                            + list((shifts[n][ddd][s]) for ddd in range(d)),
-                                            [-1] + [1] * (d + 1),
-                                        )
-                                    ],
-                                    senses=["L"],
-                                    rhs=[d],
-                                )
+                                                + [not_working_shifts[(n, d, s)]]
+                                                + list((shifts[n][ddd][s]) for ddd in range(d)),
+                                                [-1] + [1] * (d + 1),
+                                            )
+                                        ],
+                                        senses=["L"],
+                                        rhs=[d],
+                                    )
+                            else:
+                                if (lastShiftTypeAsInt != s):
+                                    model.linear_constraints.add(
+                                        lin_expr=[
+                                            cplex.SparsePair(
+                                                [
+                                                    violations_of_min_consecutive_working_shifts[
+                                                        (n, d, s, dd)
+                                                    ]
+                                                ]
+                                                + [not_working_shifts[(n, d, s)]]
+                                                + list((shifts[n][ddd][s]) for ddd in range(d)),
+                                                [-1] + [1] * (d + 1),
+                                            )
+                                        ],
+                                        senses=["L"],
+                                        rhs=[d],
+                                    )
 
     def add_min_consecutive_shifts_constraint_hard(self, model, basic_ILP_vars, data):
         """Adds the hard constraint that bans assignment of a number of consecutive shifts of one type under the minimum specified in the scenario.
@@ -1600,7 +1620,7 @@ class CplexSolver(NSP_solver):
             lastAssignedShiftType = data["h0_data"]["nurseHistory"][n][
                 "lastAssignedShiftType"
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data["shiftTypes"][s][
@@ -1624,7 +1644,7 @@ class CplexSolver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                                 or consecutive_working_shifts_prev_week == 0
                             ):
                                 model.linear_constraints.add(
@@ -1638,7 +1658,7 @@ class CplexSolver(NSP_solver):
                                     senses=["L"],
                                     rhs=[d],
                                 )
-                        if (d - dd) == 0 and lastShittTypeAsInt != s:
+                        if (d - dd) == 0 and lastShiftTypeAsInt != s:
                             model.linear_constraints.add(
                                 lin_expr=[
                                     cplex.SparsePair(
@@ -1701,7 +1721,7 @@ class CplexSolver(NSP_solver):
                             rhs=[dd + 1],
                         )
                     else:
-                        if consecutive_working_days_prev_week == d - dd:
+                        if consecutive_working_days_prev_week == dd - d:
                             model.linear_constraints.add(
                                 lin_expr=[
                                     cplex.SparsePair(
@@ -2331,7 +2351,7 @@ class CplexSolver(NSP_solver):
                     summed_violations_of_min_cons_working_days.append(
                         violations_of_min_consecutive_working_days[(n, d, dd)]
                     )
-                    weights_of_violations_of_min_cons_working_days.append(30 * dd)
+                    weights_of_violations_of_min_cons_working_days.append(utils.CONS_WORK_DAY_WEIGHT * (min_consecutive_working_days - dd))
 
         summed_violations_of_min_cons_days_off = []
         weights_of_violations_of_min_cons_days_off = []
@@ -2344,7 +2364,7 @@ class CplexSolver(NSP_solver):
                     summed_violations_of_min_cons_days_off.append(
                         violations_of_min_consecutive_days_off[(n, d, dd)]
                     )
-                    weights_of_violations_of_min_cons_days_off.append(30 * dd)
+                    weights_of_violations_of_min_cons_days_off.append(utils.CONS_DAY_OFF_WEIGHT * (min_consecutive_days_off - dd))
 
         summed_violations_of_min_cons_shift_type = []
         weights_of_violations_of_min_cons_shift_type = []
@@ -2358,7 +2378,7 @@ class CplexSolver(NSP_solver):
                         summed_violations_of_min_cons_shift_type.append(
                             violations_of_min_consecutive_working_shifts[(n, d, s, dd)]
                         )
-                        weights_of_violations_of_min_cons_shift_type.append(15 * dd)
+                        weights_of_violations_of_min_cons_shift_type.append(utils.CONS_SHIFT_WEIGHT * (min_consecutive_shifts - dd))
 
         model.objective.set_linear(
             list(
@@ -2371,7 +2391,7 @@ class CplexSolver(NSP_solver):
                                 for s in all_shifts
                                 for sk in all_skills
                             ),
-                            [30] * num_days * num_shifts * num_skills,
+                            [utils.OPT_CAPACITY_WEIGHT] * num_days * num_shifts * num_skills,
                         ),
                         zip(
                             (
@@ -2380,23 +2400,23 @@ class CplexSolver(NSP_solver):
                                 for d in all_days
                                 for s in all_shifts
                             ),
-                            [10] * num_nurses * num_days * num_shifts,
+                            [utils.UNSATISFIED_PREFERENCE_WEIGHT] * num_nurses * num_days * num_shifts,
                         ),
                         zip(
                             (total_working_weekends_over_limit[(n)] for n in all_nurses),
-                            [30] * num_nurses,
+                            [utils.TOTAL_WORKING_WEEKENDS_WEIGHT] * num_nurses,
                         ),
                         zip(
                             (incomplete_weekends[(n)] for n in all_nurses),
-                            [30] * num_nurses,
+                            [utils.INCOMPLETE_WEEKEND_WEIGHT] * num_nurses,
                         ),
                         zip(
                             (total_assignments_over_limit[(n)] for n in all_nurses),
-                            [20] * num_nurses,
+                            [utils.TOTAL_ASSIGNMENTS_WEIGHT] * num_nurses,
                         ),
                         zip(
                             (total_assignments_under_limit[(n)] for n in all_nurses),
-                            [20] * num_nurses,
+                            [utils.TOTAL_ASSIGNMENTS_WEIGHT] * num_nurses,
                         ),
                         zip(
                             (
@@ -2404,7 +2424,7 @@ class CplexSolver(NSP_solver):
                                 for n in all_nurses
                                 for d in all_days
                             ),
-                            [30] * num_nurses * num_days,
+                            [utils.CONS_WORK_DAY_WEIGHT] * num_nurses * num_days,
                         ),
                         zip(
                             summed_violations_of_min_cons_working_days,
@@ -2424,7 +2444,7 @@ class CplexSolver(NSP_solver):
                                 for n in all_nurses
                                 for d in all_days
                             ),
-                            [30] * num_nurses * num_days,
+                            [utils.CONS_DAY_OFF_WEIGHT] * num_nurses * num_days,
                         ),
                         zip(
                             (
@@ -2433,14 +2453,14 @@ class CplexSolver(NSP_solver):
                                 for d in all_days
                                 for s in all_shifts
                             ),
-                            [15] * num_nurses * num_days * num_shifts,
+                            [utils.CONS_SHIFT_WEIGHT] * num_nurses * num_days * num_shifts,
                         ),
                         zip(
                             (
                                 total_assignments_with_if_needed_skill[(n)]
                                 for n in all_nurses
                             ),
-                            [15] * num_nurses,
+                            [utils.TOTAL_IFNEEDED_SKILL_WEIGHT] * num_nurses,
                         ),
                     ]
                 )

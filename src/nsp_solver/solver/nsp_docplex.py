@@ -807,7 +807,7 @@ class DOCPLEX_Solver(NSP_solver):
             lastAssignedShiftType = data["h0_data"]["nurseHistory"][n][
                 "lastAssignedShiftType"
             ]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data["shiftTypes"][s][
@@ -830,7 +830,7 @@ class DOCPLEX_Solver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == d - dd) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 model.add(
                                     sum(
@@ -1164,7 +1164,7 @@ class DOCPLEX_Solver(NSP_solver):
                     summed_violations_of_min_cons_working_days.append(
                         violations_of_min_consecutive_working_days[(n, d, dd)]
                     )
-                    weights_of_violations_of_min_cons_working_days.append(30 * dd)
+                    weights_of_violations_of_min_cons_working_days.append(30 * (min_consecutive_working_days - dd))
 
         summed_violations_of_min_cons_days_off = []
         weights_of_violations_of_min_cons_days_off = []
@@ -1177,7 +1177,7 @@ class DOCPLEX_Solver(NSP_solver):
                     summed_violations_of_min_cons_days_off.append(
                         violations_of_min_consecutive_days_off[(n, d, dd)]
                     )
-                    weights_of_violations_of_min_cons_days_off.append(30 * dd)
+                    weights_of_violations_of_min_cons_days_off.append(30 * (min_consecutive_days_off - dd))
 
         summed_violations_of_min_cons_shift_type = []
         weights_of_violations_of_min_cons_shift_type = []
@@ -1191,7 +1191,7 @@ class DOCPLEX_Solver(NSP_solver):
                         summed_violations_of_min_cons_shift_type.append(
                             violations_of_min_consecutive_working_shifts[(n, d, s, dd)]
                         )
-                        weights_of_violations_of_min_cons_shift_type.append(15 * dd)
+                        weights_of_violations_of_min_cons_shift_type.append(15 * (min_consecutive_shifts - dd))
 
         model.add(
             model.minimize(

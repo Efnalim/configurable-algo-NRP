@@ -1003,7 +1003,7 @@ class ScheduleValidator:
             lastAssignedShiftType = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][
                 n
             ][&#34;lastAssignedShiftType&#34;]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in self.all_days:
                 w = math.floor(d / 7)
                 if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
@@ -1033,7 +1033,7 @@ class ScheduleValidator:
                                 subtotal += utils.CONS_SHIFT_WEIGHT
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 working_shifts = sum(
                                     [
@@ -1046,7 +1046,7 @@ class ScheduleValidator:
                                     #     f&#39;diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars[&#34;shifts&#34;]}_prev{consecutive_working_shifts_prev_week}&#39;
                                     # )
                                     subtotal += utils.CONS_SHIFT_WEIGHT
-                            # if lastShittTypeAsInt != s:
+                            # if lastShiftTypeAsInt != s:
 
         return subtotal
 
@@ -1192,7 +1192,7 @@ class ScheduleValidator:
                         == 1
                     ):
                         subtotal += 1
-        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+        return subtotal * utils.INCOMPLETE_WEEKEND_WEIGHT
 
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -&gt; int:
@@ -2329,7 +2329,7 @@ class ScheduleValidator:
             lastAssignedShiftType = self.data[&#34;h0_data_original&#34;][&#34;nurseHistory&#34;][
                 n
             ][&#34;lastAssignedShiftType&#34;]
-            lastShittTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = utils.shift_to_int[lastAssignedShiftType]
             for d in self.all_days:
                 w = math.floor(d / 7)
                 if self.data[&#34;configuration&#34;][&#34;h12&#34;] and (
@@ -2359,7 +2359,7 @@ class ScheduleValidator:
                                 subtotal += utils.CONS_SHIFT_WEIGHT
                         else:
                             if (consecutive_working_shifts_prev_week == dd - d) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 working_shifts = sum(
                                     [
@@ -2372,7 +2372,7 @@ class ScheduleValidator:
                                     #     f&#39;diff{working_shifts}_d{d}_dd{dd}_shifts{self.help_vars[&#34;shifts&#34;]}_prev{consecutive_working_shifts_prev_week}&#39;
                                     # )
                                     subtotal += utils.CONS_SHIFT_WEIGHT
-                            # if lastShittTypeAsInt != s:
+                            # if lastShiftTypeAsInt != s:
 
         return subtotal
 
@@ -2518,7 +2518,7 @@ class ScheduleValidator:
                         == 1
                     ):
                         subtotal += 1
-        return subtotal * utils.INCOMPLETE_WEEKEDN_WEIGHT
+        return subtotal * utils.INCOMPLETE_WEEKEND_WEIGHT
 
     @utils.soft_constr_value_print
     def _get_total_assignments_out_of_limits_value(self) -&gt; int:

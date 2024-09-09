@@ -82,7 +82,7 @@ class HistorySimulator:
 
             weekend_working_days = sum(working_days[n][5:7])
             data["h0_data"]["nurseHistory"][n]["numberOfWorkingWeekends"] += self.__isPositiveNumber(weekend_working_days)
-            if weekend_working_days == 1:
+            if data["configuration"]["h7"] and weekend_working_days == 1:
                 data["h0_data"]["nurseHistory"][n]["numberOfIncompleteWeekends"] += weekend_working_days
 
     def _compute_helpful_values(self, results, data, week_number):
@@ -101,10 +101,10 @@ class HistorySimulator:
                     shifts[n][d][s] = sum(results[(n, d + 7 * week_number, s, sk)] for sk in range(num_skills))
                     if shifts[n][d][s] == 1:
                         working_days[n][d] = 1
-
-        data["wd_data"]["vacations_with_ids"] = list(
-            map(lambda x: int(x.split("_")[1]), data["wd_data"]["vacations"])
-        )
+        if data["configuration"]["h12"]:
+            data["wd_data"]["vacations_with_ids"] = list(
+                map(lambda x: int(x.split("_")[1]), data["wd_data"]["vacations"])
+            )
 
         return working_days, shifts
 

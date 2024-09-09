@@ -464,7 +464,7 @@ def test_get_max_consecutive_shifts_value(
                     (0, 5, 0, 0),
                 ],
             },
-            2 * utils.CONS_SHIFT_WEIGHT,
+            4 * utils.CONS_SHIFT_WEIGHT,
         ),
         (
             {
@@ -1131,7 +1131,7 @@ def test_get_assignment_preferences_value(
                     (0, 5, 0, 0),
                 ],
             },
-            1 * utils.INCOMPLETE_WEEKEDN_WEIGHT,
+            1 * utils.INCOMPLETE_WEEKEND_WEIGHT,
         ),
         (
             {
@@ -1158,7 +1158,7 @@ def test_get_assignment_preferences_value(
                     (0, 6, 0, 0),
                 ],
             },
-            1 * utils.INCOMPLETE_WEEKEDN_WEIGHT,
+            1 * utils.INCOMPLETE_WEEKEND_WEIGHT,
         ),
         (
             {

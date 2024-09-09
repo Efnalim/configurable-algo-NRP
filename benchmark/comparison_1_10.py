@@ -18,7 +18,7 @@ try:
     if not os.path.exists("outputs\\schedules"): 
         os.makedirs("outputs\\schedules") 
 
-    number_of_iteration = 1
+    number_of_iteration = 10
     number_of_nurses = 35
     config_file_id = 0
 
@@ -37,11 +37,11 @@ try:
         # print(arguments_list)
         # run the main script in iterations
         for time_limit in [0]:
-            for solver_id in range(3):
+            for solver_id in [1, 2]:
                 arguments_list = [ f'{time_limit} {solver_id} {number_of_nurses} {config_file_id} ' + combination for combination in week_combinations]
                 for arg in arguments_list:
                     for _ in range(number_of_iteration):
-                        subprocess.run(['python', 'main.py'] + arg.split(' '), stdout=sys.stdout)
+                        subprocess.run(['python', 'mainbasic.py'] + arg.split(' '), stdout=sys.stdout)
 
 except Exception as e:
     sys.stdout = original_stdout

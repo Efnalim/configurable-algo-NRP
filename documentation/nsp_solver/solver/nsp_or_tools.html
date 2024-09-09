@@ -684,7 +684,7 @@ class ORTOOLS_Solver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -705,7 +705,7 @@ class ORTOOLS_Solver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == d - dd) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 model.Add(
                                     dd + 1
@@ -1029,11 +1029,11 @@ class ORTOOLS_Solver(NSP_solver):
 
         summed_violations_of_min_cons_working_days = []
         for n in all_nurses:
-            min_consecutive_wokring_days = sc_data[&#34;contracts&#34;][
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
                 contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
             ][&#34;minimumNumberOfConsecutiveWorkingDays&#34;]
             for d in all_days:
-                for dd in range(1, min_consecutive_wokring_days):
+                for dd in range(1, min_consecutive_working_days):
                     summed_violations_of_min_cons_working_days.append(
                         dd * violations_of_min_consecutive_working_days[(n, d, dd)]
                     )
@@ -1924,7 +1924,7 @@ class ORTOOLS_Solver(NSP_solver):
             lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
                 &#34;lastAssignedShiftType&#34;
             ]
-            lastShittTypeAsInt = shift_to_int[lastAssignedShiftType]
+            lastShiftTypeAsInt = shift_to_int[lastAssignedShiftType]
             for d in all_days:
                 for s in all_shifts:
                     min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -1945,7 +1945,7 @@ class ORTOOLS_Solver(NSP_solver):
                             )
                         else:
                             if (consecutive_working_shifts_prev_week == d - dd) and (
-                                lastShittTypeAsInt == s
+                                lastShiftTypeAsInt == s
                             ):
                                 model.Add(
                                     dd + 1
@@ -2269,11 +2269,11 @@ class ORTOOLS_Solver(NSP_solver):
 
         summed_violations_of_min_cons_working_days = []
         for n in all_nurses:
-            min_consecutive_wokring_days = sc_data[&#34;contracts&#34;][
+            min_consecutive_working_days = sc_data[&#34;contracts&#34;][
                 contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
             ][&#34;minimumNumberOfConsecutiveWorkingDays&#34;]
             for d in all_days:
-                for dd in range(1, min_consecutive_wokring_days):
+                for dd in range(1, min_consecutive_working_days):
                     summed_violations_of_min_cons_working_days.append(
                         dd * violations_of_min_consecutive_working_days[(n, d, dd)]
                     )
@@ -2747,7 +2747,7 @@ class ORTOOLS_Solver(NSP_solver):
         lastAssignedShiftType = data[&#34;h0_data&#34;][&#34;nurseHistory&#34;][n][
             &#34;lastAssignedShiftType&#34;
         ]
-        lastShittTypeAsInt = shift_to_int[lastAssignedShiftType]
+        lastShiftTypeAsInt = shift_to_int[lastAssignedShiftType]
         for d in all_days:
             for s in all_shifts:
                 min_consecutive_shifts = sc_data[&#34;shiftTypes&#34;][s][
@@ -2768,7 +2768,7 @@ class ORTOOLS_Solver(NSP_solver):
                         )
                     else:
                         if (consecutive_working_shifts_prev_week == d - dd) and (
-                            lastShittTypeAsInt == s
+                            lastShiftTypeAsInt == s
                         ):
                             model.Add(
                                 dd + 1
@@ -3823,11 +3823,11 @@ Returns a dictionary 'basic_cp_vars' containing the names of those variables for
 
     summed_violations_of_min_cons_working_days = []
     for n in all_nurses:
-        min_consecutive_wokring_days = sc_data[&#34;contracts&#34;][
+        min_consecutive_working_days = sc_data[&#34;contracts&#34;][
             contract_to_int[sc_data[&#34;nurses&#34;][n][&#34;contract&#34;]]
         ][&#34;minimumNumberOfConsecutiveWorkingDays&#34;]
         for d in all_days:
-            for dd in range(1, min_consecutive_wokring_days):
+            for dd in range(1, min_consecutive_working_days):
                 summed_violations_of_min_cons_working_days.append(
                     dd * violations_of_min_consecutive_working_days[(n, d, dd)]
                 )
