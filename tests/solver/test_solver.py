@@ -84,7 +84,7 @@ def test_solver(input_data, integration_tests_data_generator):
     fail = False
     solver = CplexSolver()
 
-    # Execute
+    # Act
     with does_not_raise():
         for week_number in data["all_weeks"]:
             data["wd_data"] = data["all_wd_data"][week_number]

@@ -142,7 +142,7 @@ def test_method_of_class(input_data, expected, data_for_1_nurse):
             for var, value in input_data["changes_to_sc_data"]:
                 data_for_1_nurse["sc_data"]["contracts"][-1][var] = value
 
-        # Execute
+        # Act
         result = validator.evaluate_configuration(data_for_1_nurse)
 
         # Assert

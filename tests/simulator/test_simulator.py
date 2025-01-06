@@ -19,7 +19,7 @@ def test_compute_helpful_values__1nurse_5shifts_5_days(
     results[(0, 4, 0, 0)] = 1
     simulator = HistorySimulator()
 
-    # Execute
+    # Act
     working_days, shifts = simulator._compute_helpful_values(
         results, data_for_1_nurse, 0
     )
@@ -53,7 +53,7 @@ def test_compute_helpful_values__1nurse_5shifts_4_days(
     results[(0, 3, 1, 1)] = 1
     simulator = HistorySimulator()
 
-    # Execute
+    # Act
     working_days, shifts = simulator._compute_helpful_values(
         results, data_for_1_nurse, 0
     )
@@ -81,7 +81,7 @@ def test_compute_helpful_values__1nurse_0shifts(
     results = empty_results_1nurse_1week
     simulator = HistorySimulator()
 
-    # Execute
+    # Act
     working_days, shifts = simulator._compute_helpful_values(
         results, data_for_1_nurse, 0
     )
@@ -141,7 +141,7 @@ def test_update_cumulative_data__1nurse(
         results, data_for_1_nurse, 0
     )
 
-    # Execute
+    # Act
     simulator._update_cumulative_data(data_for_1_nurse, working_days, shifts)
 
     # Assert
@@ -223,7 +223,7 @@ def test_update_border_data(
     working_days, shifts = simulator._compute_helpful_values(
         results, data_for_1_nurse, 0
     )
-    # Execute
+    # Act
     simulator._update_border_data(data_for_1_nurse, working_days, shifts)
 
     # Assert
@@ -326,7 +326,7 @@ def test_update_history_for_next_week(
         results[input] = 1
     simulator = HistorySimulator()
 
-    # Execute
+    # Act
     simulator.update_history_for_next_week(results, data_for_1_nurse)
 
     # Assert

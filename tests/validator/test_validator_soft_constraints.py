@@ -120,7 +120,7 @@ def test_get_optimal_capacity_value(
     data_for_1_nurse["all_wd_data"][0]["requirements"] = input_data["requirements"]
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
-    # Execute
+    # Act
     retval = validator._get_optimal_capacity_value()
 
     # Assert
@@ -229,7 +229,7 @@ def test_get_max_consecutive_work_days_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_max_consecutive_work_days_value()
 
     # Assert
@@ -320,7 +320,7 @@ def test_get_min_consecutive_work_days_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_min_consecutive_work_days_value()
 
     # Assert
@@ -427,7 +427,7 @@ def test_get_max_consecutive_shifts_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_max_consecutive_shifts_value()
 
     # Assert
@@ -541,7 +541,7 @@ def test_get_min_consecutive_shifts_value(
         ]
     )
 
-    # Execute
+    # Act
     retval = validator._get_min_consecutive_shifts_value()
 
     # Assert
@@ -778,7 +778,7 @@ def test_get_max_consecutive_days_off_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_max_consecutive_days_off_value()
 
     # Assert
@@ -916,7 +916,7 @@ def test_get_min_consecutive_days_off_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_min_consecutive_days_off_value()
 
     # Assert
@@ -984,7 +984,7 @@ def test_get_consecutive_days_off_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_consecutive_days_off_value()
 
     # Assert
@@ -1100,7 +1100,7 @@ def test_get_assignment_preferences_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_assignment_preferences_value()
 
     # Assert
@@ -1198,7 +1198,7 @@ def test_get_incomplete_weekends_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_incomplete_weekends_value()
 
     # Assert
@@ -1283,7 +1283,7 @@ def test_get_total_assignments_out_of_limits_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_total_assignments_out_of_limits_value()
 
     # Assert
@@ -1381,7 +1381,7 @@ def test_get_total_weekends_over_limit_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_total_weekends_over_limit_value()
 
     # Assert
@@ -1453,7 +1453,7 @@ def test_get_total_uses_of_ifneeded_skills_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_total_uses_of_ifneeded_skills_value()
 
     # Assert
@@ -1571,7 +1571,7 @@ def test_get_unsatisfied_overtime_preferences_value(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_unsatisfied_overtime_preferences_value()
 
     # Assert

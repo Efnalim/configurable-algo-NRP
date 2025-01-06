@@ -143,7 +143,7 @@ def test_is_schedule_valid(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._is_schedule_valid()
 
     # Assert
@@ -280,7 +280,7 @@ def test_get_objective_value_of_schedule(
     validator = ScheduleValidator()
     validator._init_variables(schedule, data_for_1_nurse)
 
-    # Execute
+    # Act
     retval = validator._get_objective_value_of_schedule()
 
     # Assert
@@ -327,7 +327,7 @@ def test_evaluate_schedule(
 
     validator = ScheduleValidator()
 
-    # Execute
+    # Act
     retval = validator.evaluate_schedule(schedule, data_for_1_nurse)
 
     # Assert
